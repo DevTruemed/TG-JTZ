@@ -1,0 +1,122 @@
+<!--================================-->
+<!--Modal Agregar Producto =========-->
+<!--================================-->
+<div class="modal fade" id="addProductoModal" tabindex="-1" aria-labelledby="addProductoModal" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <form class="modal-content" [formGroup]="formularioAddProducto" (ngSubmit)="agregarProducto()">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductLabel">Add Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="reiniciarModals()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="productInput" class="form-label">Product</label>
+                        <input type="text" class="form-control" id="productInput" placeholder="Product"
+                            [class.is-invalid]="isValid(formularioAddProducto,'producto')" formControlName="producto">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddProducto,'producto')">
+                            this field is required (between 5 and 200 characters)
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="priceInput" class="form-label">Price</label>
+                        <input type="number" class="form-control" id="priceInput" placeholder="Price"
+                            [class.is-invalid]="isValid(formularioAddProducto,'precio')" formControlName="precio">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddProducto,'precio')">
+                            this field is required ( positive number )
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="descriptionProductInput" class="form-label">Description</label>
+                        <textarea type="text" class="form-control" id="descriptionProductInput"
+                            [class.is-invalid]="isValid(formularioAddProducto,'descripcion')" placeholder="Description"
+                            formControlName="descripcion"></textarea>
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddProducto,'descripcion')">
+                            this field is required (between 50 and 500 characters)
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="StockInput" class="form-label">Stock</label>
+                        <input type="number" class="form-control" id="StockInput" placeholder="Stock"
+                            [class.is-invalid]="isValid(formularioAddProducto,'existencia')"
+                            formControlName="existencia">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddProducto,'existencia')">
+                            this field is required ( positive number )
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3" formGroupName="cuenta">
+                        <label for="typeSelectorProduct" class="form-label">Account</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="id"
+                            id="typeSelectorProduct">
+                            <option [value]="tipo.id" *ngFor="let tipo of tiposProductos">{{tipo.cuenta|titlecase}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalProducto"
+                    (click)="reiniciarModals()">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+
+<div class="row g-2 mx-1">
+    <div class="card card-body col-12">
+        <div class="d-flex justify-content-between">
+            <ul class="nav nav-tabs mb-3 w-100">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/catalogs', 'products']" [routerLinkActive]="'active'">Products and Services</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/catalogs', 'houses']" [routerLinkActive]="'active'">Houses</a>
+                </li>
+                <li class="ms-auto">
+                    <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                        data-bs-target="#addProductoModal" id="addProductoButton">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </li>
+            </ul>
+
+        </div>
+
+        <table class="table table-striped table-bordered text-center">
+            <thead class="bg-secondary text-white">
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Sale price</th>
+                    <th scope="col">Stock</th>
+                    <th scope="col">Actions</th>
+                </tr>
+            </thead>
+            <tbody [ngStyle]="{ 'max-height' : height/4*3+'px' }" class="contenedor">
+                <tr *ngFor="let producto of productos; let i=index">
+                    <th scope="row">{{ producto.producto | titlecase }}</th>
+                    <td>{{ producto.descripcion }}</td>
+                    <td>{{ producto.cuenta.cuenta}}</td>
+                    <td>{{ producto.precio | currency }}</td>
+                    <td>
+                        <ng-container *ngIf="producto.existencia != null; else elseTemplate">
+                            {{ producto.existencia }}
+                        </ng-container>
+                        <ng-template #elseTemplate>
+                            NA
+                        </ng-template>
+                    </td>
+                    <td>
+                        <button class="btn btn-outline-primary btn-sm" title="Update" (click)="modificarProducto(i)">
+                            <i class="fas fa-pen"></i>
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>

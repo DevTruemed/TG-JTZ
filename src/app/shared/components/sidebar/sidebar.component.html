@@ -1,0 +1,34 @@
+<nav class="h-100 m-0 p-0 position-fixed" [ngClass]="{'sidebar': !isMovil, 'sidebar-movil': isMovil}" [ngStyle]="{'left': ((isMovil && isOpen) || !isMovil ) ? '0' : '-250px'}">
+    <div class="mb-2 mx-auto mt-2" [ngStyle]="{ 'width' : isOpen ? '145px' : '35px'}">
+        <img class="img-fluid d-none d-sm-block" [src]=" isOpen ? '../../../../assets/img/TruemedGroupLogoOscuro.png' : '../../../../assets/img/icono.png'">
+    </div>
+    <ul class="h-100">
+        <li *ngFor="let acceso of accesos; let i=index">
+            <a class="d-flex align-items-center py-2" type="button" data-bs-toggle="collapse" 
+                [attr.data-bs-target]="'#' + acceso.nombre" aria-expanded="false" [attr.aria-controls]="acceso.nombre" 
+                (click)="navegar(acceso.ruta)">
+                <i class="fa-2x text-center" style="width: 60px; font-size: 1.5em;" [class]="acceso.icono"></i> 
+                <span class="nav-text">{{acceso.nombre | titlecase}}</span> 
+                <i class="fas fa-chevron-down ms-auto me-3" *ngIf="acceso.hijos != null"></i>
+            </a>
+              <div class="collapse" [id]="acceso.nombre" [ngClass]="{'d-none': !isOpen}">
+                <ul>
+                    <li *ngFor="let item of acceso.hijos; let i=index">
+                        <a class="d-flex align-items-center py-2 ps-5" (click)="navegar(item.ruta)">{{item.nombre | titlecase}}</a>
+                    </li>
+                </ul>
+              </div>
+        </li>
+        <li style="position: absolute; bottom: 0;">
+            <a class="d-flex align-items-center py-2" (click)="logout()">
+                <i class="fas fa-power-off fa-2x text-center" style="width: 60px; font-size: 1.5em;"></i> 
+                <span class="nav-text">Logout</span> 
+            </a>
+        </li>
+    </ul>
+</nav>
+<div class="h-100" 
+    [ngStyle]="{'width': ancho+ 'px', 'z-index': isMovil ? 99 : 'none'}" 
+    [ngClass]="{'d-none': isMovil && !isOpen, 'position-absolute': isMovil}"
+    (click)="cerrar()">
+</div>

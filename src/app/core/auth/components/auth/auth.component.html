@@ -1,0 +1,43 @@
+<!--====================================================================================================================-->
+<!-- Formulario de Autenticación =======================================================================================-->
+<!--====================================================================================================================-->
+<div class="auth-container" [ngStyle]="{'background-color' : (transparent) ? 'transparent':'rgba(50,50,50,.5)'}">
+    <div class="row h-100">
+        <div class="col-12 col-sm-8 col-md-6 col-lg-4 bg-white shadow rounded mx-auto my-auto" [ngClass]="{'h-100': esMovil}">
+            <div class="w-100 d-flex flex-column justify-content-center p-4" style="height: 100%;">
+                    <img class="col-10 col-sm-8 img-fluid align-self-center"
+                        src="../../../assets/img/TruemedGroupLogo.jpeg">
+                    <form class="my-4 mx-2" 
+                        [formGroup]="formularioLogin"
+                        (ngSubmit)="iniciarSesion()">
+
+                        <!-- Input username -->
+                        <input id="inputUsername"
+                            type="text" 
+                            placeholder="Username" 
+                            class="form-control mb-3" 
+                            formControlName="username" 
+                            autocomplete="on">
+
+                        <!-- Input password -->
+                        <div class="input-group mb-3">
+                            <input id="inputPassword"
+                                [type]="showPassword ? 'password' : 'text'" 
+                                placeholder="Password" 
+                                class="form-control" 
+                                formControlName="password" 
+                                autocomplete="on">
+                            <button class="btn btn-outline-secondary" type="button"
+                                style="border: solid 1px lightgray;"
+                                (click)="showPassword = !showPassword">
+                                <i class="far" [ngClass]="{'fa-eye': showPassword, 'fa-eye-slash': !showPassword}"></i>
+                            </button>
+                        </div>
+
+                        <!-- Boton de submit -->
+                        <button type="submit" class="btn btn-info text-white bg-tm float-end w-100">Sign In</button>
+                    </form>
+            </div>
+        </div>
+    </div>
+</div>

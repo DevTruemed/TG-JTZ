@@ -1,0 +1,143 @@
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">PDF Viewer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <ngx-extended-pdf-viewer [zoom]="'100%'" [src]="file" [textLayer]="true" [useBrowserLocale]="true" height="80vh">
+                </ngx-extended-pdf-viewer>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+<button type="button" id="btnOpenSelectBank" class="btn btn-primary d-none" data-bs-toggle="modal" data-bs-target="#modalBank">
+    Launch static backdrop modal
+  </button>
+  
+  <!-- Modal -->
+  <div class="modal fade" id="modalBank" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
+    <div class="modal-dialog  modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="staticBackdropLabel">Select bank</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <div class="dropdown mt-2">
+                <div class="d-grid gap-2">
+                    <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                        data-bs-toggle="dropdown" aria-expanded="false" *ngIf="selectBank">
+                        <i class="fas fa-university"></i>
+                        {{selectBank.banco}}
+                    </button>
+    
+                    <ul class="dropdown-menu w-100 p-0" aria-labelledby="dropdownMenuLink">
+                        <li role="button" (click)="selectBank = banco"
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                            *ngFor="let banco of bancos">
+                            <div class=" d-flex flex-column">
+                                <p class="card-text mb-1 fw-bold">{{banco.banco}}</p>
+                                <p class="card-text mb-0 fst-italic">Saldo: {{banco.saldo | currency}}</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" (click)="sendPago()">Continue</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<div class="d-flex">
+    <app-sidebar #sideBar></app-sidebar>
+    <app-navbar [nombreModulo]="'Debts to pay'" (sideBar)="openSideBar()"></app-navbar>
+    <div class="container-fluid">
+        <div style="height: 50px;" class="mb-2"></div>
+        <div class="row g-2">
+            <div class="col-12">
+                <div class="card card-body">
+                    <div class="nav nav-tabs mb-3" id="nav-tab" role="tablist">
+                        <button class="nav-link active" data-bs-toggle="tab" type="button" role="tab" aria-selected="true"
+                            (click)="getCxp()">
+                            Debts to pay
+                        </button>
+                        <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false"
+                            (click)="getCxp('pagadas')">
+                            Payments made
+                        </button>
+                    </div>
+
+                    <table class="table table-striped table-bordered text-center">
+                        <thead class="bg-secondary text-white">
+                            <tr>
+                                <th scope="col">Code</th>
+                                <th scope="col">Supplier</th>
+                                <th scope="col">Date</th>
+                                <th scope="col">Amount</th>
+                                <th scope="col">Invoice</th>
+                                <th scope="col">Invoice PDF</th>
+                                <th scope="col">Reviewed</th>
+                                <th scope="col">Authorized</th>
+                                <th scope="col">Pay</th>
+                            </tr>
+                        </thead>
+                        <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor">
+                            <tr *ngFor="let cxp of cuentasPorPagar; let i=index">
+                                <td>{{(cxp.id | number: '5.0-0') | code}}</td>
+                                <td>{{cxp.proveedor}}</td>
+                                <td>{{cxp.fecha | date: 'mediumDate'}}</td>
+                                <td>{{cxp.monto | currency}}</td>
+                                <td>{{cxp.factura}}</td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger me-md-2" type="button" title="pdf"
+                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                        (click)="getPago(cxp.idOrden)">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                </td>
+                                <td>
+                                    <input type="checkbox" class="btn-check" [id]="'checkR'+i" [checked]="cxp.sugerido"
+                                        (change)="revisar(i)" [disabled]="cxp.autorizado" #inputRevisado>
+                                    <label class="btn btn-sm"
+                                        [ngClass]="{'btn-outline-danger': !inputRevisado.checked, 'bg-success text-white': inputRevisado.checked}"
+                                        [for]="'checkR'+i"><i class="fas"
+                                            [ngClass]="{'fa-times': !inputRevisado.checked, 'fa-check': inputRevisado.checked}"></i></label>
+                                </td>
+                                <td>
+                                    <input type="checkbox" class="btn-check" [id]="'checkA'+i"
+                                        [checked]="cxp.autorizado" (change)="autorizar(i)" #inputAutorizado>
+                                    <label class="btn btn-sm"
+                                        [ngClass]="{'btn-outline-danger': !inputAutorizado.checked, 'bg-success text-white': inputAutorizado.checked}"
+                                        [for]="'checkA'+i"><i class="fas"
+                                            [ngClass]="{'fa-times': !inputAutorizado.checked, 'fa-check': inputAutorizado.checked}"></i></label>
+                                </td>
+                                <td>
+                                    <button class="btn btn-sm btn-outline-danger me-md-2" type="button" title="pdf"
+                                        data-bs-toggle="modal" *ngIf="cxp.status === 'PAID OUT'"
+                                        data-bs-target="#exampleModal" (click)="getPagoCXP(cxp.id)">
+                                        <i class="fas fa-file-pdf"></i>
+                                    </button>
+                                    <button class="btn btn-outline-primary btn-sm" (click)="openFileWindow()"
+                                        *ngIf="cxp.status != 'PAID OUT'">
+                                        <i class="fas fa-upload"></i>
+                                    </button>
+                                    <input class="d-none" type="file" (change)="addFile($event, i)" id="inputFile"
+                                        *ngIf="cxp.status != 'PAID OUT'">
+                                </td>
+                            </tr>   
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

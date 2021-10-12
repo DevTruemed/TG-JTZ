@@ -1,0 +1,181 @@
+<div class="d-flex">
+    <app-sidebar #sideBar></app-sidebar>
+    <app-navbar (sideBar)="openSideBar()" [nombreModulo]="'Add supplier'"></app-navbar>
+    <form class="container-fluid" [formGroup]="formulario" (ngSubmit)="agregarProveedor()">
+        <div style="height: 50px;" class="mb-2"></div>
+        <div class="row g-2">
+            <div class="col-12">
+                <div class="card ">
+                    <div class="card-body ">
+                        <h5 class="card-title mb-3">Infomation</h5>
+                        <div class="row g-2">
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label for="supplierNameInput" class="form-label">Supplier name</label>
+                                <input type="text" class="form-control" id="supplierNameInput"
+                                    [class.is-invalid]="isValid(formulario,'proveedor')" formControlName="proveedor">
+                                <div class="invalid-feedback" *ngIf="isValid(formulario,'proveedor')">
+                                    this field is required (Max 300 characters)
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label for="phoneInput" class="form-label">Phone number</label>
+                                <input type="number" class="form-control" id="phoneInput"
+                                    [class.is-invalid]="isValid(formulario,'telefono')" formControlName="telefono">
+                                <div class="invalid-feedback" *ngIf="isValid(formulario,'telefono')">
+                                    this field is required (Between 7 and 13 characters)
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label for="emailInput" class="form-label">Email</label>
+                                <input type="email" class="form-control" id="emailInput"
+                                    [class.is-invalid]="isValid(formulario,'correo')" formControlName="correo">
+                                <div class="invalid-feedback" *ngIf="isValid(formulario,'correo')">
+                                    this field is required and need valid email address (Max 200 characters)
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label for="contactInput" class="form-label">Contact</label>
+                                <input type="text" class="form-control" id="contactInput"
+                                    [class.is-invalid]="isValid(formulario,'contacto')" formControlName="contacto">
+                                <div class="invalid-feedback" *ngIf="isValid(formulario,'contacto')">
+                                    this field is required (Max 200 characters)
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label for="addressInput" class="form-label">Address</label>
+                                <input type="text" class="form-control" id="addressInput"
+                                    [class.is-invalid]="isValid(formulario,'direccion')" formControlName="direccion">
+                                <div class="invalid-feedback" *ngIf="isValid(formulario,'direccion')">
+                                    this field is required (Max 200 characters)
+                                </div>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label class="form-label">Country</label>
+                                <select class="form-select" formControlName="pais">
+                                    <option value="Mexico">Mexico</option>
+                                    <option value="USA" selected>USA</option>
+                                </select>
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-4 mb-3 mb-sm-auto">
+                                <label class="form-label">EIN / SSN / RFC</label>
+                                <input type="text" class="form-control" formControlName="rfc">
+                            </div>
+                            <div class="col-12 col-sm-6 col-md-8 ms-auto mt-auto">
+                                <button class="btn btn-outline-primary w-100" type="submit"><i
+                                        class="fas fa-plus me-2"></i>Save Supplier</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body ">
+                        <h5 class="card-title mb-3">Payment methods</h5>
+                        <select class="form-select" (change)="addPago(SelectorPago.value)" #SelectorPago>
+                            <option selected>Select</option>
+                            <option [value]="i" *ngFor="let tipo of tiposPago; let i=index">{{tipo.tipo}}</option>
+                        </select>
+                        <ul class="list-group mt-3" formArrayName="tiposPago">
+                            <li class="list-group-item"
+                                *ngFor="let pago of tiposPagoProveedor.controls; let i=index" [formGroupName]="i">
+                                <div class="d-flex justify-content-between">
+                                    <div class="fw-6 mb-2 fw-bold">{{tiposPagoProveedor.at(i).get('tipo')?.get('tipo')?.value}}</div>
+                                    <button type="button" 
+                                        title="delete"
+                                        (click)="removePago(i)"
+                                        class="btn btn-sm btn-outline-danger mb-2">
+                                            <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                                <input type="text" class="form-control form-control-sm w-100" placeholder="Extra information"
+                                    formControlName="informacion">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-6">
+                <div class="card h-100">
+                    <div class="card-body ">
+                        <h5 class="card-title mb-3">SubAccounts</h5>
+                        <ul class="list-group mt-3" formArrayName="cuentasContables">
+                            <li class="list-group-item d-flex justify-content-between align-items-start"
+                                *ngFor="let cc of cuentasProveedor.controls; let i=index" [formGroupName]="i">
+                                <input type="text" readonly class="form-control-text fw-bold w-100"
+                                    formControlName="cuenta" style="border: none; background-color: transparent;">
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 mb-3">
+                <div class="card" style="overflow-x: scroll;" [ngStyle]="{'min-height': height/2 + 'px'}">
+                    <div class="card-body ">
+                        <h5 class="card-title mb-3">Add Products</h5>
+
+                        <div class="col-12 col-sm-6 col-md-4">
+                            <label class="form-label">Products</label>
+                            <div class="dropdown">
+                                <button
+                                    class="btn btn-outline-dark w-100 d-flex justify-content-between align-items-center"
+                                    type="button" style="border: 1px solid lightgray;" data-bs-toggle="dropdown"
+                                    aria-expanded="false">
+                                    Select products
+                                    <i class="fas fa-chevron-down" style="font-size: .8em"></i>
+                                </button>
+                                <ul class="dropdown-menu m-0 p-0" aria-labelledby="dropdownMenuButton1"
+                                    [ngStyle]="{'max-height': height/4 +'px'}" style="overflow-y: scroll;">
+                                    <li class="border-bottom" *ngFor="let producto of productos; let i=index"
+                                        (click)="selectProducto(i)">
+                                        <div class="dropdown-item">
+                                            <div class="fw-bold">{{producto.producto | titlecase}}</div>
+                                            Price: {{producto.precio | currency}}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <table class="table table-striped table-bordered text-center mt-3" style="overflow-x: scroll;">
+                            <thead class="bg-secondary text-white">
+                                <tr>
+                                    <th scope="col">Product</th>
+                                    <th scope="col">Description</th>
+                                    <th scope="col">Cost</th>
+                                    <th scope="col">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor"
+                                formArrayName="productos">
+                                <tr *ngFor="let producto of productosProveedor.controls; let i=index"
+                                    [formGroupName]="i">
+                                    <th scope="row">
+                                        {{productosProveedor.at(i).get('producto')?.get('producto')?.value}}
+                                    </th>
+                                    <td>
+                                        {{productosProveedor.at(i).get('producto')?.get('descripcion')?.value}}
+                                    </td>
+                                    <td class="">
+                                        <input type="text" class="form-control text-center m-auto"
+                                            [class.is-invalid]="productosProveedor.at(i).get('precio')?.invalid  && productosProveedor.at(i).get('precio')?.touched"
+                                            id="inputPrecio" style="width: 120px; max-width: 120px;"
+                                            formControlName="precio">
+                                        <div class="invalid-feedback"
+                                            *ngIf="productosProveedor.at(i).get('precio')?.invalid && productosProveedor.at(i).get('precio')?.touched">
+                                            Cost must be at least $0.1
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <button type="button" class="btn btn-danger btn-sm"
+                                            (click)="removeProducto(i)"><i class="fas fa-times"></i></button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

@@ -1,0 +1,49 @@
+<div class="row g-2">
+    <div class="col-12">
+        <div class="card card-body">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/sales','quotes']" routerLinkActive="active">Quotes</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/sales','invoices']" routerLinkActive="active">Invoices</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/sales','paid']" routerLinkActive="active">Paid out</a>
+                </li>
+                <li class="ms-auto">
+                    <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton" [routerLink]="['/sales','form']">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </li>
+            </ul>
+            <h5 class="card-title mb-3">Quotes</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered text-center">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Quote code</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Creation Date</th>
+                            <th scope="col">Total</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor">
+                        <tr *ngFor="let cotizacion of cotizaciones; let i=index">
+                            <td>{{(cotizacion.folioCotizacion | number: '5.0-0') | code}}</td>
+                            <td>{{cotizacion.cliente.cliente}}</td>
+                            <td>{{cotizacion.fechaCreacion | date: 'mediumDate'}}</td>
+                            <td>{{cotizacion.importe | currency}}</td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm" [routerLink]="['/sales','form',cotizacion.id]">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

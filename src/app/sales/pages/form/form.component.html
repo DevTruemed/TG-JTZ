@@ -1,0 +1,162 @@
+<form class="row g-2" [formGroup]="formulario" (ngSubmit)="create()">
+    <div class="col-12 col-md-8">
+        <div class="card card-body h-100">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title mb-3">Information</h5>
+                <span
+                    class="badge bg-transparent text-secondary border border-secondary my-auto fs-6 fw-normal">{{estatus | titlecase}}</span>
+            </div>
+            <div class="row g-2">
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Quote Code</label>
+                    <input class="form-control" type="text" [value]="(venta.folioCotizacion | number: '5.0-0') | code"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Invoice code</label>
+                    <input class="form-control" type="text" [value]="(venta.folioFactura | number: '5.0-0') | code"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Creation Date</label>
+                    <input class="form-control" type="text" [value]="venta.fechaCreacion | date : 'mediumDate'"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6">
+                    <label class="form-label">Select Customer</label>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i>
+                            {{formulario.get('cliente')?.get('cliente')?.value}}
+                        </button>
+
+                        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                            <li role="button" *ngFor="let cliente of clientes; let i = index" (click)="selectCliente(i)"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{cliente.cliente}}</p>
+                                    <p class="card-text mb-0 fst-italic">Saldo: {{cliente.saldo | currency}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6">
+                    <label class="form-label">Sale Date</label>
+                    <input class="form-control" type="text" [value]="venta.fecha | date : 'mediumDate'" readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Total</label>
+                    <input class="form-control" type="text" [value]="formulario.get('importe')?.value | currency"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Select products</label>
+                    <input class="form-control" list="datalistOptions" id="exampleDataList"
+                        placeholder="Type to search..." (change)="addProducto(inputProducto.value)" id="inputProducto"
+                        #inputProducto>
+                    <datalist id="datalistOptions" class="w-100">
+                        <option *ngFor="let producto of productos; let i=index" [value]="producto.producto">
+                            precio: {{producto.precio | currency}}
+                        </option>
+                    </datalist>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4 mt-auto">
+                    <button class="btn w-100 mt-2" type="submit"
+                        [ngClass]="{'btn-outline-primary': !update, 'btn-outline-secondary': update}">
+                        <i class="fas me-2" [ngClass]="{'fa-plus': !update, 'fa-save': update}"></i>
+                        {{ !update ? 'Create Quote': 'Save changes' }}
+                    </button>
+                </div>
+                <div class="col-12" *ngIf="update">
+                    <button class="btn w-100 mt-2" type="button"
+                        [ngClass]="{'btn-outline-primary': !update, 'btn-outline-secondary': update}"
+                        (click)="create(true)">
+                        <i class="fas fa-file-invoice-dollar me-2"></i>
+                        Save and invoiced
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="col-12 col-md-4">
+        <div class="card card-body h-100" formArrayName="observaciones">
+            <h5 class="card-title mb-3">Comments</h5>
+            <ul class="list-group mb-3">
+                <li class="list-group-item " aria-current="true"
+                    *ngFor="let observacion of venta.observaciones; let i=index">
+                    <p class="mb-0">{{observacion.observacion}}</p>
+                    <small class="fw-bold" style="font-size: .8rem;">{{observacion.user | titlecase}}</small>
+                </li>
+            </ul>
+            <ng-container *ngFor="let observacion of observacionesForm.controls; let i = index" [formGroupName]="i">
+                <input type="text" class="form-control text-center mb-2"
+                    [class.is-invalid]="observacionesForm.at(i).get('observacion')?.invalid  && observacionesForm.at(i).get('observacion')?.touched"
+                    formControlName="observacion" #inputCantdad>
+                <div class="invalid-feedback"
+                    *ngIf="observacionesForm.at(i).get('observacion')?.invalid  && observacionesForm.at(i).get('observacion')?.touched">
+                    Required (5 - 300 characteres)
+                </div>
+            </ng-container>
+
+            <button type="button" class="btn btn-outline-primary w-100" (click)="addObservacion()">
+                <i class="fas fa-plus me-2"></i>Add Comment
+            </button>
+        </div>
+    </div>
+    <div class="col-12 mb-3">
+        <div class="card card-body">
+            <h5 class="card-title mb-3 w-100">Products</h5>
+            <div class="table-responsive"
+                [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none'}">
+                <table class="table table-striped table-bordered text-center mt-3">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Quantity</th>
+                            <th scope="col">Product</th>
+                            <th scope="col">Unit Price</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor" formArrayName="productos">
+                        <tr *ngFor="let producto of productosForm.controls; let i=index" [formGroupName]="i">
+                            <td>
+                                <input type="number" class="form-control text-center m-auto"
+                                    [class.is-invalid]="productosForm.at(i).get('cantidad')?.invalid  && productosForm.at(i).get('cantidad')?.touched"
+                                    id="inputPrecio" (keyup)="actualizarImporte()" formControlName="cantidad"
+                                    #inputCantdad>
+                                <div class="invalid-feedback"
+                                    *ngIf="productosForm.at(i).get('cantidad')?.invalid && productosForm.at(i).get('cantidad')?.touched">
+                                    Quantity must be at least 0.1
+                                </div>
+                            </td>
+                            <td>
+                                {{productosForm.at(i)?.get('producto')?.get('producto')?.value}}
+                            </td>
+                            <td>
+                                {{productosForm.at(i)?.get('costo')?.value | currency}}
+                            </td>
+                            <td>
+                                {{productosForm.at(i)?.get('costo')?.value *
+                                productosForm.at(i)?.get('cantidad')?.value | currency}}
+                            </td>
+                            <td>
+                                <button type="button"
+                                    class="btn btn-danger btn-sm d-flex justify-content-center align-items-center mx-auto"
+                                    (click)="removeProducto(i)">
+                                    <i class="fas fa-times me-2 my-auto"></i>
+                                    Quit
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+
+        </div>
+    </div>
+</form>

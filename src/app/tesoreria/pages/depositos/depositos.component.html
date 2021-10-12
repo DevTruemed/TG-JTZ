@@ -1,0 +1,220 @@
+<form class="row g-2" [formGroup]="formulario" (ngSubmit)="depositar()">
+    <div class="col-12 col-md-8">
+        <div class="card card-body h-100" style="overflow-x: scroll;">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title mb-3">Information</h5>
+                <span
+                    class="badge border my-auto fs-6 fw-normal"
+                    [class] = "(estatus === 'POSITIVE BALANCE') ? 'border-success text-success' : 'border-secondary text-secondary bg-transparent'"
+                    >{{estatus | titlecase}}</span>
+            </div>
+            <div class="row g-2">
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Code</label>
+                    <input class="form-control" type="text" [value]="formulario.get('id')?.value"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Amount</label>
+                    <input class="form-control" type="text" [value]="((update) ? formulario.get('monto')?.value : getImporte()) | currency"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Creation Date</label>
+                    <input class="form-control text-center" type="text" [value]="formulario.get('fecha')?.value | date: 'mediumDate'"
+                        readonly>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label class="form-label">Select Customer</label>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false" [disabled]="update">
+                            <i class="fas fa-user me-2"></i>
+                            {{this.cliente.cliente}}
+                        </button>
+
+                        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                             <li role="button" *ngFor="let cliente of clientes; let i = index" (click)="selectCliente(i)" 
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{cliente.cliente}}</p>
+                                    <p class="card-text mb-0 fst-italic">Saldo: {{cliente.saldo | currency}}</p>
+                                </div>
+                            </li> 
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label class="form-label">Select Bank</label>
+                    <div class="dropdown">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false" [disabled]="update">
+                                <i class="fas fa-university me-2"></i>
+                                {{selectBank.banco}}
+                            </button>
+            
+                            <ul class="dropdown-menu w-100 p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let banco of bancos; let i=index" (click)="selectBanco(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                    >
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{banco.banco}}</p>
+                                        <p class="card-text mb-0 fst-italic">Saldo: {{banco.saldo | currency}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6">
+                    <label class="form-label">Select Invoices</label>
+                    <div class="dropdown">
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                                data-bs-toggle="dropdown" aria-expanded="false" >
+                                <i class="fas fa-file-invoice-dollar me-2"></i>
+                                Select invoice
+                            </button>
+                            <ul class="dropdown-menu w-100 p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let factura of facturas; let i=index" (click)="addInvoice(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center"
+                                    >
+                                    <div class="w-100">
+                                        <div class="w-100 d-flex justify-content-between">
+                                            <p class="card-text mb-1 fw-bold">Invoice: {{(factura.folioFactura | number: '5.0-0') | code}}</p>
+                                            <p class="card-text ms-auto fst-italic">{{factura.fecha | date: 'mediumDate'}}</p>
+                                        </div>
+                                        <div>
+                                            Debt: {{(factura.importe - ((factura.montoAbonos === null) ? 0 : factura.montoAbonos)) | currency}}
+                                        </div>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 mt-2 mt-sm-auto">
+                    <button class="btn btn-outline-primary w-100 mt-2" type="submit">
+                        <i class="fas fa-check-circle me-2"></i>
+                        Deposit
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <!-- <div class="col-12 col-md-4">
+        <div class="card card-body h-100" formArrayName="observaciones">
+            <h5 class="card-title mb-3">Comments</h5>
+            <ul class="list-group mb-3">
+                <li class="list-group-item " aria-current="true"
+                    *ngFor="let observacion of venta.observaciones; let i=index">
+                    <p class="mb-0">{{observacion.observacion}}</p>
+                    <small class="fw-bold" style="font-size: .8rem;">{{observacion.user | titlecase}}</small>
+                </li>
+            </ul>
+            <ng-container *ngFor="let observacion of observacionesForm.controls; let i = index" [formGroupName]="i">
+                <input type="text" class="form-control text-center mb-2"
+                    [class.is-invalid]="observacionesForm.at(i).get('observacion')?.invalid  && observacionesForm.at(i).get('observacion')?.touched"
+                    formControlName="observacion" #inputCantdad>
+                <div class="invalid-feedback"
+                    *ngIf="observacionesForm.at(i).get('observacion')?.invalid  && observacionesForm.at(i).get('observacion')?.touched">
+                    Required (5 - 300 characteres)
+                </div>
+            </ng-container>
+
+            <button type="button" class="btn btn-outline-primary w-100" (click)="addObservacion()">
+                <i class="fas fa-plus me-2"></i>Add Comment
+            </button>
+        </div>
+    </div> -->
+    <div class="col-12 mb-3">
+        <div class="card card-body">
+            <h5 class="card-title mb-3 w-100">Invoices</h5>
+            <div class="table-responsive"
+                [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none'}">
+                <table class="table table-striped table-bordered text-center mt-3">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Code</th>
+                            <th scope="col">Sale date</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Paid</th>
+                            <th scope="col">Pay</th>
+                            <th scope="col">Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor" formArrayName="ventas">
+                        <tr *ngFor="let invoice of ventasForm.controls; let i = index" [formGroupName]="i">
+                            <td>
+                                {{(ventasForm.at(i)?.get('folioFactura')?.value | number: '5.0-0') | code}}
+                            </td>
+                            <td>
+                                {{ventasForm.at(i)?.get('fecha')?.value | date: 'mediumDate'}}
+                            </td>
+                            <td>
+                                {{ventasForm.at(i)?.get('importe')?.value | currency}}
+                            </td>
+                            <td>
+                                {{ventasForm.at(i)?.get('montoAbonos')?.value | currency}}
+                            </td>
+                            <td>
+                                <input class="form-control form-control-sm mx-auto" style="max-width: 100px; min-width: 60px;" type="number" formControlName="monto">
+                            </td>
+                            <td>
+                                <button type="button" class="btn btn-sm btn-outline-danger" (click)="removeInvoice(i)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let invoice of abonosRealizados; let i = index" style="background-color: rgba(3, 99, 43, 0.24)">
+                            <td class="border border-success">
+                                {{(invoice.venta.factura | number: '5.0-0') | code}}
+                            </td>
+                            <td class="border border-success">
+                                {{invoice.venta.fecha | date: 'mediumDate'}}
+                            </td>
+                            <td class="border border-success">
+                                {{invoice.venta.importe | currency}}
+                            </td>
+                            <td class="border border-success">
+                                {{invoice.venta.montoAbonos | currency}}
+                            </td>
+                            <td class="border border-success">
+                                {{invoice.monto}}
+                            </td>
+                            <td class="border border-success">
+                                <div class="badge bg-success">
+                                   SUCCESS
+                                </div>
+                            </td>
+                        </tr>
+                        <tr *ngFor="let invoice of abonosCancelados; let i = index" style="background-color: rgba(220, 53, 69, .2)">
+                            <td class="border border-danger">
+                                {{(invoice.venta.factura | number: '5.0-0') | code}}
+                            </td>
+                            <td class="border border-danger">
+                                {{invoice.venta.fecha | date: 'mediumDate'}}
+                            </td>
+                            <td class="border border-danger">
+                                {{invoice.venta.importe | currency}}
+                            </td>
+                            <td class="border border-danger">
+                                {{invoice.venta.montoAbonos | currency}}
+                            </td>
+                            <td class="border border-danger">
+                                {{invoice.monto}}
+                            </td>
+                            <td class="border border-danger">
+                                <div class="badge bg-danger">
+                                   CANCELED 
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</form>
