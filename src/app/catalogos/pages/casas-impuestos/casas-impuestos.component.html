@@ -1,0 +1,67 @@
+<div class="modal fade" id="PropertyTaxesModal" tabindex="-1" aria-labelledby="PropertyTaxesModal" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="propertyTaxesModalLabel">Property Taxes</h5>
+                <button id="closeImpuestosModal" type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="table-responsive">
+                        <table class="table table-dark table-hover table-sm table-striped">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">Amount</th>
+                                    <th scope="col">Due Date</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr *ngFor="let impuesto of impuestos; let i = index">
+                                    <th>{{ i + 1 }} </th>
+                                    <th>{{ impuesto.monto | currency }}</th>
+                                    <th class="d-flex justify-content-around">
+                                        {{ impuesto.fechaImpuesto | date:'Y' }}
+                                        <button class="btn btn-sm btn-outline-danger" type="button" title="Delete"
+                                            (click)="eliminarImpuesto(impuesto, i)">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </th>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <form [formGroup]="formularioAddImpuesto" (ngSubmit)="agregarImpuesto()" autocomplete="off">
+                <div class="modal-footer">
+                    <div class="row">
+                        <div class="mb-3 col-6 col-sm-6 col-md-4">
+                            <label for="montotInput" class="form-label">Amount</label>
+                            <input type="number" class="form-control" id="montoInput" placeholder="Amount"
+                                [class.is-invalid]="isValid(formularioAddImpuesto,'monto')" formControlName="monto">
+                            <div class="invalid-feedback" *ngIf="isValid(formularioAddImpuesto,'monto')">
+                                this field is required
+                            </div>
+                        </div>
+                        <div class="mb-3 col-6 col-sm-6 col-md-4">
+                            <label for="anioInput" class="form-label">Due Date</label>
+                            <input class="form-control" placeholder="Select a date" angular-mydatepicker
+                                name="fechaImpuesto" formControlName="fechaImpuesto" [options]="myOptions"
+                                [class.is-invalid]="isValid(formularioAddImpuesto,'fechaImpuesto')"
+                                #dp="angular-mydatepicker" (click)="toggleCalendar()" />
+                            <div class="invalid-feedback" *ngIf="isValid(formularioAddImpuesto,'fechaImpuesto')">
+                                this field is required
+                            </div>
+                        </div>
+                        <button type="submit" class="btn btn-outline-secondary col-2 btn-sm">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

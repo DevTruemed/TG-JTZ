@@ -14,6 +14,8 @@ import { ClientesComponent } from './pages/clientes/clientes.component';
 import { CatalogosComponent } from './catalogos.component';
 import { CasasComponent } from './pages/casas/casas.component';
 import { AseguradorasComponent } from './pages/aseguradoras/aseguradoras.component';
+import { CasasImpuestosComponent } from './pages/casas-impuestos/casas-impuestos.component';
+import { AngularMyDatePickerModule } from 'angular-mydatepicker';
 
 @NgModule({
   declarations: [
@@ -26,11 +28,13 @@ import { AseguradorasComponent } from './pages/aseguradoras/aseguradoras.compone
     ClientesComponent,
     CatalogosComponent, CasasComponent,
     AseguradorasComponent,
+    CasasImpuestosComponent
   ],
   imports: [
     CommonModule,
     CatalogosRoutingModule,
-    CoreModule
+    CoreModule,
+    AngularMyDatePickerModule
   ],
   bootstrap: [
     CatalogosComponent

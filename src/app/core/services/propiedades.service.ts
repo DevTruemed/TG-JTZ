@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { PropiedadModel, TipoModel } from '../models/catalogos.models';
+import { PropiedadModel, TipoModel, PropiedadImpuestoModel } from '../models/catalogos.models';
 
 @Injectable({
   providedIn: 'root'
@@ -95,6 +95,19 @@ export class PropiedadesService {
 
     return this.http.delete<boolean>(this.urlBase + '/images/' + idImagen);
 
+  }
+
+  postImpuesto(impuesto: PropiedadImpuestoModel): Observable<PropiedadImpuestoModel> {
+    let formData: FormData = new FormData();
+    formData.append('propiedad', impuesto.propiedad.toString()); 
+    formData.append('monto', impuesto.monto.toString());
+    // @ts-ignore
+    formData.append('fechaImpuesto', impuesto.fechaImpuesto.singleDate.formatted);
+    return this.http.post<PropiedadImpuestoModel>(this.urlBase + '/impuestos', formData);
+  }
+
+  deleteImpuesto(id: number) {
+    return this.http.delete<any>( this.urlBase + '/impuestos/' + id );
   }
 
 }

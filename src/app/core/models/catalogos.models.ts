@@ -48,6 +48,8 @@ export class PropiedadModel {
 
     aseguradora: AseguradoraModel;
 
+    impuestos: PropiedadImpuestoModel[];
+
     constructor() {
 
         this.id = 0;
@@ -95,6 +97,8 @@ export class PropiedadModel {
         this.habitaciones = 0;
 
         this.aseguradora = new AseguradoraModel();
+
+        this.impuestos = [];
 
     }
 
@@ -148,7 +152,7 @@ export class ImagenModel {
 
     tipo: string;
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -172,7 +176,7 @@ export class CuentaContableModel {
 
     padre: CuentaContableModel | null = null;
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -191,18 +195,18 @@ export class ClienteModel {
     id: number;
 
     cliente: string;
-    
+
     telefono: string;
-    
+
     correo: string;
-    
+
     contacto: string;
-    
+
     direccion: string;
-    
+
     saldo: number;
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -217,7 +221,7 @@ export class ClienteModel {
         this.direccion = '';
 
         this.saldo = 0;
-        
+
     }
 
 }
@@ -232,7 +236,7 @@ export class BancoModel {
 
     saldo: number;
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -252,7 +256,7 @@ export class TipoModel {
 
     tipo: string;
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -268,7 +272,7 @@ export class EstatusModel {
 
     estatus: string;
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -305,7 +309,7 @@ export class ProveedorModel {
         tipo: TipoModel
     }[] = [];
 
-    constructor(){
+    constructor() {
 
         this.id = 0;
 
@@ -337,7 +341,7 @@ export class ProveedorProductoModel {
 
     precio: number;
 
-    constructor(){
+    constructor() {
 
         this.producto = new ProductoModel();
 
@@ -375,6 +379,32 @@ export class AseguradoraModel {
 
         this.telefonoContacto = '';
 
+    }
+
+}
+
+export class PropiedadImpuestoModel {
+
+    id: number;
+
+    propiedad: PropiedadModel;
+
+    monto: number;
+
+    fechaImpuesto: string;
+
+    fechaRegistro: string;
+
+    constructor() {
+        this.id = 0;
+
+        this.propiedad = new PropiedadModel();
+
+        this.monto = 0;
+
+        this.fechaImpuesto = '';
+
+        this.fechaRegistro = '';
     }
 
 }

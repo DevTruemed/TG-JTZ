@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductoModel, PropiedadModel, TipoModel } from 'src/app/core/models/catalogos.models';
-import { AseguradoraModel } from '../../../core/models/catalogos.models';
+import { AseguradoraModel, PropiedadImpuestoModel } from '../../../core/models/catalogos.models';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { AseguradorasService } from '../../../core/services/aseguradoras.service';
@@ -31,6 +31,10 @@ export class CasasComponent implements OnInit {
   aseguradoras: AseguradoraModel[] = [];
 
   infoAseguradora: any = null;
+
+  propiedadImpuestos: PropiedadImpuestoModel[] = [];
+
+  idPropiedad: number = 0;
 
   update: number | null = null;
 
@@ -135,6 +139,13 @@ export class CasasComponent implements OnInit {
 
   }
 
+  prepararImpuestosModal(index: number): void {
+    let propiedad = this.propiedades[index];
+    this.propiedadImpuestos = propiedad.impuestos;
+    this.idPropiedad = propiedad.id;
+    document.getElementById('openImpuestosModal')?.click();
+  }
+
   public isValid(form: FormGroup, field: string): boolean {
 
     //@ts-ignore
@@ -222,6 +233,9 @@ export class CasasComponent implements OnInit {
       recamaras: [1, [Validators.min(1), Validators.max(10), Validators.required]],
       banos: [1, [Validators.min(1), Validators.max(10), Validators.required]],
       estacionamientos: [0, [Validators.min(0), Validators.max(10), Validators.required]],
+      aseguradora: this.formBuilder.group({
+        id: [0, [Validators.min(1)]]
+      }),
       productos: this.formBuilder.array([])
     });
   }
