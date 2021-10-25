@@ -13,17 +13,19 @@ import { FormProveedoresComponent } from './form-proveedores/form-proveedores.co
 import { ClientesComponent } from './pages/clientes/clientes.component';
 import { CatalogosComponent } from './catalogos.component';
 import { CasasComponent } from './pages/casas/casas.component';
+import { AseguradorasComponent } from './pages/aseguradoras/aseguradoras.component';
 
 @NgModule({
   declarations: [
-    ProveedoresComponent, 
-    UsuariosComponent, 
+    ProveedoresComponent,
+    UsuariosComponent,
     ProductosComponent,
-    CuentasComponent, 
-    BancosComponent, 
-    FormProveedoresComponent, 
-    ClientesComponent, 
-    CatalogosComponent, CasasComponent
+    CuentasComponent,
+    BancosComponent,
+    FormProveedoresComponent,
+    ClientesComponent,
+    CatalogosComponent, CasasComponent,
+    AseguradorasComponent,
   ],
   imports: [
     CommonModule,

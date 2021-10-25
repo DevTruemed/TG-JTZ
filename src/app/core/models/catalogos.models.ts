@@ -46,8 +46,10 @@ export class PropiedadModel {
 
     productos: ProductoModel[];
 
-    constructor(){
-    
+    aseguradora: AseguradoraModel;
+
+    constructor() {
+
         this.id = 0;
 
         this.terreno = 0;
@@ -91,6 +93,8 @@ export class PropiedadModel {
         this.venta = 0;
 
         this.habitaciones = 0;
+
+        this.aseguradora = new AseguradoraModel();
 
     }
 
@@ -156,7 +160,7 @@ export class ImagenModel {
 
 }
 
-export class CuentaContableModel{
+export class CuentaContableModel {
 
     id: number;
 
@@ -182,8 +186,8 @@ export class CuentaContableModel{
 
 }
 
-export class ClienteModel{
-    
+export class ClienteModel {
+
     id: number;
 
     cliente: string;
@@ -218,7 +222,7 @@ export class ClienteModel{
 
 }
 
-export class BancoModel{
+export class BancoModel {
 
     id: number;
 
@@ -274,7 +278,7 @@ export class EstatusModel {
 
 }
 
-export class ProveedorModel{
+export class ProveedorModel {
 
     id: number;
 
@@ -327,7 +331,7 @@ export class ProveedorModel{
 
 }
 
-export class ProveedorProductoModel{
+export class ProveedorProductoModel {
 
     producto: ProductoModel;
 
@@ -338,6 +342,38 @@ export class ProveedorProductoModel{
         this.producto = new ProductoModel();
 
         this.precio = 0;
+
+    }
+
+}
+
+export class AseguradoraModel {
+
+    id: number;
+
+    nombre: string;
+
+    paginaWeb: string;
+
+    nombreContacto: string;
+
+    correoContacto: string;
+
+    telefonoContacto: string;
+
+    constructor() {
+
+        this.id = 0;
+
+        this.nombre = '';
+
+        this.paginaWeb = '';
+
+        this.nombreContacto = '';
+
+        this.correoContacto = '';
+
+        this.telefonoContacto = '';
 
     }
 

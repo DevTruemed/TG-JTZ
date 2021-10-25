@@ -58,6 +58,7 @@ export class PropiedadesService {
     formData.append('recamaras', propiedad.recamaras.toString())
     formData.append('banos', propiedad.banos.toString())
     formData.append('estacionamientos', propiedad.estacionamientos.toString())
+    formData.append('aseguradora', propiedad.aseguradora.id.toString())
     return this.http.post<PropiedadModel>(this.urlBase, formData);
 
   }

@@ -154,6 +154,25 @@
                         <input class="form-control" (change)="seleccionarFotos($event)" type="file"
                             id="formFileMultiple" multiple>
                     </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3" formGroupName="aseguradora">
+                        <label for="insurerSelector" class="form-label">Insurer</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="id"
+                            id="insurerSelector" (change)="getInfoAseguradora()"
+                            [class.is-invalid]="isValid(formularioAddPropiedad,'aseguradora')">
+                            <option value="0">Select</option>
+                            <option [value]="aseguradora.id" *ngFor="let aseguradora of aseguradoras">
+                                {{aseguradora.nombre|titlecase}}</option>
+                        </select>
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'aseguradora')">
+                            this field is required
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3" *ngIf="infoAseguradora">
+                        <i class="fas fa-globe mr-3"></i>&nbsp;&nbsp;&nbsp;&nbsp;<a [href]="infoAseguradora.paginaWeb"
+                            target="_blank" rel="noopener noreferrer">{{ infoAseguradora.paginaWeb }}</a><br>
+                        <i class="fas fa-user-tie"></i> {{ infoAseguradora.nombreContacto}}, {{
+                        infoAseguradora.telefonoContacto}}
+                    </div>
                     <div class="row">
                         <div class="mb-3 col-12 col-sm-6 col-md-3 d-flex"
                             *ngFor="let image of imagenesActualesBase64; let i = index">

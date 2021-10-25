@@ -11,6 +11,7 @@ import { CuentasComponent } from './pages/cuentas/cuentas.component';
 import { ProductosComponent } from './pages/productos/productos.component';
 import { ProveedoresComponent } from './pages/proveedores/proveedores.component';
 import { UsuariosComponent } from './pages/usuarios/usuarios.component';
+import { AseguradorasComponent } from './pages/aseguradoras/aseguradoras.component';
 
 const routes: Routes = [
   {
@@ -62,6 +63,11 @@ const routes: Routes = [
   {
     path: 'customers',
     component: ClientesComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'insurers',
+    component: AseguradorasComponent,
     canActivate: [AuthGuard]
   }
 ];

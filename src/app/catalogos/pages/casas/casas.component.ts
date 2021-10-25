@@ -1,9 +1,12 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductoModel, PropiedadModel, TipoModel } from 'src/app/core/models/catalogos.models';
+import { AseguradoraModel } from '../../../core/models/catalogos.models';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
+import { AseguradorasService } from '../../../core/services/aseguradoras.service';
 
+declare var $: any;
 @Component({
   selector: 'app-casas',
   templateUrl: './casas.component.html',
@@ -25,6 +28,10 @@ export class CasasComponent implements OnInit {
 
   tipos: TipoModel[] = [];
 
+  aseguradoras: AseguradoraModel[] = [];
+
+  infoAseguradora: any = null;
+
   update: number | null = null;
 
   height = screen.height - 165;
@@ -33,16 +40,18 @@ export class CasasComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private propiedadesService: PropiedadesService,
-    private productosService: ProductosService) { 
+    private productosService: ProductosService,
+    private aseguradorasService: AseguradorasService) {
 
-      this.inicializarFormulario();
+    this.inicializarFormulario();
 
-    }
+  }
 
   ngOnInit(): void {
 
     this.propiedadesService.getPropiedades().subscribe(
-      propiedades => { this.propiedades = propiedades;
+      propiedades => {
+        this.propiedades = propiedades;
         this.propiedades.forEach(p => p.cortarDetalle = true);
       },
       err => { console.log(err) }
@@ -50,6 +59,11 @@ export class CasasComponent implements OnInit {
 
     this.propiedadesService.getTipos().subscribe(
       tipos => this.tipos = tipos,
+      err => console.log(err)
+    )
+
+    this.aseguradorasService.getAseguradoras().subscribe(
+      aseguradoras => this.aseguradoras = aseguradoras,
       err => console.log(err)
     )
 
@@ -108,6 +122,7 @@ export class CasasComponent implements OnInit {
     this.formularioAddPropiedad.get('id')?.setValue(this.propiedades[index].id);
     this.update = index;
     this.imagenesActualesBase64 = [];
+    this.infoAseguradora = this.propiedades[index].aseguradora;
     document.getElementById('addButton')?.click();
 
     this.propiedades[index].imagenes.forEach(imagen => {
@@ -185,7 +200,7 @@ export class CasasComponent implements OnInit {
 
   }
 
-  private inicializarFormulario(): void{
+  private inicializarFormulario(): void {
     this.formularioAddPropiedad = this.formBuilder.group({
       id: [null],
       direccion: ['', [Validators.minLength(5), Validators.maxLength(200), Validators.required]],
@@ -211,4 +226,13 @@ export class CasasComponent implements OnInit {
     });
   }
 
+  getInfoAseguradora(): void {
+    let propiedad = this.formularioAddPropiedad.get('aseguradora')?.value.id!;
+    if (!propiedad) {
+      this.infoAseguradora = null;
+      return;
+    }
+
+    this.infoAseguradora = this.aseguradoras.find((a) => a.id == propiedad);
+  }
 }
