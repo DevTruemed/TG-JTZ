@@ -233,6 +233,10 @@
     id="openImpuestosModal"></button>
 <app-casas-impuestos [impuestos]="propiedadImpuestos" [idPropiedad]="idPropiedad"></app-casas-impuestos>
 
+<button class="btn btn-outline-secondary d-none" data-bs-toggle="modal" data-bs-target="#ArchivesModal"
+    id="openArchivosModal"></button>
+<app-archivos [archivos]="documentacion" (uploadFiles)="subirArchivos($event)"></app-archivos>
+
 <div class="row g-2 mx-1">
     <div class="card card-body col-12" [ngStyle]="{'max-width': (width >= 576) ? width - 95 + 'px' : 'none'}">
         <div class="d-flex justify-content-between">
@@ -288,6 +292,10 @@
                             <button class="btn btn-outline-secondary btn-sm" title="Property Taxes"
                                 (click)="prepararImpuestosModal(i)">
                                 <i class="fas fa-file-invoice-dollar"></i>
+                            </button>
+                            <button class="btn btn-outline-secondary btn-sm" title="Property Documents"
+                                (click)="documentosModal(i)">
+                                <i class="fas fa-folder-open"></i>
                             </button>
                         </td>
                     </tr>

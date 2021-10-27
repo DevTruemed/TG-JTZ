@@ -2,7 +2,7 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { ClienteModel } from '../models/catalogos.models';
+import { ClienteModel, DocumentoModel } from '../models/catalogos.models';
 
 @Injectable({
   providedIn: 'root'
@@ -13,27 +13,37 @@ export class ClientesService {
 
   constructor(private http: HttpClient) { }
 
-  getClientes(): Observable<ClienteModel[]>{
+  getClientes(): Observable<ClienteModel[]> {
 
     return this.http.get<ClienteModel[]>(this.urlBase);
 
   }
 
-  
-  postCliente(Cliente: ClienteModel): Observable<ClienteModel>{
-    
+
+  postCliente(Cliente: ClienteModel): Observable<ClienteModel> {
+
     return this.http.post<ClienteModel>(this.urlBase, Cliente);
-    
+
   }
-  
-  putCliente(Cliente: ClienteModel): Observable<ClienteModel>{
-    
+
+  putCliente(Cliente: ClienteModel): Observable<ClienteModel> {
+
     return this.http.put<ClienteModel>(this.urlBase + '/' + Cliente.id, Cliente);
-    
+
   }
-  
-  deleteCliente(id: number): Observable<any>{
-    return this.http.delete<any>( this.urlBase + '/' + id );
+
+  deleteCliente(id: number): Observable<any> {
+    return this.http.delete<any>(this.urlBase + '/' + id);
+  }
+
+  postArchivos(idPropiedad: number, archivos: File[], idTipo: number) {
+    let formData: FormData = new FormData();
+
+    archivos.forEach(archivo => formData.append('archivos', archivo));
+    formData.append('id', idPropiedad.toString());
+    formData.append('idTipo', idTipo.toString());
+
+    return this.http.post<DocumentoModel[]>(this.urlBase + '/archivos', formData);
   }
 
 }

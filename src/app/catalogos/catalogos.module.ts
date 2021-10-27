@@ -16,6 +16,8 @@ import { CasasComponent } from './pages/casas/casas.component';
 import { AseguradorasComponent } from './pages/aseguradoras/aseguradoras.component';
 import { CasasImpuestosComponent } from './pages/casas-impuestos/casas-impuestos.component';
 import { AngularMyDatePickerModule } from 'angular-mydatepicker';
+import { TiposDocumentosComponent } from './pages/tipos-documentos/tipos-documentos.component';
+import { ArchivosComponent } from './pages/archivos/archivos.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +30,9 @@ import { AngularMyDatePickerModule } from 'angular-mydatepicker';
     ClientesComponent,
     CatalogosComponent, CasasComponent,
     AseguradorasComponent,
-    CasasImpuestosComponent
+    CasasImpuestosComponent,
+    TiposDocumentosComponent,
+    ArchivosComponent
   ],
   imports: [
     CommonModule,

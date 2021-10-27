@@ -1,0 +1,56 @@
+<div class="modal fade" id="ArchivesModal" tabindex="-1" aria-labelledby="ArchivesModal" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="archivesModalLabel">Documentation</h5>
+                <button id="closeArchivosModal" type="button" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <ul class="list-group list-group-flush" *ngIf="archivos.length else noFiles">
+                        <li class="list-group-item" *ngFor="let archivo of archivos; let i=index">
+                            <div class="row">
+                                <div class="col-10">
+                                    <a class="link-primary" (click)="descargarArchivo(archivo)">{{ archivo.nombre
+                                        }}</a>
+                                    ---> {{archivo.tipo.nombre}}
+                                </div>
+                                <div class="col-2">
+                                    <div class="btn-group" role="group">
+                                        <button (click)="borrarArchivoFromServer(archivo.id, i)"
+                                            class="btn btn-outline-danger btn-sm">
+                                            <i class="fas fa-trash-alt"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </li>
+                    </ul>
+                    <ng-template #noFiles>
+                        <h1>No Files</h1>
+                    </ng-template>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <span>Add</span>
+                <div class="mb-3 col-12 col-sm-12 col-md-12">
+                    <label class="form-label">Select Files</label>
+                    <input #inputFile class="form-control" (change)="seleccionarArchivos($event)" type="file"
+                        id="formFileMultiple" multiple>
+                </div>
+                <div class="mb-3 col-12 col-sm-12 col-md-12">
+                    <label class="form-label">Document Type</label>
+                    <select class="form-select" [(ngModel)]="tipoSeleccionado">
+                        <option value="0" disabled>Select</option>
+                        <option [value]="tipo.id" *ngFor="let tipo of tipos">{{tipo.nombre|titlecase}}</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-outline-secondary btn-sm" (click)="agregarArchivos()">
+                    <i class="fas fa-plus"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

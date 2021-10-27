@@ -57,8 +57,8 @@
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label class="form-label">Balance</label>
-                        <input type="number" class="form-control" [class.is-invalid]="isValid(formulario,'saldo')" [readOnly]="update != null"
-                            formControlName="saldo">
+                        <input type="number" class="form-control" [class.is-invalid]="isValid(formulario,'saldo')"
+                            [readOnly]="update != null" formControlName="saldo">
                         <div class="form-txt" *ngIf="!isValid(formulario,'saldo')">If there is a positive balance</div>
                         <div class="invalid-feedback" *ngIf="isValid(formulario,'saldo')">
                             this field is required ( must be positive or 0 )
@@ -75,6 +75,10 @@
         </form>
     </div>
 </div>
+
+<button class="btn btn-outline-secondary d-none" data-bs-toggle="modal" data-bs-target="#ArchivesModal"
+    id="openArchivosModal"></button>
+<app-archivos [archivos]="documentacion" (uploadFiles)="subirArchivos($event)"></app-archivos>
 
 <div class="d-flex">
     <app-sidebar #sideBar></app-sidebar>
@@ -114,17 +118,22 @@
                                         <td>{{cliente.telefono}}</td>
                                         <td>{{cliente.correo}}</td>
                                         <td>{{cliente.direccion}}</td>
-                                        <td class="fw-bold" [class]="(cliente.saldo >= 0) ? 'text-success' : 'text-danger'">
+                                        <td class="fw-bold"
+                                            [class]="(cliente.saldo >= 0) ? 'text-success' : 'text-danger'">
                                             {{numeroAbsoluto(cliente.saldo) | currency}}
                                         </td>
                                         <td>
                                             <button class="btn btn-sm btn-outline-primary m-auto m-1" type="button"
-                                                title="update" (click)="prepararUpdate(i)" >
+                                                title="update" (click)="prepararUpdate(i)">
                                                 <i class="fas fa-pen"></i>
                                             </button>
                                             <button class="btn btn-sm btn-outline-danger m-1" type="button"
                                                 title="inactivate" (click)="desactivarCliente(i)">
                                                 <i class="fas fa-trash"></i>
+                                            </button>
+                                            <button class="btn btn-outline-secondary btn-sm" title="Customer Documents"
+                                                (click)="documentosModal(i)">
+                                                <i class="fas fa-folder-open"></i>
                                             </button>
                                         </td>
                                     </tr>

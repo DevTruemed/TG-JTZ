@@ -50,6 +50,8 @@ export class PropiedadModel {
 
     impuestos: PropiedadImpuestoModel[];
 
+    documentacion: DocumentoModel[];
+
     constructor() {
 
         this.id = 0;
@@ -99,6 +101,8 @@ export class PropiedadModel {
         this.aseguradora = new AseguradoraModel();
 
         this.impuestos = [];
+
+        this.documentacion = [];
 
     }
 
@@ -206,6 +210,8 @@ export class ClienteModel {
 
     saldo: number;
 
+    documentacion: DocumentoModel[];
+
     constructor() {
 
         this.id = 0;
@@ -221,6 +227,8 @@ export class ClienteModel {
         this.direccion = '';
 
         this.saldo = 0;
+
+        this.documentacion = [];
 
     }
 
@@ -407,4 +415,55 @@ export class PropiedadImpuestoModel {
         this.fechaRegistro = '';
     }
 
+}
+
+export class TipoDocumentoModel {
+
+    id: number;
+
+    nombre: string;
+
+    descripcion: string;
+
+    constructor() {
+
+        this.id = 0;
+
+        this.nombre = '';
+
+        this.descripcion = '';
+    }
+}
+
+export class DocumentoModel {
+
+    id: number;
+
+    tipo: TipoDocumentoModel;
+
+    modelo: string;
+
+    ruta: string;
+
+    nombre: string;
+
+    extension: string;
+
+    fechaCreacion: string;
+
+    constructor() {
+        this.id = 0;
+
+        this.tipo = new TipoDocumentoModel();
+
+        this.modelo = '';
+
+        this.ruta = '';
+
+        this.nombre = '';
+
+        this.extension = '';
+
+        this.fechaCreacion = '';
+    }
 }

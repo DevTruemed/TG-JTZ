@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductoModel, PropiedadModel, TipoModel } from 'src/app/core/models/catalogos.models';
-import { AseguradoraModel, PropiedadImpuestoModel } from '../../../core/models/catalogos.models';
+import { AseguradoraModel, PropiedadImpuestoModel, DocumentoModel } from '../../../core/models/catalogos.models';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { AseguradorasService } from '../../../core/services/aseguradoras.service';
@@ -35,6 +35,8 @@ export class CasasComponent implements OnInit {
   propiedadImpuestos: PropiedadImpuestoModel[] = [];
 
   idPropiedad: number = 0;
+
+  documentacion: DocumentoModel[] = [];
 
   update: number | null = null;
 
@@ -146,6 +148,13 @@ export class CasasComponent implements OnInit {
     document.getElementById('openImpuestosModal')?.click();
   }
 
+  documentosModal(index: number): void {
+    let propiedad = this.propiedades[index];
+    this.documentacion = propiedad.documentacion;
+    this.idPropiedad = propiedad.id;
+    document.getElementById('openArchivosModal')?.click();
+  }
+
   public isValid(form: FormGroup, field: string): boolean {
 
     //@ts-ignore
@@ -248,5 +257,13 @@ export class CasasComponent implements OnInit {
     }
 
     this.infoAseguradora = this.aseguradoras.find((a) => a.id == propiedad);
+  }
+
+  subirArchivos(data: { archivos: File[], tipo: number }): void {
+    this.propiedadesService.postArchivos(this.idPropiedad, data.archivos, data.tipo).subscribe(res => {
+      res.forEach(element => {
+        this.documentacion.push(element);
+      });
+    });
   }
 }

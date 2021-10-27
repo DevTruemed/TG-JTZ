@@ -1,11 +1,11 @@
 <!--================================-->
-<!--Modal Agregar Aseguradora ==========-->
+<!--Modal Agregar Tipo Documento ==========-->
 <!--================================-->
 <div class="modal fade" id="Add" tabindex="-1" aria-labelledby="Add" aria-hidden="true">
     <div class="modal-dialog modal-fullscreen">
-        <form class="modal-content" [formGroup]="formulario" (ngSubmit)="agregarAseguradora()">
+        <form class="modal-content" [formGroup]="formulario" (ngSubmit)="agregarTipoDocumento()">
             <div class="modal-header">
-                <h5 class="modal-title" id="addProductLabel">Add Insurer</h5>
+                <h5 class="modal-title" id="addProductLabel">Add Document Type</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                     (click)="reiniciarModals()"></button>
             </div>
@@ -24,36 +24,11 @@
                         </div>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
-                        <label class="form-label">Web Page</label>
-                        <input type="text" class="form-control" [class.is-invalid]="isValid(formulario,'paginaWeb')"
-                            formControlName="paginaWeb">
-                        <div class="invalid-feedback" *ngIf="isValid(formulario,'paginaWeb')">
-                            Invalid field
-                        </div>
-                    </div>
-                    <div class="mb-3 col-12 col-sm-6 col-md-3">
-                        <label class="form-label">Contact Name</label>
-                        <input type="text" class="form-control"
-                            [class.is-invalid]="isValid(formulario,'nombreContacto')" formControlName="nombreContacto">
-                        <div class="invalid-feedback" *ngIf="isValid(formulario,'nombreContacto')">
-                            this field is required ( 5 - 200 characteres )
-                        </div>
-                    </div>
-                    <div class="mb-3 col-12 col-sm-6 col-md-3">
-                        <label class="form-label">Contact Email</label>
-                        <input type="text" class="form-control"
-                            [class.is-invalid]="isValid(formulario,'correoContacto')" formControlName="correoContacto">
-                        <div class="invalid-feedback" *ngIf="isValid(formulario,'correoContacto')">
-                            this field is required ( 5 - 100 characteres )
-                        </div>
-                    </div>
-                    <div class="mb-3 col-12 col-sm-6 col-md-3">
-                        <label class="form-label">Contact Phone</label>
-                        <input type="text" class="form-control"
-                            [class.is-invalid]="isValid(formulario,'telefonoContacto')"
-                            formControlName="telefonoContacto">
-                        <div class="invalid-feedback" *ngIf="isValid(formulario,'telefonoContacto')">
-                            this field is required ( 3 - 50 characteres )
+                        <label class="form-label">Description</label>
+                        <input type="text" class="form-control" [class.is-invalid]="isValid(formulario,'descripcion')"
+                            formControlName="descripcion">
+                        <div class="invalid-feedback" *ngIf="isValid(formulario,'descripcion')">
+                            this field is required ( 5 - 500 characteres )
                         </div>
                     </div>
                 </div>
@@ -69,7 +44,7 @@
 
 <div class="d-flex">
     <app-sidebar #sideBar></app-sidebar>
-    <app-navbar (sideBar)="openSideBar()" [nombreModulo]="'Insurers'"></app-navbar>
+    <app-navbar (sideBar)="openSideBar()" [nombreModulo]="'Document Types'"></app-navbar>
     <div class="container-fluid">
         <div style="height: 50px;" class="mb-2"></div>
         <div class="row g-2">
@@ -77,7 +52,7 @@
                 <div class="card ">
                     <div class="card-body ">
                         <div class="d-flex justify-content-between">
-                            <h5 class="card-title mb-3">Active Insurers</h5>
+                            <h5 class="card-title mb-3">Active Document Types</h5>
                             <div class="ms-auto">
                                 <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
                                     data-bs-target="#Add" id="addButton">
@@ -90,29 +65,21 @@
                                 <thead class="bg-secondary text-white">
                                     <tr>
                                         <th scope="col">Code</th>
-                                        <th scope="col">Insurer</th>
-                                        <th scope="col">Web Page</th>
-                                        <th scope="col">Contact</th>
+                                        <th scope="col">Document Type</th>
                                         <th scope="col">Actions</th>
                                     </tr>
                                 </thead>
                                 <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor">
-                                    <tr *ngFor="let aseguradora of aseguradoras; let i=index">
-                                        <td>{{(aseguradora.id | number: '4.0-0') | code}}</td>
-                                        <td>{{aseguradora.nombre}}</td>
-                                        <td>{{aseguradora.paginaWeb}}</td>
-                                        <td>
-                                            {{aseguradora.nombreContacto}} <br>
-                                            <i class="fas fa-at"></i> {{aseguradora.correoContacto}} <br>
-                                            <i class="fas fa-phone"></i> {{aseguradora.telefonoContacto}}
-                                        </td>
+                                    <tr *ngFor="let documento of documentos; let i=index">
+                                        <td>{{(documento.id | number: '4.0-0') | code}}</td>
+                                        <td>{{documento.nombre}}</td>
                                         <td>
                                             <button class="btn btn-sm btn-outline-primary m-auto m-1" type="button"
                                                 title="update" (click)="prepararUpdate(i)">
                                                 <i class="fas fa-pen"></i>
                                             </button>
                                             <!-- <button class="btn btn-sm btn-outline-danger m-1" type="button"
-                                                title="inactivate" (click)="desactivarAseguradora(i)">
+                                                title="inactivate" (click)="desactivarTipoDocumento(i)">
                                                 <i class="fas fa-trash"></i>
                                             </button> -->
                                         </td>
