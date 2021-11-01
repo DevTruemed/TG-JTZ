@@ -1,0 +1,68 @@
+<button class="btn btn-outline-secondary d-none" data-bs-toggle="modal" data-bs-target="#ArchivesModal"
+    id="openArchivosModal"></button>
+<app-archivos [archivos]="documentacion" (uploadFiles)="subirArchivos($event)"></app-archivos>
+
+<div class="row g-2">
+    <div class="col-12">
+        <div class="card card-body">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/leases','vigentes']" routerLinkActive="active">Current</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/leases','vencidos']" routerLinkActive="active">Expired</a>
+                </li>
+                <li class="ms-auto">
+                    <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton"
+                        [routerLink]="['/leases','form']">
+                        <i class="fas fa-plus"></i>
+                    </a>
+                </li>
+            </ul>
+            <h5 class="card-title mb-3">Leases</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered text-center">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Lease code</th>
+                            <th scope="col">Property</th>
+                            <th scope="col">Customer</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Expiration Date</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor">
+                        <tr *ngFor="let contrato of contratos; let i=index">
+                            <td>{{(contrato.id | number: '5.0-0') | code}}</td>
+                            <td>
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{contrato.propiedad.direccion}}</p>
+                                    <p class="card-text mb-0 fst-italic">{{contrato.propiedad.tipo.tipo}}</p>
+                                </div>
+
+                            </td>
+                            <td>{{contrato.cliente.cliente}}</td>
+                            <td>{{contrato.tipo.nombre}}</td>
+                            <td>{{contrato.fechaTermino | date: 'mediumDate'}}</td>
+                            <td>
+                                <a class="btn btn-outline-primary btn-sm"
+                                    [routerLink]="['/leases', 'show', contrato.id]">
+                                    <i class="fas fa-pen"></i>
+                                </a>
+                                <button class="btn btn-outline-secondary btn-sm" title="Lease Documents"
+                                    (click)="documentosModal(i)">
+                                    <i class="fas fa-folder-open"></i>
+                                </button>
+                                <!-- <button class="btn btn-sm btn-outline-danger m-1" type="button" title="Delete"
+                                    (click)="eliminarContrato(i)">
+                                    <i class="fas fa-trash"></i>
+                                </button> -->
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

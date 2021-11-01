@@ -1,0 +1,109 @@
+<form class="row g-2" [formGroup]="formulario" (ngSubmit)="create()">
+    <div class="col-12 col-md-12">
+        <div class="card card-body h-100">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title mb-3">Information</h5>
+            </div>
+            <div class="row g-2">
+                <div class="col-12 col-sm-6 col-md-2">
+                    <label class="form-label">Lease Code</label>
+                    <input class="form-control" type="text" [value]="(contrato.id | number: '5.0-0') | code" readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-5">
+                    <label class="form-label">Select Property</label>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-home"></i>
+                            {{formulario.get('propiedad')?.get('direccion')?.value}}
+                        </button>
+                        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                            <li role="button" *ngFor="let propiedad of propiedades; let i = index"
+                                (click)="selectPropiedad(i)"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{propiedad.tipo.tipo}}</p>
+                                    <p class="card-text mb-0 fst-italic">{{propiedad.direccion}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-5">
+                    <label class="form-label">Select Customer</label>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-user"></i>
+                            {{formulario.get('cliente')?.get('cliente')?.value}}
+                        </button>
+
+                        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                            <li role="button" *ngFor="let cliente of clientes; let i = index" (click)="selectCliente(i)"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{cliente.cliente}}</p>
+                                    <p class="card-text mb-0 fst-italic">Saldo: {{cliente.saldo | currency}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Type</label>
+                    <div class="d-grid gap-2">
+                        <button class="btn btn-outline-secondary dropdown-toggle" role="button" id="dropdownMenuLink"
+                            data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="fas fa-file-contract"></i>
+                            {{formulario.get('tipo')?.get('nombre')?.value}}
+                        </button>
+
+                        <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                            <li role="button" *ngFor="let tipo of tipos; let i = index" (click)="selectTipo(i)"
+                                class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{tipo.nombre}}</p>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control text-center m-auto"
+                        [class.is-invalid]="isValid(formulario,'monto')" id="inputMonto" formControlName="monto">
+                    <div class="invalid-feedback">
+                        Quantity must be at least 1
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                    <label class="form-label">Period</label>
+                    <div class="input-group">
+                        <!-- input box -->
+                        <input class="form-control" placeholder="Select a Date Range" angular-mydatepicker
+                            formControlName="rango" [options]="myOptions"
+                            [class.is-invalid]="isValid(formulario,'fechaInicio')" #dp="angular-mydatepicker"
+                            (click)="toggleCalendar()" (dateChanged)="seleccionarFechas($event)" />
+
+                        <!-- clear date button -->
+                        <div class="input-group-append">
+                            <button type="button" class="btn btn-secondary" *ngIf="formulario.get('fechaInicio')?.value"
+                                (click)="dp.clearDate()">
+                                <i class="fas fa-times-circle"></i>
+                            </button>
+                        </div>
+                        <div class="invalid-feedback">
+                            this field is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-5 col-lg-3 mt-auto">
+                    <button class="btn w-100 mt-2 btn-outline-primary" type="submit">
+                        <i class="fas me-2 fa-plus"></i>
+                        Save Information
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

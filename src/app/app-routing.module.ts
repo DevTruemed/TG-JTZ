@@ -8,7 +8,8 @@ const ROUTES: Routes = [
     path: 'login',
     component: LoginComponent
   },
-  { path: 'catalogs', 
+  {
+    path: 'catalogs',
     loadChildren: () => import('./catalogos/catalogos.module').then(m => m.CatalogosModule)
   },
   {
@@ -26,6 +27,10 @@ const ROUTES: Routes = [
   {
     path: 'treasury',
     loadChildren: () => import('./tesoreria/tesoreria.module').then(m => m.TesoreriaModule),
+  },
+  {
+    path: 'leases',
+    loadChildren: () => import('./contratos/contratos.module').then(m => m.ContratosModule),
   },
   {
     path: '**',

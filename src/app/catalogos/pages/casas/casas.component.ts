@@ -91,7 +91,6 @@ export class CasasComponent implements OnInit {
   }
 
   public agregarPropiedad(): void {
-    console.log(this.formularioAddPropiedad)
     if (this.formularioAddPropiedad.valid) {
       if (this.update === null) {
         this.propiedadesService.postPropiedad(this.formularioAddPropiedad.value, this.fotosSeleccionadas).subscribe(p => {

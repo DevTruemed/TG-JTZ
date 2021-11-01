@@ -1,0 +1,175 @@
+<div class="row g-2">
+    <div class="col-12 col-md-12">
+        <div class="card card-body h-100">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title mb-3">Information</h5>
+            </div>
+            <div class="row g-2">
+                <div class="col-12 col-sm-6 col-md-2">
+                    <label class="form-label">Lease Code</label>
+                    <input class="form-control" type="text" [value]="(contrato.id | number: '5.0-0') | code" readonly>
+                </div>
+                <div class="col-12 col-sm-6 col-md-5">
+                    <label class="form-label">Property</label>
+                    <div class="d-grid gap-2">
+                        <div
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div class=" d-flex flex-column">
+                                <p class="card-text mb-1 fw-bold">{{contrato.propiedad.tipo.tipo}}</p>
+                                <p class="card-text mb-0 fst-italic">{{contrato.propiedad.direccion}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-5">
+                    <label class="form-label">Customer</label>
+                    <div class="d-grid gap-2">
+                        <div
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div class=" d-flex flex-column">
+                                <p class="card-text mb-1 fw-bold">{{contrato.cliente.cliente}}</p>
+                                <p class="card-text mb-0 fst-italic">Saldo: {{contrato.cliente.saldo | currency}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Type</label>
+                    <div class="d-grid gap-2">
+                        <div
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div class=" d-flex flex-column">
+                                <p class="card-text mb-1 fw-bold">{{contrato.tipo.nombre}}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Amount</label>
+                    <h3>{{ contrato.monto | currency }}</h3>
+                </div>
+                <div class="col-12 col-sm-6 col-md-6 col-lg-3">
+                    <label class="form-label">Period</label>
+                    <h5 class="mt-2">
+                        {{ contrato.fechaInicio | date: 'mediumDate'}}
+                        -
+                        {{ contrato.fechaTermino | date: 'mediumDate' }}
+                    </h5>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 mb-3">
+        <div class="card card-body">
+            <form class="row d-flex justify-content-between" [formGroup]="formulario" (ngSubmit)="agregarPago()">
+                <h5 class="card-title col-3">
+                    <br>
+                    Lease Payments
+                </h5>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Concept</label>
+                    <input class="form-control" type="text" [class.is-invalid]="isValid(formulario,'concepto')"
+                        formControlName="concepto" placeholder="Concept">
+                    <div class="invalid-feedback">
+                        This field is required
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6 col-md-4">
+                    <label class="form-label">Amount</label>
+                    <input type="number" class="form-control m-auto" [class.is-invalid]="isValid(formulario,'monto')"
+                        id="inputMonto" formControlName="monto" placeholder="Amount">
+                    <div class="invalid-feedback">
+                        Quantity must be at least 1
+                    </div>
+                </div>
+                <div class="w-100 mt-auto">
+                    <button class="btn w-100 mt-2 btn-outline-primary" type="submit">
+                        <i class="fa-plus fas me-2"></i>
+                    </button>
+                </div>
+            </form>
+            <div class="table-responsive" style="overflow-y: scroll"
+                [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none', 'height': (height - 520) + 'px'}">
+                <table class="table table-striped table-bordered text-center mt-3">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Concept</th>
+                            <th scope="col">Amount</th>
+                            <th scope="col">Date</th>
+                            <!-- <th scope="col">Actions</th> -->
+                        </tr>
+                    </thead>
+                    <tbody class="contenedor">
+                        <tr *ngFor="let pago of contrato.pagos; let i=index">
+                            <td>
+                                {{pago.concepto}}
+                                {{height}}
+                            </td>
+                            <td>
+                                {{pago.monto | currency}}
+                            </td>
+                            <td>
+                                {{pago.fechaEmision}}
+                            </td>
+                            <!-- <td>
+                                <button type="button"
+                                        class="btn btn-danger btn-sm d-flex justify-content-center align-items-center mx-auto"
+                                        (click)="removePago(i)">
+                                        <i class="fas fa-times me-2 my-auto"></i>
+                                        Quit
+                                    </button>
+                            </td> -->
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="row">
+                <h5>Total: {{total | currency}}</h5>
+            </div>
+        </div>
+    </div>
+    <div class="col-12 col-md-6 mb-3">
+        <div class="card card-body">
+            <h5 class="card-title mb-3 w-100">Tickets</h5>
+            <div class="table-responsive"
+                [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none'}">
+                <table class="table table-striped table-bordered text-center mt-3">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Folio</th>
+                            <th scope="col">Ticket</th>
+                            <th scope="col">Comments</th>
+                            <th scope="col">Date</th>
+                            <th scope="col">Actions</th>
+                        </tr>
+                    </thead>
+                    <!-- <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor"
+                                formArrayName="tickets">
+                                <tr *ngFor="let ticket of ticketsForm.controls; let i=index" [formGroupName]="i">
+                                    <td>
+                                        #{{ticketsForm.at(i)?.get('ticket')?.get('id')?.value}}
+                                    </td>
+                                    <td>
+                                        {{ticketsForm.at(i)?.get('ticket')?.get('descripcion')?.value}}
+                                    </td>
+                                    <td>
+                                        {{ticketsForm.at(i)?.get('ticket')?.get('observacion')?.value}}
+                                    </td>
+                                    <td>
+                                        {{ticketsForm.at(i)?.get('ticket')?.get('fechaSolicitud')?.value}}
+                                    </td>
+                                    <td>
+                                        <button type="button"
+                                    class="btn btn-danger btn-sm d-flex justify-content-center align-items-center mx-auto"
+                                    (click)="removeTicket(i)">
+                                    <i class="fas fa-times me-2 my-auto"></i>
+                                    Quit
+                                </button>
+                                    </td>
+                                </tr>
+                            </tbody> -->
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

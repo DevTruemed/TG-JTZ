@@ -13,6 +13,7 @@ import { ProveedoresComponent } from './pages/proveedores/proveedores.component'
 import { UsuariosComponent } from './pages/usuarios/usuarios.component';
 import { AseguradorasComponent } from './pages/aseguradoras/aseguradoras.component';
 import { TiposDocumentosComponent } from './pages/tipos-documentos/tipos-documentos.component';
+import { TiposContratosComponent } from './pages/tipos-contratos/tipos-contratos.component';
 
 const routes: Routes = [
   {
@@ -74,6 +75,11 @@ const routes: Routes = [
   {
     path: 'documents',
     component: TiposDocumentosComponent,
+    canActivate: [AuthGuard]
+  },
+  {
+    path: 'lease_agreements',
+    component: TiposContratosComponent,
     canActivate: [AuthGuard]
   }
 ];

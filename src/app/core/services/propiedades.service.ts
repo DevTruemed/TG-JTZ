@@ -13,7 +13,12 @@ export class PropiedadesService {
 
   constructor(private http: HttpClient) { }
 
-  getPropiedades(): Observable<PropiedadModel[]> {
+  getPropiedades(type: string = ""): Observable<PropiedadModel[]> {
+
+    if (type) {
+      let params: HttpParams = new HttpParams().set('type', type);
+      return this.http.get<PropiedadModel[]>(this.urlBase, { params: params });
+    }
 
     return this.http.get<PropiedadModel[]>(this.urlBase);
 
