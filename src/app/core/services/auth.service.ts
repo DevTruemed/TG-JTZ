@@ -17,10 +17,10 @@ export class AuthService {
     this.token = this.readToken();
   }
 
-   login(username: string, password: string): Observable<boolean> {
+  login(username: string, password: string): Observable<any> {
 
-    const urlEndpoint = this.urlService+'/oauth/token';
-    
+    const urlEndpoint = this.urlService + '/oauth/token';
+
     const credenciales = btoa('tmapp' + ':' + 'Ag785.-4$795Tyui');
 
     const httpHeaders = new HttpHeaders({
@@ -34,21 +34,21 @@ export class AuthService {
     params.set('password', password);
 
     return this.http.post<any>(urlEndpoint, params.toString(), { headers: httpHeaders })
-    .pipe(
-      map( resp => {
-        this.saveToken( resp[ 'access_token' ], resp[ 'expires_in' ] );
+      .pipe(
+        map(resp => {
+          this.saveToken(resp['access_token'], resp['expires_in']);
 
-        if (resp['accesos'])
-          localStorage.setItem('accesos', JSON.stringify(resp['accesos']))
+          if (resp['accesos'])
+            localStorage.setItem('accesos', JSON.stringify(resp['accesos']))
 
-        return true;
-      })
-    );
+          return { isAuth: true, accesos: resp['accesos'] };
+        })
+      );
   }
 
   /* Método que se encarga de almacenar el token y la fecha de
    expiración del mismo en el localStorage*/
-  saveToken(token: string, expiresIn: number): void{
+  saveToken(token: string, expiresIn: number): void {
 
     this.token = token;
     localStorage.setItem('token', token);
@@ -60,11 +60,11 @@ export class AuthService {
 
   /* Método que se encarga de validar si ya hay un token existente
   e inicializa la variable local con el token o con una cadena vacia*/
-  readToken(): string | null{
+  readToken(): string | null {
 
-    if ( localStorage.getItem('token') )
+    if (localStorage.getItem('token'))
       this.token = localStorage.getItem('token');
-    else 
+    else
       this.token = null;
 
     return this.token;
@@ -73,13 +73,13 @@ export class AuthService {
 
   /* Método que verifica si hay un token existente y en caso que si lo haya,
   verifica que el mismo no haya expirado  */
-  isAuth(): boolean{
+  isAuth(): boolean {
 
-    if ( this.token === null || this.token.length < 2 ){
+    if (this.token === null || this.token.length < 2) {
       return false;
     }
 
-    if (  new Date( Number(localStorage.getItem('expiration'))-310) <= new Date() ){
+    if (new Date(Number(localStorage.getItem('expiration')) - 310) <= new Date()) {
       return false;
     }
 
@@ -88,8 +88,8 @@ export class AuthService {
 
   /* Método que elimina el token y su fecha de expiración
   del localStorage */
-  logout(): void{
-    
+  logout(): void {
+
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
 

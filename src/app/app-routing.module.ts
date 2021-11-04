@@ -33,6 +33,10 @@ const ROUTES: Routes = [
     loadChildren: () => import('./contratos/contratos.module').then(m => m.ContratosModule),
   },
   {
+    path: 'platform',
+    loadChildren: () => import('./customer-platform/customer-platform.module').then(m => m.CustomerPlatformModule),
+  },
+  {
     path: '**',
     pathMatch: 'full',
     redirectTo: 'login'

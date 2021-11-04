@@ -36,11 +36,11 @@ export class AuthComponent {
   formularioLogin: FormGroup;
 
   constructor(private router: Router,
-              private authService: AuthService,
-              private formBuilder: FormBuilder) {
+    private authService: AuthService,
+    private formBuilder: FormBuilder) {
 
     this.esMovil = (screen.width < 576);
-    
+
     /* Creación y configuración del formulario de login */
     this.formularioLogin = this.formBuilder.group({
       username: ['', [Validators.required]],
@@ -51,14 +51,15 @@ export class AuthComponent {
 
   public iniciarSesion(): void {
     Swal.fire(
-      { text: 'cargando', 
+      {
+        text: 'cargando',
         allowOutsideClick: false,
         allowEnterKey: false,
         allowEscapeKey: false
       });
     Swal.showLoading();
 
-    this.authService.login( this.formularioLogin.get('username')?.value, this.formularioLogin.get('password')?.value)
+    this.authService.login(this.formularioLogin.get('username')?.value, this.formularioLogin.get('password')?.value)
       .subscribe(isAuth => {
 
         Swal.fire({
@@ -67,19 +68,24 @@ export class AuthComponent {
           showConfirmButton: false,
           timer: 1500
         })
-        
-        if (isAuth)
-          this.router.navigate([ 'catalogs', 'products' ]);
-      
-  }, (err) => {
 
-    Swal.fire({
-      icon: 'error',
-      text: 'Error ' + err.status,
-      title: err.error.error_description
-    });
+        if (isAuth) {
+          if (isAuth.accesos.find((acceso: any) => acceso.ruta ? acceso.ruta.includes("platform") : false)) {
+            this.router.navigate(['platform', 'contratos']);
+          } else {
+            this.router.navigate(['catalogs', 'products']);
+          }
+        }
 
-  });
+      }, (err) => {
+
+        Swal.fire({
+          icon: 'error',
+          text: 'Error ' + err.status,
+          title: err.error.error_description
+        });
+
+      });
 
   }
 

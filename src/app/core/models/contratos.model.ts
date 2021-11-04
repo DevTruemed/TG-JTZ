@@ -1,4 +1,5 @@
 import { PropiedadModel, ClienteModel, TipoContratoModel, DocumentoModel } from './catalogos.models';
+import { TicketModel } from './tickets.model';
 export class ContratoModel {
 
     id: number;
@@ -21,6 +22,8 @@ export class ContratoModel {
 
     pagos: PagoContratoModel[];
 
+    tickets: TicketModel[];
+
     constructor() {
 
         this.id = 0;
@@ -42,6 +45,8 @@ export class ContratoModel {
         this.documentacion = [];
 
         this.pagos = [];
+
+        this.tickets = [];
 
     }
 }

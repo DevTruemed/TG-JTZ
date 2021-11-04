@@ -131,10 +131,21 @@
                                                 title="inactivate" (click)="desactivarCliente(i)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <button class="btn btn-outline-secondary btn-sm" title="Customer Documents"
-                                                (click)="documentosModal(i)">
+                                            <button class="btn btn-outline-secondary btn-sm m-1"
+                                                title="Customer Documents" (click)="documentosModal(i)">
                                                 <i class="fas fa-folder-open"></i>
                                             </button>
+                                            <button *ngIf="cliente.usuario; else noLogin"
+                                                class="btn btn-outline-success btn-sm m-1" title="Show Login"
+                                                (click)="mostrarUsuario(i)">
+                                                <i class="far fa-address-card"></i>
+                                            </button>
+                                            <ng-template #noLogin>
+                                                <button class="btn btn-outline-info btn-sm m-1" title="Generate Login"
+                                                    (click)="generarLogin(i)">
+                                                    <i class="fas fa-user-plus"></i>
+                                                </button>
+                                            </ng-template>
                                         </td>
                                     </tr>
                                 </tbody>

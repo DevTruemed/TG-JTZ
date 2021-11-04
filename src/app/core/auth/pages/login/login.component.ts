@@ -12,8 +12,14 @@ export class LoginComponent implements OnInit {
   constructor(private authService: AuthService,
     private router: Router) {
 
-    if (this.authService.isAuth())
-      this.router.navigate(['catalogs', 'products'])
+    if (this.authService.isAuth()) {
+      let accesos = JSON.parse(localStorage.getItem('accesos')!) || [];
+      if (accesos.find((acceso: any) => acceso.ruta ? acceso.ruta.includes("platform") : false)) {
+        this.router.navigate(['platform', 'contratos']);
+      } else {
+        this.router.navigate(['catalogs', 'products']);
+      }
+    }
 
   }
 

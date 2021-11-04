@@ -4,6 +4,7 @@ import { ClienteModel } from 'src/app/core/models/catalogos.models';
 import { ClientesService } from 'src/app/core/services/clientes.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 import { DocumentoModel } from '../../../core/models/catalogos.models';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-clientes',
@@ -131,4 +132,27 @@ export class ClientesComponent implements OnInit {
     });
   }
 
+  generarLogin(index: number): void {
+    Swal.fire({
+      icon: 'question',
+      text: 'Generate user login?',
+      showCancelButton: true,
+      allowOutsideClick: false,
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.clienteService.generarLogin(this.clientes[index].id).subscribe(usuario => {
+          this.clientes[index].usuario = usuario;
+          Swal.fire({
+            icon: 'success',
+            title: 'Access Login generated',
+            timer: 3000
+          });
+        });
+      }
+    });
+  }
+
+  mostrarUsuario(index: number): void {
+    console.log(this.clientes[index]);
+  }
 }

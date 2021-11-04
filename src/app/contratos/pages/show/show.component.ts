@@ -3,6 +3,7 @@ import { ContratosService } from '../../../core/services/contratos.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ContratoModel } from '../../../core/models/contratos.model';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { TicketsService } from '../../../core/services/tickets.service';
 
 @Component({
   selector: 'app-show',
@@ -17,6 +18,7 @@ export class ShowComponent implements OnInit {
   width: number = screen.width;
   constructor(private fb: FormBuilder,
     private contratosService: ContratosService,
+    private ticketsService: TicketsService,
     private router: Router,
     private activeRoute: ActivatedRoute) { }
 
@@ -35,6 +37,24 @@ export class ShowComponent implements OnInit {
         err => console.log(err));
     } else
       return this.markFormGroupTouched(this.formulario);
+  }
+
+  cambiarEstatus(index: number, estatus: boolean): void {
+    let ticket = this.contrato.tickets[index];
+    if (!ticket.observacion) ticket.observacion = '';
+    this.ticketsService.updateEstatus(ticket.id, estatus, ticket.observacion).subscribe(res => {
+      this.contrato.tickets[index] = res;
+    });
+  }
+
+  saveComment(index: number): void {
+    let ticket = this.contrato.tickets[index];
+
+    if (!ticket.observacion) ticket.observacion = '';
+
+    this.ticketsService.updateComentario(ticket.id, ticket.observacion).subscribe(res => {
+      this.contrato.tickets[index] = res;
+    });
   }
 
   private inicializarFormularios(): void {

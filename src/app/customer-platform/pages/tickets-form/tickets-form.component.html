@@ -1,0 +1,77 @@
+<form class="row g-2" [formGroup]="formulario" (ngSubmit)="create()">
+    <div class="col-12 col-md-12">
+        <div class="card card-body h-100">
+            <div class="d-flex justify-content-between">
+                <h5 class="card-title mb-3">Ticket Information</h5>
+                <span *ngIf="update"
+                    class="badge bg-transparent text-secondary border border-secondary my-auto fs-6 fw-normal">{{ticket.estatus}}</span>
+            </div>
+            <div class="row g-2">
+                <div class="col-12 col-sm-6 col-md-2">
+                    <label class="form-label">Ticket Code</label>
+                    <input class="form-control" type="text" [value]="(ticket.id | number: '5.0-0') | code" readonly>
+                </div>
+                <div class="col-12 col-sm-6" [ngClass]="{'col-md-7': update, 'col-md-5': !update}">
+                    <label class="form-label">{{update ? 'Property' : 'Select Property'}}</label>
+                    <div class="d-grid gap-2" *ngIf="update else selectProp">
+                        <div
+                            class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                            <div class=" d-flex flex-column">
+                                <p class="card-text mb-1 fw-bold">{{ticket.contrato.propiedad.tipo.tipo}}</p>
+                                <p class="card-text mb-0 fst-italic">{{ticket.contrato.propiedad.direccion}}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <ng-template #selectProp>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-home"></i>
+                                {{formulario.get('contrato')?.get('propiedad')?.get('direccion')?.value}}
+                            </button>
+                            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let propiedad of propiedades; let i = index"
+                                    (click)="selectPropiedad(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{propiedad.tipo.tipo}}</p>
+                                        <p class="card-text mb-0 fst-italic">{{propiedad.direccion}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </ng-template>
+                </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Amount Spent</label>
+                    <input type="number" class="form-control text-center m-auto"
+                        [class.is-invalid]="isValid(formulario,'monto')" id="inputMonto" formControlName="monto"
+                        [readonly]="update">
+                    <div class="invalid-feedback">
+                        Quantity must be at least 1
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6" [ngClass]="{'col-md-6': update, 'col-md-5': !update}">
+                    <label for="form-label">Description</label>
+                    <textarea formControlName="descripcion" id="textAreaDescripcion" cols="30" rows="5"
+                        class="form-control" [class.is-invalid]="isValid(formulario,'descripcion')"
+                        [readonly]="update"></textarea>
+                    <div class="invalid-feedback">
+                        This field is required
+                    </div>
+                </div>
+                <div class="col-12 col-sm-6" [ngClass]="{'col-md-6': update, 'col-md-5': !update}">
+                    <label for="form-label">Feedback</label>
+                    <textarea formControlName="observacion" class="form-control" id="textAreaObservacion" cols="30"
+                        rows="5" readonly></textarea>
+                </div>
+                <div class="col-12 col-sm-6 col-md-5 col-lg-2 mt-auto" *ngIf="update == false">
+                    <button class="btn w-100 mt-2 btn-outline-primary" type="submit">
+                        <i class="fas me-2 fa-plus"></i>
+                        Save Ticket
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</form>

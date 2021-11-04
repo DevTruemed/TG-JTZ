@@ -1,0 +1,41 @@
+<div class="row g-2">
+    <div class="col-12">
+        <div class="card card-body">
+            <ul class="nav nav-tabs mb-3">
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/platform','leases']" routerLinkActive="active">Leases</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" [routerLink]="['/platform','tickets']" routerLinkActive="active">Tickets</a>
+                </li>
+            </ul>
+            <h5 class="card-title mb-3">Leases</h5>
+            <div class="table-responsive">
+                <table class="table table-striped table-bordered text-center">
+                    <thead class="bg-secondary text-white">
+                        <tr>
+                            <th scope="col">Lease code</th>
+                            <th scope="col">Property</th>
+                            <th scope="col">Type</th>
+                            <th scope="col">Expiration Date</th>
+                        </tr>
+                    </thead>
+                    <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor">
+                        <tr *ngFor="let contrato of contratos; let i=index">
+                            <td>{{(contrato.id | number: '5.0-0') | code}}</td>
+                            <td>
+                                <div class=" d-flex flex-column">
+                                    <p class="card-text mb-1 fw-bold">{{contrato.propiedad.direccion}}</p>
+                                    <p class="card-text mb-0 fst-italic">{{contrato.propiedad.tipo.tipo}}</p>
+                                </div>
+
+                            </td>
+                            <td>{{contrato.tipo.nombre}}</td>
+                            <td>{{contrato.fechaTermino | date: 'mediumDate'}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

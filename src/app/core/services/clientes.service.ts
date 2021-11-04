@@ -36,14 +36,21 @@ export class ClientesService {
     return this.http.delete<any>(this.urlBase + '/' + id);
   }
 
-  postArchivos(idPropiedad: number, archivos: File[], idTipo: number) {
+  postArchivos(idCliente: number, archivos: File[], idTipo: number) {
     let formData: FormData = new FormData();
 
     archivos.forEach(archivo => formData.append('archivos', archivo));
-    formData.append('id', idPropiedad.toString());
+    formData.append('id', idCliente.toString());
     formData.append('idTipo', idTipo.toString());
 
     return this.http.post<DocumentoModel[]>(this.urlBase + '/archivos', formData);
+  }
+
+  generarLogin(idCliente: number) {
+    let formData: FormData = new FormData();
+    formData.append('idCliente', idCliente.toString());
+
+    return this.http.post(this.urlBase + '/login', formData);
   }
 
 }

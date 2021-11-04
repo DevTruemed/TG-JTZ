@@ -212,6 +212,8 @@ export class ClienteModel {
 
     documentacion: DocumentoModel[];
 
+    usuario: any;
+
     constructor() {
 
         this.id = 0;
