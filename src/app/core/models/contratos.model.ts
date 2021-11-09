@@ -1,4 +1,4 @@
-import { PropiedadModel, ClienteModel, TipoContratoModel, DocumentoModel } from './catalogos.models';
+import { PropiedadModel, ClienteModel, TipoContratoModel, DocumentoModel, BancoModel, ProveedorModel } from './catalogos.models';
 import { TicketModel } from './tickets.model';
 export class ContratoModel {
 
@@ -21,6 +21,8 @@ export class ContratoModel {
     documentacion: DocumentoModel[];
 
     pagos: PagoContratoModel[];
+
+    depositos: PagoContratoModel[];
 
     tickets: TicketModel[];
 
@@ -46,6 +48,8 @@ export class ContratoModel {
 
         this.pagos = [];
 
+        this.depositos = [];
+
         this.tickets = [];
 
     }
@@ -57,9 +61,15 @@ export class PagoContratoModel {
 
     contrato: ContratoModel;
 
+    proveedor: ProveedorModel;
+
+    banco: BancoModel;
+
     monto: number;
 
     concepto: string;
+
+    tipoEntrada: number;
 
     fechaEmision: string;
 
@@ -69,9 +79,15 @@ export class PagoContratoModel {
 
         this.contrato = new ContratoModel();
 
+        this.proveedor = new ProveedorModel();
+
+        this.banco = new BancoModel();
+
         this.monto = 0;
 
         this.concepto = '';
+
+        this.tipoEntrada = 1;
 
         this.fechaEmision = '';
 

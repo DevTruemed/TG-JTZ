@@ -110,9 +110,9 @@ export class ClientesComponent implements OnInit {
       telefono: ['', [Validators.required]],
       correo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200), Validators.email]],
       contacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
-      direccion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(300)]],
+      // direccion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(300)]],
       saldo: [0, [Validators.required, Validators.min(0)]],
-
+      metodoPago: [0, [Validators.required, Validators.min(1)]],
     })
 
   }

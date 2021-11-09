@@ -49,6 +49,10 @@
                                 <a class="btn btn-outline-primary btn-sm" [routerLink]="['/leases','show',contrato.id]">
                                     <i class="fas fa-pen"></i>
                                 </a>
+                                <a class="btn btn-outline-success btn-sm"
+                                    [routerLink]="['/leases','balance',contrato.id]">
+                                    <i class="fas fa-dollar-sign"></i>
+                                </a>
                                 <button class="btn btn-outline-secondary btn-sm" title="Lease Documents"
                                     (click)="documentosModal(i)">
                                     <i class="fas fa-folder-open"></i>

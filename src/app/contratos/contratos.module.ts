@@ -9,6 +9,7 @@ import { VigentesComponent } from './pages/vigentes/vigentes.component';
 import { VencidosComponent } from './pages/vencidos/vencidos.component';
 import { FormComponent } from './pages/form/form.component';
 import { ShowComponent } from './pages/show/show.component';
+import { BalanceComponent } from './pages/balance/balance.component';
 
 @NgModule({
   declarations: [
@@ -17,6 +18,7 @@ import { ShowComponent } from './pages/show/show.component';
     VencidosComponent,
     FormComponent,
     ShowComponent,
+    BalanceComponent,
   ],
   imports: [
     CommonModule,

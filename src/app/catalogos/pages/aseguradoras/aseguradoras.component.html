@@ -56,6 +56,15 @@
                             this field is required ( 3 - 50 characteres )
                         </div>
                     </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Claim Phone</label>
+                        <input type="text" class="form-control"
+                            [class.is-invalid]="isValid(formulario,'telefonoReclamaciones')"
+                            formControlName="telefonoReclamaciones">
+                        <div class="invalid-feedback">
+                            this field is required ( 3 - 50 characteres )
+                        </div>
+                    </div>
                 </div>
             </div>
             <div class="modal-footer">
@@ -104,7 +113,8 @@
                                         <td>
                                             {{aseguradora.nombreContacto}} <br>
                                             <i class="fas fa-at"></i> {{aseguradora.correoContacto}} <br>
-                                            <i class="fas fa-phone"></i> {{aseguradora.telefonoContacto}}
+                                            <i class="fas fa-phone"></i> {{aseguradora.telefonoContacto}} <br>
+                                            {{aseguradora.telefonoReclamaciones}}
                                         </td>
                                         <td>
                                             <button class="btn btn-sm btn-outline-primary m-auto m-1" type="button"

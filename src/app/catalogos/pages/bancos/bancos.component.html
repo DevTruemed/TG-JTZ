@@ -95,6 +95,26 @@
                             </ul>
                         </div>
                     </div>
+                    <div class="mb-3 col-12" *ngIf="clienteSeleccionado.contratos.length">
+                        <label class="form-label">Select Property</label>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-home"></i>
+                                {{formularioDeposito.get('propiedad')?.get('tipo')?.get('tipo')?.value}}
+                            </button>
+                            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let contrato of clienteSeleccionado.contratos; let i = index"
+                                    (click)="selectPropiedad(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{contrato.propiedad.tipo.tipo}}</p>
+                                        <p class="card-text mb-0 fst-italic">{{contrato.propiedad.direccion}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
                     <div class="mb-3 col-12">
                         <label class="form-label">Amount</label>
                         <input type="number" class="form-control"
@@ -166,9 +186,29 @@
                         </div>
                     </div>
                     <div class="mb-3 col-12">
+                        <label class="form-label">Is related to a property? Select Property</label>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-home"></i>
+                                {{formularioPago.get('propiedad')?.get('tipo')?.get('tipo')?.value}}
+                            </button>
+                            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let contrato of contratos; let i = index"
+                                    (click)="selectPropiedad(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{contrato.propiedad.tipo.tipo}}</p>
+                                        <p class="card-text mb-0 fst-italic">{{contrato.propiedad.direccion}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
                         <label class="form-label">Amount</label>
-                        <input type="number" class="form-control"
-                            [class.is-invalid]="isValid(formularioPago,'monto')" formControlName="monto">
+                        <input type="number" class="form-control" [class.is-invalid]="isValid(formularioPago,'monto')"
+                            formControlName="monto">
                         <div class="invalid-feedback" *ngIf="isValid(formularioPago,'monto')">
                             this field is requireds (Positive balance)
                         </div>
@@ -235,7 +275,7 @@
                                     </tr>
                                 </tbody>
                             </table>
-                            
+
                         </div>
                     </div>
                 </div>
@@ -253,7 +293,8 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-bottom"
-                            role="button" *ngFor="let deposito of depositos; let i=index" [routerLink]="['/treasury','deposits',deposito.id]">
+                            role="button" *ngFor="let deposito of depositos; let i=index"
+                            [routerLink]="['/treasury','deposits',deposito.id]">
                             <div class="w-50 d-flex flex-column">
                                 <h5>{{deposito.cliente.cliente}}</h5>
                                 <small class="text-muted">{{deposito.fecha | date: 'mediumDate'}}</small>

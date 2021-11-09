@@ -1,0 +1,206 @@
+<div class="modal fade" id="addMovimiento" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" [formGroup]="formularioDeposito" (ngSubmit)="agregarDeposito()">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTypeLabel">Add Deposit</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="reiniciarModals()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Select Bank</label>
+                        <div class="dropdown">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-university me-2"></i>
+                                    {{formularioDeposito.get('banco')?.get('banco')?.value}}
+                                </button>
+
+                                <ul class="dropdown-menu w-100 p-0" aria-labelledby="dropdownMenuLink">
+                                    <li role="button" *ngFor="let banco of bancos; let i=index" (click)="selectBanco(i)"
+                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div class=" d-flex flex-column">
+                                            <p class="card-text mb-1 fw-bold">{{banco.banco}}</p>
+                                            <p class="card-text mb-0 fst-italic">Saldo: {{banco.saldo | currency}}</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Concept</label>
+                        <input type="text" class="form-control"
+                            [class.is-invalid]="isValid(formularioDeposito,'concepto')" formControlName="concepto">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioDeposito,'concepto')">
+                            this field is required
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control"
+                            [class.is-invalid]="isValid(formularioDeposito,'monto')" formControlName="monto">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioDeposito,'monto')">
+                            this field is required (Positive balance)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalDeposito"
+                    (click)="reiniciarModals()">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="modal fade" id="addPago" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" [formGroup]="formularioPago" (ngSubmit)="agregarPago()">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTypeLabel">Add Pay</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="reiniciarModals()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Select Bank</label>
+                        <div class="dropdown">
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-university me-2"></i>
+                                    {{formularioPago.get('banco')?.get('banco')?.value}}
+                                </button>
+
+                                <ul class="dropdown-menu w-100 p-0" aria-labelledby="dropdownMenuLink">
+                                    <li role="button" *ngFor="let banco of bancos; let i=index" (click)="selectBanco(i)"
+                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div class=" d-flex flex-column">
+                                            <p class="card-text mb-1 fw-bold">{{banco.banco}}</p>
+                                            <p class="card-text mb-0 fst-italic">Saldo: {{banco.saldo | currency}}</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Select Supplier</label>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-user"></i>
+                                {{formularioPago.get('provider')?.get('proveedor')?.value}}
+                            </button>
+
+                            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let proveedor of proveedores; let i = index"
+                                    (click)="selectProveedor(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{proveedor.proveedor}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Concept</label>
+                        <input type="text" class="form-control" [class.is-invalid]="isValid(formularioPago,'concepto')"
+                            formControlName="concepto">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioPago,'concepto')">
+                            this field is required
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Amount</label>
+                        <input type="number" class="form-control" [class.is-invalid]="isValid(formularioPago,'monto')"
+                            formControlName="monto">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioPago,'monto')">
+                            this field is requireds (Positive balance)
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalPago"
+                    (click)="reiniciarModals()">Close</button>
+                <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row g-2">
+    <div class="col-12">
+        <div class="card ">
+            <div class="card-body">
+                <div class="d-flex justify-content-center">
+                    <h3>{{ total | currency }}</h3>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="row g-2">
+    <div class="col-12 col-md-6">
+        <div class="card card-body h-100">
+            <div class="d-flex justify-content-between">
+                <h4 class="card-title mb-3">Deposits</h4>
+                <div class="ms-auto">
+                    <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                        data-bs-target="#addMovimiento" id="addButton">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-bottom"
+                    role="button" *ngFor="let deposito of depositos; let i=index">
+                    <div class="w-50 d-flex flex-column">
+                        <h5>{{deposito.concepto}}</h5>
+                        <small class="text-muted">{{deposito.fechaEmision | date: 'mediumDate'}}</small>
+                    </div>
+                    <div class="d-flex flex-column">
+                        <div class="fs-4 text-success text-end">
+                            + {{deposito.monto | currency}}
+                        </div>
+                        <small class="text-black bg-black text-end">{{deposito.banco.banco}}</small>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-12 col-md-6">
+        <div class="card card-body h-100">
+            <div class="d-flex justify-content-between">
+                <h4 class="card-title mb-3">Payments</h4>
+                <div class="ms-auto">
+                    <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                        data-bs-target="#addPago" id="addButton" (click)="getProveedores()">
+                        <i class="fas fa-plus"></i>
+                    </button>
+                </div>
+            </div>
+            <ul class="list-group list-group-flush">
+                <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-bottom"
+                    role="button" *ngFor="let pago of pagos; let i=index">
+                    <div class="w-50 d-flex flex-column">
+                        <h5 class="mb-1">{{pago.proveedor}}</h5>
+                        <p class="mb-0 text-muted">{{pago.fechaEmision | date: 'mediumDate'}}</p>
+                        <!-- <small class="fst-italic">Accounting: {{pago.cuentaContable}}</small> -->
+                    </div>
+                    <div class="d-flex flex-column">
+                        <div class="fs-4 text-danger text-end">
+                            - {{pago.monto | currency}}
+                        </div>
+                        <small class="text-black text-end">{{pago.banco.banco}}</small>
+                    </div>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>

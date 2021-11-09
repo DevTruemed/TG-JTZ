@@ -48,6 +48,21 @@ export class ArchivosComponent implements OnInit {
     });
   }
 
+  visualizarArchivo(archivo: DocumentoModel): void {
+    this.documentosService.descargarArchivo(archivo.id).subscribe(res => {
+      let file = new Blob([res], { type: archivo.extension });
+      let url = window.URL.createObjectURL(file);
+      let a = document.createElement('a');
+      document.body.appendChild(a);
+      a.setAttribute('style', 'display: none');
+      a.href = url;
+      a.target = "_blank";
+      a.click();
+      window.URL.revokeObjectURL(url);
+      a.remove();
+    });
+  }
+
   borrarArchivoFromServer(idArchivo: number, index: number) {
     this.documentosService.deleteArchivo(idArchivo).subscribe(res => {
       if (res) {

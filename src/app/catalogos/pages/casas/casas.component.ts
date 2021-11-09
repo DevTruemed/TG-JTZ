@@ -1,10 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { Form, FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ProductoModel, PropiedadModel, TipoModel } from 'src/app/core/models/catalogos.models';
-import { AseguradoraModel, PropiedadImpuestoModel, DocumentoModel } from '../../../core/models/catalogos.models';
+import { AseguradoraModel, PropiedadImpuestoModel, DocumentoModel, SeguroModel } from '../../../core/models/catalogos.models';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { AseguradorasService } from '../../../core/services/aseguradoras.service';
+import { AngularMyDatePickerDirective, IAngularMyDpOptions } from 'angular-mydatepicker';
 
 declare var $: any;
 @Component({
@@ -15,6 +16,8 @@ declare var $: any;
 export class CasasComponent implements OnInit {
 
   formularioAddPropiedad!: FormGroup;
+
+  formularioSeguro!: FormGroup;
 
   imagenesActualesBase64: { image: string, id: number }[] = [];
 
@@ -38,16 +41,27 @@ export class CasasComponent implements OnInit {
 
   documentacion: DocumentoModel[] = [];
 
+  isDocumentoAseguradora: boolean = false;
+
   update: number | null = null;
 
   height = screen.height - 165;
 
   width = screen.width;
 
+  @ViewChild('dp') myDp!: AngularMyDatePickerDirective;
+
+  myOptions: IAngularMyDpOptions = {
+    dateRange: true,
+    dateFormat: 'yyyy-mm-dd',
+    appendSelectorToBody: true,
+  };
+
   constructor(private formBuilder: FormBuilder,
     private propiedadesService: PropiedadesService,
     private productosService: ProductosService,
-    private aseguradorasService: AseguradorasService) {
+    private aseguradorasService: AseguradorasService,
+    private cdr: ChangeDetectorRef) {
 
     this.inicializarFormulario();
 
@@ -79,6 +93,10 @@ export class CasasComponent implements OnInit {
     return this.formularioAddPropiedad.get('productos') as FormArray;
   }
 
+  get segurosPropiedades() {
+    return this.formularioAddPropiedad.get('seguros') as FormArray;
+  }
+
   agregarProductoPropiedades() {
     this.productosPropiedades.push(this.formBuilder.group({
       id: [],
@@ -94,17 +112,42 @@ export class CasasComponent implements OnInit {
     if (this.formularioAddPropiedad.valid) {
       if (this.update === null) {
         this.propiedadesService.postPropiedad(this.formularioAddPropiedad.value, this.fotosSeleccionadas).subscribe(p => {
-          document.getElementById('closeModal')?.click();
-          this.reiniciarModals();
-          this.propiedades.unshift(p);
+
+          if (this.segurosPropiedades.length) {
+            this.segurosPropiedades.value.forEach((seguro: SeguroModel) => {
+              this.propiedadesService.postSeguro(p.id, seguro).subscribe(res => {
+                this.propiedades.find(prop => prop.id == p.id)!.seguros.unshift(res);
+              }, err => console.log);
+            });
+            document.getElementById('closeModal')?.click();
+            this.reiniciarModals();
+            this.propiedades.unshift(p);
+          } else {
+            document.getElementById('closeModal')?.click();
+            this.reiniciarModals();
+            this.propiedades.unshift(p);
+          }
         }, err => console.log(err))
 
       } else
         this.propiedadesService.putPropiedad(this.formularioAddPropiedad.value, this.fotosSeleccionadas).subscribe(propiedad => {
-          document.getElementById('closeModal')?.click();
-          if (this.update != null)
-            this.propiedades[this.update] = propiedad;
-          this.reiniciarModals();
+
+          if (this.segurosPropiedades.length) {
+            this.segurosPropiedades.value.forEach((seguro: SeguroModel) => {
+              this.propiedadesService.postSeguro(propiedad.id, seguro).subscribe(res => {
+                this.propiedades.find(p => p.id == propiedad.id)!.seguros.unshift(res);
+              }, err => console.log);
+            });
+            document.getElementById('closeModal')?.click();
+            if (this.update != null)
+              this.propiedades[this.update] = propiedad;
+            this.reiniciarModals();
+          } else {
+            document.getElementById('closeModal')?.click();
+            if (this.update != null)
+              this.propiedades[this.update] = propiedad;
+            this.reiniciarModals();
+          } 5
         }, err => console.log(err))
 
     } else {
@@ -113,21 +156,39 @@ export class CasasComponent implements OnInit {
 
   }
 
+  public agregarSeguro(): void {
+    if (this.formularioSeguro.valid) {
+      const form = this.formularioSeguro;
+      this.segurosPropiedades.push(form);
+      this.inicializarFormularioSeguro();
+    } else {
+      return Object.values(this.formularioSeguro.controls).forEach(control => control.markAllAsTouched);
+    }
+  }
+
+  removerSeguro(index: number): void {
+    this.segurosPropiedades.removeAt(index);
+  }
+
   public reiniciarModals(): void {
     this.update = null;
     this.formularioAddPropiedad.reset();
     this.fotosMostrar = [];
     this.fotosSeleccionadas = [];
     this.imagenesActualesBase64 = [];
+    this.segurosPropiedades.clear();
   }
 
   public modificarPropiedad(index: number): void {
 
     this.formularioAddPropiedad.patchValue(this.propiedades[index]);
     this.formularioAddPropiedad.get('id')?.setValue(this.propiedades[index].id);
+
+    this.propiedades[index].seguros.forEach(seguro => {
+      this.segurosPropiedades.push(this.formBuilder.group(seguro));
+    });
     this.update = index;
     this.imagenesActualesBase64 = [];
-    this.infoAseguradora = this.propiedades[index].aseguradora;
     document.getElementById('addButton')?.click();
 
     this.propiedades[index].imagenes.forEach(imagen => {
@@ -147,10 +208,18 @@ export class CasasComponent implements OnInit {
     document.getElementById('openImpuestosModal')?.click();
   }
 
-  documentosModal(index: number): void {
-    let propiedad = this.propiedades[index];
-    this.documentacion = propiedad.documentacion;
-    this.idPropiedad = propiedad.id;
+  documentosModal(index: number, isInsurance: boolean = false): void {
+    if (isInsurance) {
+      let seguro = this.segurosPropiedades.at(index).value;
+      this.documentacion = [seguro.documentacion];
+      this.idPropiedad = seguro.id;
+      this.isDocumentoAseguradora = true;
+    } else {
+      this.isDocumentoAseguradora = false;
+      let propiedad = this.propiedades[index];
+      this.documentacion = propiedad.documentacion;
+      this.idPropiedad = propiedad.id;
+    }
     document.getElementById('openArchivosModal')?.click();
   }
 
@@ -241,10 +310,26 @@ export class CasasComponent implements OnInit {
       recamaras: [1, [Validators.min(1), Validators.max(10), Validators.required]],
       banos: [1, [Validators.min(1), Validators.max(10), Validators.required]],
       estacionamientos: [0, [Validators.min(0), Validators.max(10), Validators.required]],
+      seguros: this.formBuilder.array([]),
+      productos: this.formBuilder.array([])
+    });
+    this.inicializarFormularioSeguro();
+  }
+
+  private inicializarFormularioSeguro(): void {
+    this.formularioSeguro = this.formBuilder.group({
+      id: [],
+      categoria: ['', [Validators.required]],
+      poliza: ['', [Validators.required]],
+      fechaInicio: ['', [Validators.required]],
+      fechaTermino: ['', [Validators.required]],
+      deducible: [0, [Validators.min(1), Validators.required]],
+      nombreArchivo: ['', [Validators.required]],
+      documentacion: ['', [Validators.required]],
+      rango: [],
       aseguradora: this.formBuilder.group({
         id: [0, [Validators.min(1)]]
       }),
-      productos: this.formBuilder.array([])
     });
   }
 
@@ -259,10 +344,38 @@ export class CasasComponent implements OnInit {
   }
 
   subirArchivos(data: { archivos: File[], tipo: number }): void {
-    this.propiedadesService.postArchivos(this.idPropiedad, data.archivos, data.tipo).subscribe(res => {
-      res.forEach(element => {
-        this.documentacion.push(element);
+    if (this.isDocumentoAseguradora) {
+      this.propiedadesService.postArchivosAseguradora(this.idPropiedad, data.archivos, data.tipo).subscribe(res => {
+        res.forEach(element => {
+          this.documentacion.push(element);
+        });
       });
+    } else {
+      this.propiedadesService.postArchivos(this.idPropiedad, data.archivos, data.tipo).subscribe(res => {
+        res.forEach(element => {
+          this.documentacion.push(element);
+        });
+      });
+    }
+  }
+
+  toggleCalendar(): void {
+    this.cdr.detectChanges();
+    this.myDp.toggleCalendar();
+  }
+
+  seleccionarFechas(e: any): void {
+    this.formularioSeguro.patchValue({ 'fechaInicio': e.dateRange.formatted.split(" - ")[0] });
+    this.formularioSeguro.patchValue({ 'fechaTermino': e.dateRange.formatted.split(" - ")[1] });
+  }
+
+  subirArchivoSeguro(e: any): void {
+    let file = '';
+    if (e.target.files.length > 0) {
+      file = e.target.files[0];
+    }
+    this.formularioSeguro.patchValue({
+      documentacion: file
     });
   }
 }

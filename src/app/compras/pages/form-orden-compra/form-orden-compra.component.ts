@@ -8,6 +8,8 @@ import { ComprasService } from 'src/app/core/services/compras.service';
 import { ProveedoresService } from 'src/app/core/services/proveedores.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 import Swal from 'sweetalert2';
+import { ContratoModel } from '../../../core/models/contratos.model';
+import { ContratosService } from '../../../core/services/contratos.service';
 
 @Component({
   selector: 'app-form-orden-compra',
@@ -33,6 +35,8 @@ export class FormOrdenCompraComponent implements OnInit {
 
   file: File | null = null;
 
+  contratos: ContratoModel[] = [];
+
   height: number = screen.height - 165;
   width: number = screen.width;
 
@@ -40,6 +44,7 @@ export class FormOrdenCompraComponent implements OnInit {
     private router: Router,
     private activeRoute: ActivatedRoute,
     private proveedoresService: ProveedoresService,
+    private contratosService: ContratosService,
     private ocService: ComprasService) {
 
     if (this.activeRoute.snapshot.params.id) {
@@ -51,6 +56,9 @@ export class FormOrdenCompraComponent implements OnInit {
   }
 
   ngOnInit(): void {
+
+    this.contratosService.getContratos("vigentes").subscribe(contratos => this.contratos = contratos,
+      err => console.log);
 
     if (!this.update)
       this.proveedoresService.getProveedores().subscribe(p => {
@@ -77,8 +85,13 @@ export class FormOrdenCompraComponent implements OnInit {
         this.estatus = oc.estatus.estatus;
         this.proveedores.push(oc.proveedor);
         this.proveedorSelect = oc.proveedor;
+        if (oc.contrato == null) {
+          oc.contrato = new ContratoModel();
+        }
         this.formulario.patchValue(oc);
         this.formulario.get('cuentaContable')?.get('id')?.disable();
+        this.formulario.get('propiedad')?.get('id')?.disable();
+        this.formulario.get('contrato')?.get('id')?.disable();
         let i: number = 0;
         oc.productos.forEach(p => {
           for (let index = 0; index < this.proveedorSelect.productos.length; index++) {
@@ -116,6 +129,11 @@ export class FormOrdenCompraComponent implements OnInit {
     this.formulario.reset();
     this.proveedorSelect = JSON.parse(JSON.stringify(this.proveedores[Number(index)]));
     this.formulario.get('proveedor')?.get('id')?.setValue(this.proveedores[Number(index)].id);
+  }
+
+  public selectPropiedad(index: number): void {
+    this.formulario.patchValue({ 'propiedad': this.contratos[index].propiedad });
+    this.formulario.patchValue({ 'contrato': this.contratos[index] });
   }
 
   public addProducto(index: number) {
@@ -177,14 +195,14 @@ export class FormOrdenCompraComponent implements OnInit {
           let p: OrdenCompraModel = this.formulario.value;
           this.oc.observaciones.forEach(o => p.observaciones.push(o));
           this.ocService.putOrdenCompra(p).subscribe(() => this.router.navigate(['/purchases']))
-        }else{
-          
-          if ( this.formulario.get('factura')?.value === null || this.formulario.get('factura')?.value === '' )
+        } else {
+
+          if (this.formulario.get('factura')?.value === null || this.formulario.get('factura')?.value === '')
             this.formulario.get('factura')?.markAsTouched();
-          else if ( this.file != null )
+          else if (this.file != null)
             this.ocService.sendPago(this.activeRoute.snapshot.params.id, this.file, this.formulario.get('factura')?.value).subscribe(() => this.router.navigate(['/purchases']));
           else
-            Swal.fire('File not found','PDF is required', 'error');
+            Swal.fire('File not found', 'PDF is required', 'error');
         }
       }
     } else
@@ -195,12 +213,12 @@ export class FormOrdenCompraComponent implements OnInit {
   public addFile(event: any): void {
 
     this.file = event.target.files[0];
-    
-    if ( this.file?.type.indexOf('pdf') && this.file?.type.indexOf('pdf') < 0){
-      Swal.fire('Must be PDF','','error');
+
+    if (this.file?.type.indexOf('pdf') && this.file?.type.indexOf('pdf') < 0) {
+      Swal.fire('Must be PDF', '', 'error');
       this.file = null;
     }
-      
+
   }
 
   public addObservacion(): void {
@@ -237,7 +255,17 @@ export class FormOrdenCompraComponent implements OnInit {
         id: [0, Validators.required]
       }),
       productos: this.fb.array([]),
-      observaciones: this.fb.array([])
+      observaciones: this.fb.array([]),
+      propiedad: this.fb.group({
+        id: [],
+        tipo: this.fb.group({
+          tipo: []
+        }),
+        direccion: []
+      }),
+      contrato: this.fb.group({
+        id: []
+      })
     });
 
   }

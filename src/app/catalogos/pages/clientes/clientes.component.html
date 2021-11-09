@@ -47,14 +47,14 @@
                             this field is required ( 3 - 200 characteres )
                         </div>
                     </div>
-                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                    <!-- <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label class="form-label">Address</label>
                         <input type="text" class="form-control" [class.is-invalid]="isValid(formulario,'direccion')"
                             formControlName="direccion">
                         <div class="invalid-feedback" *ngIf="isValid(formulario,'direccion')">
                             this field is required ( 3 - 300 characteres )
                         </div>
-                    </div>
+                    </div> -->
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label class="form-label">Balance</label>
                         <input type="number" class="form-control" [class.is-invalid]="isValid(formulario,'saldo')"
@@ -62,6 +62,17 @@
                         <div class="form-txt" *ngIf="!isValid(formulario,'saldo')">If there is a positive balance</div>
                         <div class="invalid-feedback" *ngIf="isValid(formulario,'saldo')">
                             this field is required ( must be positive or 0 )
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="paymentSelector" class="form-label">Payment method</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="metodoPago"
+                            id="paymentSelector" [class.is-invalid]="isValid(formulario,'metodoPago')">
+                            <option value="1">Pay Pal</option>
+                            <option value="2">Electronic Transfer</option>
+                        </select>
+                        <div class="invalid-feedback">
+                            this field is required
                         </div>
                     </div>
 
@@ -106,7 +117,7 @@
                                         <th scope="col">Customer</th>
                                         <th scope="col">Phone number</th>
                                         <th scope="col">Email</th>
-                                        <th scope="col">Address</th>
+                                        <!-- <th scope="col">Address</th> -->
                                         <th scope="col">Balance</th>
                                         <th scope="col">Actions</th>
                                     </tr>
@@ -117,7 +128,7 @@
                                         <td>{{cliente.cliente}}</td>
                                         <td>{{cliente.telefono}}</td>
                                         <td>{{cliente.correo}}</td>
-                                        <td>{{cliente.direccion}}</td>
+                                        <!-- <td>{{cliente.direccion}}</td> -->
                                         <td class="fw-bold"
                                             [class]="(cliente.saldo >= 0) ? 'text-success' : 'text-danger'">
                                             {{numeroAbsoluto(cliente.saldo) | currency}}

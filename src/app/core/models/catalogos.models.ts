@@ -1,3 +1,4 @@
+import { ContratoModel } from './contratos.model';
 export class PropiedadModel {
 
     id: number;
@@ -46,7 +47,7 @@ export class PropiedadModel {
 
     productos: ProductoModel[];
 
-    aseguradora: AseguradoraModel;
+    seguros: SeguroModel[];
 
     impuestos: PropiedadImpuestoModel[];
 
@@ -98,7 +99,7 @@ export class PropiedadModel {
 
         this.habitaciones = 0;
 
-        this.aseguradora = new AseguradoraModel();
+        this.seguros = [];
 
         this.impuestos = [];
 
@@ -210,9 +211,13 @@ export class ClienteModel {
 
     saldo: number;
 
+    metodoPago: number;
+
     documentacion: DocumentoModel[];
 
     usuario: any;
+
+    contratos: ContratoModel[];
 
     constructor() {
 
@@ -230,7 +235,11 @@ export class ClienteModel {
 
         this.saldo = 0;
 
+        this.metodoPago = 0;
+
         this.documentacion = [];
+
+        this.contratos = [];
 
     }
 
@@ -361,6 +370,41 @@ export class ProveedorProductoModel {
 
 }
 
+export class SeguroModel {
+    id: number;
+
+    aseguradora: AseguradoraModel;
+
+    categoria: string;
+
+    poliza: string;
+
+    fechaInicio: string;
+
+    fechaTermino: string;
+
+    deducible: number;
+
+    documentacion: any;
+
+    constructor() {
+
+        this.id = 0;
+
+        this.aseguradora = new AseguradoraModel();
+
+        this.categoria = '';
+
+        this.poliza = '';
+
+        this.fechaInicio = '';
+
+        this.fechaTermino = '';
+
+        this.deducible = 0;
+    }
+}
+
 export class AseguradoraModel {
 
     id: number;
@@ -374,6 +418,8 @@ export class AseguradoraModel {
     correoContacto: string;
 
     telefonoContacto: string;
+
+    telefonoReclamaciones: string;
 
     constructor() {
 
@@ -389,6 +435,8 @@ export class AseguradoraModel {
 
         this.telefonoContacto = '';
 
+        this.telefonoReclamaciones = '';
+
     }
 
 }
@@ -399,9 +447,13 @@ export class PropiedadImpuestoModel {
 
     propiedad: PropiedadModel;
 
-    monto: number;
+    tipo: string;
 
-    fechaImpuesto: string;
+    identificador: string;
+
+    entidad: string;
+
+    paginaWeb: string;
 
     fechaRegistro: string;
 
@@ -410,9 +462,13 @@ export class PropiedadImpuestoModel {
 
         this.propiedad = new PropiedadModel();
 
-        this.monto = 0;
+        this.tipo = '';
 
-        this.fechaImpuesto = '';
+        this.identificador = '';
+
+        this.entidad = '';
+
+        this.paginaWeb = '';
 
         this.fechaRegistro = '';
     }

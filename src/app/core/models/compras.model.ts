@@ -1,7 +1,8 @@
 import { CuentaContableModel, EstatusModel, ProveedorModel } from "./catalogos.models";
 import { ProductoModel } from "./catalogos.models";
+import { ContratoModel } from "./contratos.model";
 
-export class OrdenCompraModel{
+export class OrdenCompraModel {
 
     id: number;
 
@@ -23,7 +24,9 @@ export class OrdenCompraModel{
 
     productos: OCProucto[];
 
-    constructor(){
+    contrato: ContratoModel;
+
+    constructor() {
         this.id = 0;
 
         this.importe = 0;
@@ -41,11 +44,13 @@ export class OrdenCompraModel{
         this.cuentaContable = new CuentaContableModel();
 
         this.productos = [];
+
+        this.contrato = new ContratoModel();
     }
 
 }
 
-export class OCProucto{
+export class OCProucto {
 
     costo: number;
 
@@ -61,7 +66,7 @@ export class OCProucto{
 
     producto: ProductoModel;
 
-    constructor(){
+    constructor() {
 
         this.costo = 0;
 
@@ -81,7 +86,7 @@ export class OCProucto{
 
 }
 
-export class ObservacionOC{
+export class ObservacionOC {
 
     id: number;
 
@@ -91,7 +96,7 @@ export class ObservacionOC{
 
     user: string
 
-    constructor(){
+    constructor() {
         this.id = 0;
         this.observacion = '';
         this.fecha = new Date();
@@ -100,13 +105,13 @@ export class ObservacionOC{
 
 }
 
-export class CxpModel{
+export class CxpModel {
 
-    id: number; 
+    id: number;
 
-    sugerido: boolean; 
+    sugerido: boolean;
 
-    autorizado: boolean; 
+    autorizado: boolean;
 
     monto: number;
 
@@ -114,13 +119,13 @@ export class CxpModel{
 
     status: string;
 
-    factura: string; 
+    factura: string;
 
-    idOrden: number; 
+    idOrden: number;
 
-    proveedor: string ;
+    proveedor: string;
 
-    constructor (){
+    constructor() {
 
         this.id = 0;
 

@@ -48,7 +48,7 @@ export class FormProveedoresComponent implements OnInit {
 
   ngOnInit(): void {
 
-    
+
 
     if (!this.update) {
       this.bancoService.getTiposPago().subscribe(tipos => this.tiposPago = tipos);
@@ -62,40 +62,40 @@ export class FormProveedoresComponent implements OnInit {
           p.tiposPago.forEach(pago => {
             for (let index = 0; index < this.tiposPago.length; index++) {
               const element = this.tiposPago[index];
-              if (element.id === pago.tipo.id){
-                this.addPago(index+"");
-                this.tiposPagoProveedor.at(this.tiposPagoProveedor.length-1).get('informacion')?.setValue(pago.informacion);
-                break;  
+              if (element.id === pago.tipo.id) {
+                this.addPago(index + "");
+                this.tiposPagoProveedor.at(this.tiposPagoProveedor.length - 1).get('informacion')?.setValue(pago.informacion);
+                break;
               }
 
             }
           });
-          
+
         });
         this.formulario.patchValue(p);
 
         this.productosService.getProductos().subscribe(pr => {
-          
+
           this.productos = pr;
 
           if (p.productos) {
-          let i = 0;
-          p.productos.forEach(p => {
-            for (let index = 0; index < this.productos.length; index++) {
-              const element = this.productos[index];
-              if (element.id === p.producto.id) {
-                this.selectProducto(index, p.precio);
+            let i = 0;
+            p.productos.forEach(p => {
+              for (let index = 0; index < this.productos.length; index++) {
+                const element = this.productos[index];
+                if (element.id === p.producto.id) {
+                  this.selectProducto(index, p.precio);
+                }
               }
-            }
 
-            i++;
-          })
+              i++;
+            })
 
-        }
-        
+          }
+
         }, err => console.log(err))
-        
-        
+
+
       })
     }
 
@@ -143,7 +143,7 @@ export class FormProveedoresComponent implements OnInit {
   public addCC(cuenta: CuentaContableModel): void {
 
     for (let index = 0; index < this.cuentasProveedor.length; index++) {
-      
+
       if (this.cuentasProveedor.at(index).get('id')?.value === cuenta.id)
         return;
 
@@ -172,7 +172,7 @@ export class FormProveedoresComponent implements OnInit {
       })
     )
 
-    this.tiposPago.splice(Number(index),1);
+    this.tiposPago.splice(Number(index), 1);
 
   }
 
@@ -205,8 +205,8 @@ export class FormProveedoresComponent implements OnInit {
           })
         })
       })
-      )
-      
+    )
+
     this.addCC(this.productos[index].cuenta);
 
     this.productos.splice(index, 1)
@@ -223,9 +223,9 @@ export class FormProveedoresComponent implements OnInit {
     }
 
     for (let index = 0; index < this.productosProveedor.length; index++) {
-      
+
       this.addCC(this.productosProveedor.at(index).get('producto')?.get('cuenta')?.value);
-      
+
     }
 
   }
@@ -250,7 +250,7 @@ export class FormProveedoresComponent implements OnInit {
       contacto: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]],
       pais: ['USA', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
-      rfc: [,[Validators.minLength(12), Validators.maxLength(13)]],
+      rfc: [, [Validators.minLength(12), Validators.maxLength(13)]],
       cuentasContables: this.fb.array([]),
       productos: this.fb.array([]),
       tiposPago: this.fb.array([])

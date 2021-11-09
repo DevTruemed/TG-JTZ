@@ -13,12 +13,17 @@
                         <li class="list-group-item" *ngFor="let archivo of archivos; let i=index">
                             <div class="row">
                                 <div class="col-10">
-                                    <a class="link-primary" (click)="descargarArchivo(archivo)">{{ archivo.nombre
-                                        }}</a>
-                                    ---> {{archivo.tipo.nombre}}
+                                    <span>{{ archivo.nombre}}</span>
+                                    <span class="text-primary fw-bold"> ---> </span>
+                                    {{archivo.tipo.nombre}}
                                 </div>
                                 <div class="col-2">
                                     <div class="btn-group" role="group">
+                                        <button (click)="descargarArchivo(archivo)"
+                                            class="btn btn-outline-secondary btn-sm"><i
+                                                class="fas fa-download"></i></button>
+                                        <button (click)="visualizarArchivo(archivo)"
+                                            class="btn btn-outline-primary btn-sm"><i class="fas fa-eye"></i></button>
                                         <button (click)="borrarArchivoFromServer(archivo.id, i)"
                                             class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-trash-alt"></i>

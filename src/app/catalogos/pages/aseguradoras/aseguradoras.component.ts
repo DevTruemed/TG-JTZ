@@ -86,7 +86,7 @@ export class AseguradorasComponent implements OnInit {
       nombreContacto: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
       correoContacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.email]],
       telefonoContacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-
+      telefonoReclamaciones: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
     })
 
   }

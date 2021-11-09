@@ -6,6 +6,7 @@ import { VigentesComponent } from './pages/vigentes/vigentes.component';
 import { TokenGuard } from '../core/guards/token.guard';
 import { FormComponent } from './pages/form/form.component';
 import { ShowComponent } from './pages/show/show.component';
+import { BalanceComponent } from './pages/balance/balance.component';
 
 const routes: Routes = [
   {
@@ -30,6 +31,11 @@ const routes: Routes = [
       {
         path: 'show/:id',
         component: ShowComponent,
+        canActivate: [TokenGuard]
+      },
+      {
+        path: 'balance/:id',
+        component: BalanceComponent,
         canActivate: [TokenGuard]
       },
       {

@@ -17,7 +17,7 @@ export class ComprasService {
 
     let params: HttpParams = new HttpParams().set('estatus', estatus);
 
-    return this.http.get<any>(this.urlBase, {params: params});
+    return this.http.get<any>(this.urlBase, { params: params });
 
   }
 
@@ -51,7 +51,7 @@ export class ComprasService {
   getPago(id: number): Observable<Blob> {
 
     return this.http.get<Blob>(this.urlBase + '/' + id + '/pago', { responseType: 'blob' as 'json' });
-    
+
   }
 
 }

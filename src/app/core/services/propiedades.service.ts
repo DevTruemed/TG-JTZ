@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { environment } from 'src/environments/environment';
-import { PropiedadModel, TipoModel, PropiedadImpuestoModel, DocumentoModel } from '../models/catalogos.models';
+import { PropiedadModel, TipoModel, PropiedadImpuestoModel, DocumentoModel, SeguroModel } from '../models/catalogos.models';
 
 @Injectable({
   providedIn: 'root'
@@ -63,7 +63,6 @@ export class PropiedadesService {
     formData.append('recamaras', propiedad.recamaras.toString())
     formData.append('banos', propiedad.banos.toString())
     formData.append('estacionamientos', propiedad.estacionamientos.toString())
-    formData.append('aseguradora', propiedad.aseguradora.id.toString())
     return this.http.post<PropiedadModel>(this.urlBase, formData);
 
   }
@@ -105,9 +104,11 @@ export class PropiedadesService {
   postImpuesto(impuesto: PropiedadImpuestoModel): Observable<PropiedadImpuestoModel> {
     let formData: FormData = new FormData();
     formData.append('propiedad', impuesto.propiedad.toString());
-    formData.append('monto', impuesto.monto.toString());
-    // @ts-ignore
-    formData.append('fechaImpuesto', impuesto.fechaImpuesto.singleDate.formatted);
+    formData.append('tipo', impuesto.tipo);
+    formData.append('identificador', impuesto.identificador);
+    formData.append('entidad', impuesto.entidad);
+    formData.append('paginaWeb', impuesto.paginaWeb);
+
     return this.http.post<PropiedadImpuestoModel>(this.urlBase + '/impuestos', formData);
   }
 
@@ -125,4 +126,28 @@ export class PropiedadesService {
     return this.http.post<DocumentoModel[]>(this.urlBase + '/archivos', formData);
   }
 
+  postSeguro(idPropiedad: number, seguro: SeguroModel) {
+    let formData: FormData = new FormData();
+
+    formData.append('propiedad', idPropiedad.toString());
+    formData.append('aseguradora', seguro.aseguradora.id.toString());
+    formData.append('categoria', seguro.categoria);
+    formData.append('poliza', seguro.poliza);
+    formData.append('deducible', seguro.deducible.toString());
+    formData.append('fechaInicio', seguro.fechaInicio);
+    formData.append('fechaTermino', seguro.fechaTermino);
+    formData.append('archivo', seguro.documentacion);
+
+    return this.http.post<SeguroModel>(this.urlBase + '/' + idPropiedad + '/seguros', formData);
+  }
+
+  postArchivosAseguradora(idSeguro: number, archivos: File[], idTipo: number) {
+    let formData: FormData = new FormData();
+
+    archivos.forEach(archivo => formData.append('archivos', archivo));
+    formData.append('id', idSeguro.toString());
+    formData.append('idTipo', idTipo.toString());
+
+    return this.http.post<DocumentoModel[]>(this.urlBase + '/seguros/' + idSeguro + '/archivos', formData);
+  }
 }

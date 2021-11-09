@@ -14,17 +14,9 @@ export class CasasImpuestosComponent implements OnInit {
   formularioAddImpuesto!: FormGroup;
   @Input() idPropiedad: number = 0;
   @Input() impuestos: PropiedadImpuestoModel[] = [];
-  @ViewChild('dp') myDp!: AngularMyDatePickerDirective;
-  myOptions: IAngularMyDpOptions = {
-    dateFormat: 'yyyy-mm-dd',
-    defaultView: 3,
-    monthSelector: false,
-    appendSelectorToBody: true,
-  };
 
   constructor(private formBuilder: FormBuilder,
-    private propiedadesService: PropiedadesService,
-    private cdr: ChangeDetectorRef) { 
+    private propiedadesService: PropiedadesService) {
     this.inicializarFormulario();
   }
 
@@ -35,8 +27,6 @@ export class CasasImpuestosComponent implements OnInit {
     if (this.formularioAddImpuesto.valid) {
       this.formularioAddImpuesto.get('propiedad')?.setValue(this.idPropiedad);
       this.propiedadesService.postImpuesto(this.formularioAddImpuesto.value).subscribe(i => {
-        // console.log(i);
-        // document.getElementById('closeImpuestosModal')?.click();
         this.reiniciarForm();
         this.impuestos.push(i);
       }, err => console.log(err));
@@ -45,8 +35,8 @@ export class CasasImpuestosComponent implements OnInit {
     }
   }
 
-  eliminarImpuesto(impuesto: PropiedadImpuestoModel,index: number): void {
-    this.propiedadesService.deleteImpuesto(impuesto.id).subscribe( () => this.impuestos.splice(index,1));
+  eliminarImpuesto(impuesto: PropiedadImpuestoModel, index: number): void {
+    this.propiedadesService.deleteImpuesto(impuesto.id).subscribe(() => this.impuestos.splice(index, 1));
   }
 
   public isValid(form: FormGroup, field: string): boolean {
@@ -60,17 +50,14 @@ export class CasasImpuestosComponent implements OnInit {
     this.formularioAddImpuesto.reset();
   }
 
-  private inicializarFormulario(): void{
+  private inicializarFormulario(): void {
     // let model: IMyDateModel = {isRange: false};
     this.formularioAddImpuesto = this.formBuilder.group({
       propiedad: [0],
-      monto: [0, [Validators.min(1), Validators.required]],
-      fechaImpuesto: ['', [Validators.required]]
+      tipo: ['', [Validators.required]],
+      identificador: ['', [Validators.required]],
+      entidad: ['', [Validators.required]],
+      paginaWeb: ['', [Validators.required]]
     });
-  }
-
-  toggleCalendar(): void {
-    this.cdr.detectChanges();
-    this.myDp.toggleCalendar();
   }
 }

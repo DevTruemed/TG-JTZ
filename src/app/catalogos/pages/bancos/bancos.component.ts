@@ -5,6 +5,8 @@ import { BancosService } from 'src/app/core/services/bancos.service';
 import { ClientesService } from 'src/app/core/services/clientes.service';
 import { ProveedoresService } from 'src/app/core/services/proveedores.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
+import { ContratosService } from '../../../core/services/contratos.service';
+import { ContratoModel } from '../../../core/models/contratos.model';
 
 @Component({
   selector: 'app-bancos',
@@ -28,6 +30,8 @@ export class BancosComponent implements OnInit {
 
   bancos: BancoModel[];
 
+  contratos: ContratoModel[] = [];
+
   bancoSeleccionado: BancoModel = new BancoModel();
 
   clienteSeleccionado: ClienteModel = new ClienteModel();
@@ -45,6 +49,7 @@ export class BancosComponent implements OnInit {
   constructor(private bancosService: BancosService,
     private proveedoresService: ProveedoresService,
     private clientesService: ClientesService,
+    private contratosService: ContratosService,
     private fb: FormBuilder) {
 
     this.update = null;
@@ -58,7 +63,7 @@ export class BancosComponent implements OnInit {
   ngOnInit(): void {
 
     this.bancosService.getBancos().subscribe(bancos => {
-      if (bancos && bancos.length > 0){
+      if (bancos && bancos.length > 0) {
         this.bancos = bancos;
         this.selectBanco(0);
       }
@@ -66,16 +71,22 @@ export class BancosComponent implements OnInit {
 
     this.getMovimientos(null);
 
+    this.contratosService.getContratos("vigentes").subscribe(contratos => this.contratos = contratos,
+      err => console.log);
+
   }
 
-  public getClientesOrProveedores(clientes: boolean = true): void{
+  public getClientesOrProveedores(clientes: boolean = true): void {
     if (clientes && (this.clientes === null || this.clientes.length === 0))
       this.clientesService.getClientes().subscribe(clientes => {
         this.clientes = clientes;
         this.selectCliente(0);
+        this.clientes.forEach(cliente => {
+          cliente.contratos = this.contratos.filter(contrato => contrato.cliente.id == cliente.id);
+        });
       })
 
-    else if (!clientes && (this.proveedores === null || this.proveedores.length === 0) )
+    else if (!clientes && (this.proveedores === null || this.proveedores.length === 0))
       this.proveedoresService.getProveedores().subscribe(proveedores => {
         this.proveedores = proveedores;
         this.formularioPago.get('proveedor')?.patchValue(this.proveedores[0]);
@@ -83,7 +94,7 @@ export class BancosComponent implements OnInit {
       });
   }
 
-  public getMovimientos(id: number | null){
+  public getMovimientos(id: number | null) {
     this.bancosService.getMovimientos(id).subscribe(movimientos => {
       this.depositos = movimientos.depositos;
       this.pagos = movimientos.pagos;
@@ -141,9 +152,9 @@ export class BancosComponent implements OnInit {
     this.sideBar.isOpen = true;
   }
 
-  public agregarDeposito(): void{
-    
-     if ( this.formularioDeposito.valid ){
+  public agregarDeposito(): void {
+
+    if (this.formularioDeposito.valid) {
       this.bancosService.postDeposito(this.formularioDeposito.value).subscribe(deposito => {
         this.depositos.unshift(deposito);
         document.getElementById('closeModalDeposito')?.click();
@@ -151,37 +162,47 @@ export class BancosComponent implements OnInit {
         this.clienteSeleccionado.saldo += deposito.monto;
       });
     } else
-    return Object.values(this.formularioDeposito.controls).forEach(control => control.markAsTouched()); 
+      return Object.values(this.formularioDeposito.controls).forEach(control => control.markAsTouched());
 
   }
 
-  public agregarPago(): void{
-    
-    if ( this.formularioPago.valid ){
-     this.bancosService.postPago(this.formularioPago.value).subscribe(pago => {
-       this.pagos.unshift(pago);
-       document.getElementById('closeModalPago')?.click();
-       this.bancoSeleccionado.saldo -= pago.monto;
-     });
-   } else
-   return Object.values(this.formularioPago.controls).forEach(control => control.markAsTouched()); 
+  public agregarPago(): void {
 
- }
+    if (this.formularioPago.valid) {
+      this.bancosService.postPago(this.formularioPago.value).subscribe(pago => {
+        this.pagos.unshift(pago);
+        document.getElementById('closeModalPago')?.click();
+        this.bancoSeleccionado.saldo -= pago.monto;
+      });
+    } else
+      return Object.values(this.formularioPago.controls).forEach(control => control.markAsTouched());
 
-  public selectBanco(index: number){
+  }
+
+  public selectBanco(index: number) {
     this.bancoSeleccionado = this.bancos[index];
     this.formularioPago.get('banco')?.patchValue(this.bancos[index]);
     this.formularioDeposito.get('banco')?.patchValue(this.bancos[index]);
   }
 
-  public selectCliente(index: number){
+  public selectCliente(index: number) {
     this.clienteSeleccionado = this.clientes[index];
     this.formularioDeposito.get('cliente')?.patchValue(this.clientes[index]);
   }
 
-  public selectProveedor(index: number){
+  public selectProveedor(index: number) {
     this.proveedorSeleccionado = this.proveedores[index];
     this.formularioPago.get('provider')?.patchValue(this.proveedores[index]);
+  }
+
+  public selectPropiedad(index: number): void {
+    if (this.clienteSeleccionado.id) {
+      this.formularioDeposito.patchValue({ 'propiedad': this.clienteSeleccionado.contratos[index].propiedad });
+      this.formularioDeposito.patchValue({ 'contrato': this.clienteSeleccionado.contratos[index] });
+    }
+
+    this.formularioPago.patchValue({ 'propiedad': this.contratos[index].propiedad });
+    this.formularioPago.patchValue({ 'contrato': this.contratos[index] });
   }
 
   private inicializarFormularios(): void {
@@ -199,15 +220,25 @@ export class BancosComponent implements OnInit {
 
       monto: [0, [Validators.required, Validators.min(1)]],
       banco: this.fb.group({
-        id:[],
+        id: [],
         banco: [],
-        cuenta:[],
-        saldo:[]
+        cuenta: [],
+        saldo: []
       }),
       cliente: this.fb.group({
         id: [],
         cliente: [],
-        saldo:[]
+        saldo: []
+      }),
+      propiedad: this.fb.group({
+        id: [],
+        tipo: this.fb.group({
+          tipo: []
+        }),
+        direccion: []
+      }),
+      contrato: this.fb.group({
+        id: []
       })
 
     });
@@ -217,15 +248,27 @@ export class BancosComponent implements OnInit {
       monto: [0, [Validators.required, Validators.min(0)]],
 
       banco: this.fb.group({
-        id:[],
+        id: [],
         banco: [],
-        cuenta:[],
-        saldo:[]
+        cuenta: [],
+        saldo: []
       }),
 
       provider: this.fb.group({
         id: [],
         proveedor: []
+      }),
+
+      propiedad: this.fb.group({
+        id: [],
+        tipo: this.fb.group({
+          tipo: []
+        }),
+        direccion: []
+      }),
+
+      contrato: this.fb.group({
+        id: []
       })
 
     });

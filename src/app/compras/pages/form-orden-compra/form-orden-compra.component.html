@@ -9,7 +9,8 @@
                     <div class="d-flex justify-content-between">
                         <h5 class="card-title mb-3">Information</h5>
                         <span
-                            class="badge bg-transparent text-secondary border border-secondary my-auto fs-6 fw-normal">{{estatus | titlecase}}</span>
+                            class="badge bg-transparent text-secondary border border-secondary my-auto fs-6 fw-normal">{{estatus
+                            | titlecase}}</span>
                     </div>
 
                     <div class="row g-2">
@@ -64,6 +65,45 @@
                                 </ul>
                             </div>
                         </div>
+                        <div class="mb-3 col-12" *ngIf="contratos.length && update == false; else noEdit">
+                            <label class="form-label">Is related to a lease? Select Property</label>
+                            <div class="d-grid gap-2">
+                                <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                    id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fas fa-home"></i>
+                                    {{formulario.get('propiedad')?.get('tipo')?.get('tipo')?.value}}
+                                </button>
+                                <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                    <li role="button" *ngFor="let contrato of contratos; let i = index"
+                                        (click)="selectPropiedad(i)"
+                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div class=" d-flex flex-column">
+                                            <p class="card-text mb-1 fw-bold">{{contrato.propiedad.tipo.tipo}}</p>
+                                            <p class="card-text mb-0 fst-italic">{{contrato.propiedad.direccion}}</p>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        <ng-template #noEdit>
+                            <ng-template #show class="mb-3 col-12"
+                                [ngIf]="formulario.get('contrato')?.get('id')?.value">
+                                <label class="form-label">Is related to a lease? Select Property</label>
+                                <div class="d-grid gap-2">
+                                    <div
+                                        class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                        <div class=" d-flex flex-column">
+                                            <p class="card-text mb-1 fw-bold">
+                                                {{oc.contrato.propiedad.tipo.tipo}}
+                                            </p>
+                                            <p class="card-text mb-0 fst-italic">
+                                                {{oc.contrato.propiedad.direccion}}
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </ng-template>
+                        </ng-template>
                         <div class="col-12 col-sm-6" *ngIf="estatus === 'AUTHORIZED'">
                             <label for="formFile" class="form-label">upload invoice</label>
                             <input class="form-control" type="file" id="formFile" (change)="addFile($event)">
@@ -71,18 +111,20 @@
                         <div class="col-12 col-sm-6 mb-2" *ngIf="estatus === 'AUTHORIZED'">
                             <label class="form-label">Folio</label>
                             <input class="form-control" type="text" formControlName="factura"
-                            [class.is-invalid]="formulario.get('factura')?.touched && (formulario.get('factura')?.value === null || formulario.get('factura')?.value === '') ">
-                            <div class="invalid-feedback" *ngIf="formulario.get('factura')?.touched && (formulario.get('factura')?.value === null || formulario.get('factura')?.value === '') ">
+                                [class.is-invalid]="formulario.get('factura')?.touched && (formulario.get('factura')?.value === null || formulario.get('factura')?.value === '') ">
+                            <div class="invalid-feedback"
+                                *ngIf="formulario.get('factura')?.touched && (formulario.get('factura')?.value === null || formulario.get('factura')?.value === '') ">
                                 Required field
                             </div>
                         </div>
                         <div class="col-12" *ngIf="estatus != 'FOR PAYMENT' && estatus != 'CANCELED'">
-                            <button class="btn w-100 mt-2" type="submit" [ngClass]="{'btn-outline-primary': !update, 'btn-outline-secondary': update}" >
+                            <button class="btn w-100 mt-2" type="submit"
+                                [ngClass]="{'btn-outline-primary': !update, 'btn-outline-secondary': update}">
                                 <i class="fas me-2" [ngClass]="{'fa-plus': !update, 'fa-save': update}"></i>
                                 {{ !update ? 'Create Order': 'Save changes' }}
                             </button>
                         </div>
-                        
+
                     </div>
                 </div>
 
@@ -108,15 +150,17 @@
                         </div>
                     </ng-container>
 
-                    <button type="button" class="btn btn-outline-primary w-100" (click)="addObservacion()" [disabled]="estatus === 'AUTHORIZED' || estatus === 'FOR PAYMENT' || estatus === 'CANCELED'">
+                    <button type="button" class="btn btn-outline-primary w-100" (click)="addObservacion()"
+                        [disabled]="estatus === 'AUTHORIZED' || estatus === 'FOR PAYMENT' || estatus === 'CANCELED'">
                         <i class="fas fa-plus me-2"></i>Add Comment
                     </button>
                 </div>
             </div>
             <div class="col-12 mb-3">
-                <div class="card card-body" >
+                <div class="card card-body">
                     <h5 class="card-title mb-3 w-100">Products</h5>
-                    <div class="table-responsive" [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none'}">
+                    <div class="table-responsive"
+                        [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none'}">
                         <table class="table table-striped table-bordered text-center mt-3">
                             <thead class="bg-secondary text-white">
                                 <tr>
@@ -135,8 +179,8 @@
                                     <td>
                                         <input type="number" class="form-control text-center m-auto"
                                             [class.is-invalid]="productosForm.at(i).get('cantidad')?.invalid  && productosForm.at(i).get('cantidad')?.touched"
-                                            id="inputPrecio" 
-                                            (keyup)="actualizarImporte()" formControlName="cantidad" #inputCantdad>
+                                            id="inputPrecio" (keyup)="actualizarImporte()" formControlName="cantidad"
+                                            #inputCantdad>
                                         <div class="invalid-feedback"
                                             *ngIf="productosForm.at(i).get('cantidad')?.invalid && productosForm.at(i).get('cantidad')?.touched">
                                             Quantity must be at least 0.1
@@ -168,10 +212,11 @@
                                             [for]="'checkA'+i"><i class="fas"
                                                 [ngClass]="{'fa-times': !inputAutorizado.checked, 'fa-check': inputAutorizado.checked}"></i></label>
                                     <td>
-                                        <button type="button" class="btn btn-danger btn-sm d-flex justify-content-center align-items-center mx-auto" (click)="removeProducto(i)"
-                                            [disabled]='update'>
+                                        <button type="button"
+                                            class="btn btn-danger btn-sm d-flex justify-content-center align-items-center mx-auto"
+                                            (click)="removeProducto(i)" [disabled]='update'>
                                             <i class="fas fa-times me-2 my-auto"></i>
-                                               Quit 
+                                            Quit
                                         </button>
                                     </td>
                                 </tr>

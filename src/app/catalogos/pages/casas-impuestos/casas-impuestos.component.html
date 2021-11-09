@@ -1,5 +1,5 @@
 <div class="modal fade" id="PropertyTaxesModal" tabindex="-1" aria-labelledby="PropertyTaxesModal" aria-hidden="true">
-    <div class="modal-dialog">
+    <div class="modal-dialog modal-lg">
         <div class="modal-content">
 
             <div class="modal-header">
@@ -14,16 +14,21 @@
                             <thead>
                                 <tr>
                                     <th scope="col">#</th>
-                                    <th scope="col">Amount</th>
-                                    <th scope="col">Due Date</th>
+                                    <th scope="col">Type</th>
+                                    <th scope="col">#ID</th>
+                                    <th scope="col">Entity</th>
+                                    <th scope="col">Website</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 <tr *ngFor="let impuesto of impuestos; let i = index">
                                     <th>{{ i + 1 }} </th>
-                                    <th>{{ impuesto.monto | currency }}</th>
+                                    <th>{{ impuesto.tipo }}</th>
+                                    <th>{{ impuesto.identificador }}</th>
+                                    <th>{{ impuesto.entidad }}</th>
                                     <th class="d-flex justify-content-around">
-                                        {{ impuesto.fechaImpuesto | date:'Y' }}
+                                        <a [href]="'http://'+impuesto.paginaWeb" target="_blank"
+                                            rel="noopener noreferrer">{{impuesto.paginaWeb}}</a>
                                         <button class="btn btn-sm btn-outline-danger" type="button" title="Delete"
                                             (click)="eliminarImpuesto(impuesto, i)">
                                             <i class="fas fa-trash"></i>
@@ -39,26 +44,45 @@
                 <div class="modal-footer">
                     <div class="row">
                         <div class="mb-3 col-6 col-sm-6 col-md-4">
-                            <label for="montotInput" class="form-label">Amount</label>
-                            <input type="number" class="form-control" id="montoInput" placeholder="Amount"
-                                [class.is-invalid]="isValid(formularioAddImpuesto,'monto')" formControlName="monto">
-                            <div class="invalid-feedback" *ngIf="isValid(formularioAddImpuesto,'monto')">
+                            <label for="tipoInput" class="form-label">Type</label>
+                            <input type="text" class="form-control" id="tipoInput" placeholder="Type"
+                                [class.is-invalid]="isValid(formularioAddImpuesto,'tipo')" formControlName="tipo">
+                            <div class="invalid-feedback">
                                 this field is required
                             </div>
                         </div>
                         <div class="mb-3 col-6 col-sm-6 col-md-4">
-                            <label for="anioInput" class="form-label">Due Date</label>
-                            <input class="form-control" placeholder="Select a date" angular-mydatepicker
-                                name="fechaImpuesto" formControlName="fechaImpuesto" [options]="myOptions"
-                                [class.is-invalid]="isValid(formularioAddImpuesto,'fechaImpuesto')"
-                                #dp="angular-mydatepicker" (click)="toggleCalendar()" />
-                            <div class="invalid-feedback" *ngIf="isValid(formularioAddImpuesto,'fechaImpuesto')">
+                            <label for="identificadorInput" class="form-label">#ID</label>
+                            <input type="text" class="form-control" id="identificadorInput" placeholder="Property ID"
+                                [class.is-invalid]="isValid(formularioAddImpuesto,'identificador')"
+                                formControlName="identificador">
+                            <div class="invalid-feedback">
                                 this field is required
                             </div>
                         </div>
-                        <button type="submit" class="btn btn-outline-secondary col-2 btn-sm">
-                            <i class="fas fa-plus"></i>
-                        </button>
+                        <div class="mb-3 col-6 col-sm-6 col-md-4">
+                            <label for="entidadInput" class="form-label">Entity</label>
+                            <input type="text" class="form-control" id="entidadInput" placeholder="Entity"
+                                [class.is-invalid]="isValid(formularioAddImpuesto,'entidad')" formControlName="entidad">
+                            <div class="invalid-feedback">
+                                this field is required
+                            </div>
+                        </div>
+                        <div class="mb-3 col-6 col-sm-6 col-md-4">
+                            <label for="websiteInput" class="form-label">Website</label>
+                            <input type="text" class="form-control" id="websiteInput" placeholder="Website"
+                                [class.is-invalid]="isValid(formularioAddImpuesto,'paginaWeb')"
+                                formControlName="paginaWeb">
+                            <div class="invalid-feedback">
+                                this field is required
+                            </div>
+                        </div>
+                        <div class="mb-3 col-6">
+                            <br>
+                            <button type="submit" class="btn btn-outline-secondary btn-lg">
+                                Save <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </form>

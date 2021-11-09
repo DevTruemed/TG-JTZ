@@ -61,6 +61,11 @@ export class ContratosService {
     formData.append('idContrato', pago.contrato.id.toString());
     formData.append('concepto', pago.concepto);
     formData.append('monto', pago.monto.toString());
+    formData.append('banco', pago.banco.id.toString());
+    if (!pago.tipoEntrada) {
+      formData.append('idProveedor', pago.proveedor.id.toString());
+    }
+    formData.append('tipoEntrada', pago.tipoEntrada.toString());
 
     return this.http.post<PagoContratoModel>(this.urlBase + '/pagos', formData);
   }
