@@ -57,7 +57,6 @@ export class TicketsFormComponent implements OnInit {
         id: [0, [Validators.required]],
       }),
       descripcion: ['', [Validators.required, Validators.max(255)]],
-      monto: [0, [Validators.min(1), Validators.required]],
       observacion: ['', [Validators.max(500)]]
     });
 

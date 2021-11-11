@@ -141,6 +141,9 @@
                 <div class="d-flex justify-content-center">
                     <h3>{{ total | currency }}</h3>
                 </div>
+                <div class="alert alert-danger" role="alert" *ngIf="!pagoRecibido()">
+                    The deposit of this month has not been received yet!
+                </div>
             </div>
         </div>
     </div>

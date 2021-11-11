@@ -24,7 +24,11 @@ export class OrdenCompraModel {
 
     productos: OCProucto[];
 
-    contrato: ContratoModel;
+    contrato: number;
+
+    contratoModelo: ContratoModel;
+
+    ticket: number | null;
 
     constructor() {
         this.id = 0;
@@ -45,7 +49,11 @@ export class OrdenCompraModel {
 
         this.productos = [];
 
-        this.contrato = new ContratoModel();
+        this.contrato = 0;
+
+        this.contratoModelo = new ContratoModel();
+
+        this.ticket = null;
     }
 
 }

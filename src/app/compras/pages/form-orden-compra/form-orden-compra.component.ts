@@ -85,8 +85,10 @@ export class FormOrdenCompraComponent implements OnInit {
         this.estatus = oc.estatus.estatus;
         this.proveedores.push(oc.proveedor);
         this.proveedorSelect = oc.proveedor;
-        if (oc.contrato == null) {
-          oc.contrato = new ContratoModel();
+        if (oc.contratoModelo == null) {
+          oc.contratoModelo = new ContratoModel();
+        } else {
+          oc.contrato = oc.contratoModelo.id;
         }
         this.formulario.patchValue(oc);
         this.formulario.get('cuentaContable')?.get('id')?.disable();
@@ -133,7 +135,7 @@ export class FormOrdenCompraComponent implements OnInit {
 
   public selectPropiedad(index: number): void {
     this.formulario.patchValue({ 'propiedad': this.contratos[index].propiedad });
-    this.formulario.patchValue({ 'contrato': this.contratos[index] });
+    this.formulario.patchValue({ 'contrato': this.contratos[index].id });
   }
 
   public addProducto(index: number) {
@@ -263,9 +265,7 @@ export class FormOrdenCompraComponent implements OnInit {
         }),
         direccion: []
       }),
-      contrato: this.fb.group({
-        id: []
-      })
+      contrato: []
     });
 
   }

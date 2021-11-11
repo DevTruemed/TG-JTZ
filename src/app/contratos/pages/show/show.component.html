@@ -1,3 +1,194 @@
+<!--================================-->
+<!--Modal Crear Orden de Compra ========-->
+<!--================================-->
+<div class="modal" id="ODCModal">
+    <div class="modal-dialog modal-lg modal-fullscreeno">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Create Purchase Order</h5>
+                <button type="button" id="closeODCModal" class="btn-close" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            <form class="modal-body" [formGroup]="formulario" (ngSubmit)="addOC()">
+                <div class="row g-2">
+                    <div class="col-12 col-md-8">
+                        <div class="card card-body h-100">
+                            <div class="d-flex justify-content-between">
+                                <h5 class="card-title mb-3">Information</h5>
+                                <span
+                                    class="badge bg-transparent text-secondary border border-secondary my-auto fs-6 fw-normal">{{estatus
+                                    | titlecase}}</span>
+                            </div>
+
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label class="form-label">Order</label>
+                                    <input class="form-control" type="text" formControlName="id" readonly>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label class="form-label">Amount</label>
+                                    <input class="form-control" type="text"
+                                        [value]="formulario.get('importe')?.value | currency" readonly>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label class="form-label">Authorized Amount</label>
+                                    <input class="form-control" type="text"
+                                        [value]="formulario.get('importeAutorizado')?.value | currency" readonly>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label class="form-label">Supplier</label>
+                                    <select class="form-select form-select"
+                                        (change)="seleccionarProveedor(selectorProveedor.value)" #selectorProveedor>
+                                        <option *ngFor="let proveedor of proveedores; let i=index" [value]="i">
+                                            {{proveedor.proveedor}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4" formGroupName="cuentaContable">
+                                    <label class="form-label">Accounting account</label>
+                                    <select class="form-select form-select" formControlName="id">
+                                        <option *ngFor="let cc of proveedorSelect.cuentasContables" [value]="cc.id">
+                                            {{cc.cuenta}}</option>
+                                    </select>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label class="form-label">Products</label>
+                                    <div class="dropdown">
+                                        <button
+                                            class="btn btn-outline-dark w-100 d-flex justify-content-between align-items-center"
+                                            type="button" style="border: 1px solid lightgray;" data-bs-toggle="dropdown"
+                                            aria-expanded="false">
+                                            Add product
+                                            <i class="fas fa-chevron-down" style="font-size: .8em"></i>
+                                        </button>
+                                        <ul class="dropdown-menu m-0 p-0" aria-labelledby="dropdownMenuButton1">
+                                            <li class="border-bottom"
+                                                *ngFor="let producto of proveedorSelect.productos; let i=index"
+                                                style="cursor: pointer;" (click)="addProducto(i)">
+                                                <div class="dropdown-item">
+                                                    <div class="fw-bold">{{producto.producto.producto | titlecase}}
+                                                    </div>
+                                                    Price: {{producto.precio | currency}}
+                                                </div>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="col-12" *ngIf="estatus != 'FOR PAYMENT' && estatus != 'CANCELED'">
+                                    <button class="btn w-100 mt-2 btn-outline-secondary" type="submit">
+                                        <i class="fas me-2 fa-save"></i>
+                                        Save changes
+                                    </button>
+                                </div>
+
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-12 col-md-4">
+                        <div class="card card-body h-100" formArrayName="observaciones">
+                            <h5 class="card-title mb-3">Comments</h5>
+                            <ul class="list-group mb-3">
+                                <li class="list-group-item " aria-current="true"
+                                    *ngFor="let observacion of oc.observaciones; let i=index">
+                                    <p class="mb-0">{{observacion.observacion}}</p>
+                                    <small class="fw-bold" style="font-size: .8rem;">{{observacion.user |
+                                        titlecase}}</small>
+                                </li>
+                            </ul>
+                            <ng-container *ngFor="let observacion of observacionesForm.controls; let i = index"
+                                [formGroupName]="i">
+                                <input type="text" class="form-control text-center mb-2"
+                                    [class.is-invalid]="observacionesForm.at(i).get('observacion')?.invalid  && observacionesForm.at(i).get('observacion')?.touched"
+                                    formControlName="observacion" #inputCantdad>
+                                <div class="invalid-feedback"
+                                    *ngIf="observacionesForm.at(i).get('observacion')?.invalid  && observacionesForm.at(i).get('observacion')?.touched">
+                                    Required (5 - 300 characteres)
+                                </div>
+                            </ng-container>
+
+                            <button type="button" class="btn btn-outline-primary w-100" (click)="addObservacion()">
+                                <i class="fas fa-plus me-2"></i>Add Comment
+                            </button>
+                        </div>
+                    </div>
+                    <div class="col-12 mb-3">
+                        <div class="card card-body">
+                            <h5 class="card-title mb-3 w-100">Products</h5>
+                            <div class="table-responsive"
+                                [ngStyle]="{'max-width': (width > 576 && width < 720) ? ( width - 120) + 'px' : 'none'}">
+                                <table class="table table-striped table-bordered text-center mt-3">
+                                    <thead class="bg-secondary text-white">
+                                        <tr>
+                                            <th scope="col">Quantity</th>
+                                            <th scope="col">Product</th>
+                                            <th scope="col">Unit Price</th>
+                                            <th scope="col">Amount</th>
+                                            <th scope="col">Reviewed</th>
+                                            <th scope="col">Authorized</th>
+                                            <th scope="col">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor"
+                                        formArrayName="productos">
+                                        <tr *ngFor="let producto of productosForm.controls; let i=index"
+                                            [formGroupName]="i">
+                                            <td>
+                                                <input type="number" class="form-control text-center m-auto"
+                                                    [class.is-invalid]="productosForm.at(i).get('cantidad')?.invalid  && productosForm.at(i).get('cantidad')?.touched"
+                                                    id="inputPrecio" (keyup)="actualizarImporte()"
+                                                    formControlName="cantidad" #inputCantdad>
+                                                <div class="invalid-feedback"
+                                                    *ngIf="productosForm.at(i).get('cantidad')?.invalid && productosForm.at(i).get('cantidad')?.touched">
+                                                    Quantity must be at least 0.1
+                                                </div>
+                                            </td>
+                                            <td>
+                                                {{productosForm.at(i)?.get('producto')?.get('producto')?.value}}
+                                                s </td>
+                                            <td>
+                                                {{productosForm.at(i)?.get('costo')?.value | currency}}
+                                            </td>
+                                            <td>
+                                                {{productosForm.at(i)?.get('costo')?.value *
+                                                productosForm.at(i)?.get('cantidad')?.value | currency}}
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="btn-check" [id]="'checkR'+i"
+                                                    formControlName="revisado" #inputRevisado>
+                                                <label class="btn btn-sm"
+                                                    [ngClass]="{'btn-outline-danger': !inputRevisado.checked, 'bg-success text-white': inputRevisado.checked}"
+                                                    [for]="'checkR'+i"><i class="fas"
+                                                        [ngClass]="{'fa-times': !inputRevisado.checked, 'fa-check': inputRevisado.checked}"></i></label>
+                                            </td>
+                                            <td>
+                                                <input type="checkbox" class="btn-check" formControlName="autorizado"
+                                                    [id]="'checkA'+i" #inputAutorizado>
+                                                <label class="btn btn-sm"
+                                                    [ngClass]="{'btn-outline-danger': !inputAutorizado.checked, 'bg-success text-white': inputAutorizado.checked}"
+                                                    [for]="'checkA'+i"><i class="fas"
+                                                        [ngClass]="{'fa-times': !inputAutorizado.checked, 'fa-check': inputAutorizado.checked}"></i></label>
+                                            <td>
+                                                <button type="button"
+                                                    class="btn btn-danger btn-sm d-flex justify-content-center align-items-center mx-auto"
+                                                    (click)="removeProducto(i)">
+                                                    <i class="fas fa-times me-2 my-auto"></i>
+                                                    Quit
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<button class="btn btn-outline-secondary d-none" data-bs-toggle="modal" data-bs-target="#ODCModal"
+    id="openODCModal"></button>
+
 <div class="row g-2">
     <div class="col-12 col-md-12">
         <div class="card card-body h-100">
@@ -48,6 +239,10 @@
                     <label class="form-label">Amount</label>
                     <h3>{{ contrato.monto | currency }}</h3>
                 </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Payment Day</label>
+                    <h5>The {{ contrato.diasPago }} of every month</h5>
+                </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3">
                     <label class="form-label">Period</label>
                     <h5 class="mt-2">
@@ -69,7 +264,7 @@
                         <tr>
                             <th scope="col">Ticket</th>
                             <th scope="col">Description</th>
-                            <th scope="col">Amount</th>
+                            <th scope="col">ODC</th>
                             <th scope="col">Date</th>
                             <th scope="col">Estatus</th>
                             <th scope="col">Comments</th>
@@ -82,7 +277,7 @@
                                 #{{ticket.id}}
                             </td>
                             <td>{{ticket.descripcion}}</td>
-                            <td>{{ticket.monto | currency}}</td>
+                            <td>{{ticket.odc ? ticket.odc : '--'}}</td>
                             <td>{{ticket.fechaSolicitud | date: 'mediumDate'}}</td>
                             <td>{{ticket.estatus}}</td>
                             <td>

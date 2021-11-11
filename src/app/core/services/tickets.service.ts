@@ -30,7 +30,6 @@ export class TicketsService {
 
     formData.append('propiedad', ticket.idPropiedad.id.toString());
     formData.append('descripcion', ticket.descripcion);
-    formData.append('monto', ticket.monto.toString());
 
     return this.http.post<TicketModel>(this.urlBase, formData);
 

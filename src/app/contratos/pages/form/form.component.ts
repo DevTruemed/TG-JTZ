@@ -88,6 +88,7 @@ export class FormComponent implements OnInit {
         id: [0, [Validators.required]],
       }),
       monto: [0, [Validators.min(1), Validators.required]],
+      diasPago: [0, [Validators.min(1), Validators.max(31)]],
       rango: [],
       fechaInicio: ['', [Validators.required]],
       fechaTermino: ['', [Validators.required]],

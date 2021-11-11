@@ -12,6 +12,8 @@ export class ContratoModel {
 
     monto: number;
 
+    diasPago: number;
+
     fechaInicio: string;
 
     fechaTermino: string;
@@ -37,6 +39,8 @@ export class ContratoModel {
         this.tipo = new TipoContratoModel();
 
         this.monto = 0;
+
+        this.diasPago = 0;
 
         this.fechaInicio = '';
 

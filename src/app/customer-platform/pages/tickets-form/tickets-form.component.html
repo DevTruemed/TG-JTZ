@@ -7,11 +7,11 @@
                     class="badge bg-transparent text-secondary border border-secondary my-auto fs-6 fw-normal">{{ticket.estatus}}</span>
             </div>
             <div class="row g-2">
-                <div class="col-12 col-sm-6 col-md-2">
+                <div class="col-12 col-sm-6 col-md-3">
                     <label class="form-label">Ticket Code</label>
                     <input class="form-control" type="text" [value]="(ticket.id | number: '5.0-0') | code" readonly>
                 </div>
-                <div class="col-12 col-sm-6" [ngClass]="{'col-md-7': update, 'col-md-5': !update}">
+                <div class="col-12 col-sm-7" [ngClass]="{'col-md-7': update, 'col-md-5': !update}">
                     <label class="form-label">{{update ? 'Property' : 'Select Property'}}</label>
                     <div class="d-grid gap-2" *ngIf="update else selectProp">
                         <div
@@ -41,15 +41,6 @@
                             </ul>
                         </div>
                     </ng-template>
-                </div>
-                <div class="col-12 col-sm-6 col-md-3">
-                    <label class="form-label">Amount Spent</label>
-                    <input type="number" class="form-control text-center m-auto"
-                        [class.is-invalid]="isValid(formulario,'monto')" id="inputMonto" formControlName="monto"
-                        [readonly]="update">
-                    <div class="invalid-feedback">
-                        Quantity must be at least 1
-                    </div>
                 </div>
                 <div class="col-12 col-sm-6" [ngClass]="{'col-md-6': update, 'col-md-5': !update}">
                     <label for="form-label">Description</label>

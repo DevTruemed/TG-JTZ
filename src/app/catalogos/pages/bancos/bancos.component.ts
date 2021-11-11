@@ -211,7 +211,7 @@ export class BancosComponent implements OnInit {
 
       id: [null],
       banco: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(200)]],
-      cuenta: [null, [Validators.required, Validators.min(0), Validators.minLength(6)]],
+      cuenta: [null, [Validators.required, Validators.min(100000)]],
       saldo: [null, [Validators.required, Validators.min(0)]]
 
     });

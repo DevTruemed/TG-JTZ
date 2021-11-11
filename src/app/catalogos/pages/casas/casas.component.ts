@@ -120,12 +120,12 @@ export class CasasComponent implements OnInit {
               }, err => console.log);
             });
             document.getElementById('closeModal')?.click();
+            this.ngOnInit();
             this.reiniciarModals();
-            this.propiedades.unshift(p);
           } else {
             document.getElementById('closeModal')?.click();
+            this.ngOnInit();
             this.reiniciarModals();
-            this.propiedades.unshift(p);
           }
         }, err => console.log(err))
 

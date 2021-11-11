@@ -11,13 +11,13 @@ export class TicketModel {
 
     estado: number;
 
-    monto: number;
-
     observacion: string;
 
     fechaSolicitud: string;
 
     idPropiedad: number;
+
+    odc: number;
 
     constructor() {
 
@@ -31,13 +31,13 @@ export class TicketModel {
 
         this.estado = 0;
 
-        this.monto = 0;
-
         this.observacion = '';
 
         this.fechaSolicitud = '';
 
         this.idPropiedad = 0;
+
+        this.odc = 0;
 
     }
 

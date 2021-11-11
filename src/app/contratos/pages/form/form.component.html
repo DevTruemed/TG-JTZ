@@ -76,8 +76,17 @@
                         Quantity must be at least 1
                     </div>
                 </div>
+                <div class="col-12 col-sm-6 col-md-3">
+                    <label class="form-label">Payment Day</label>
+                    <input type="number" class="form-control text-center m-auto"
+                        [class.is-invalid]="isValid(formulario,'diasPago')" id="inputDiasPago"
+                        formControlName="diasPago">
+                    <div class="invalid-feedback">
+                        This field is required (Days between 1 - 31)
+                    </div>
+                </div>
                 <div class="col-12 col-sm-6 col-md-6 col-lg-3">
-                    <label class="form-label">Period</label>
+                    <label class="form-label">Leasing Period</label>
                     <div class="input-group">
                         <!-- input box -->
                         <input class="form-control" placeholder="Select a Date Range" angular-mydatepicker
@@ -97,7 +106,7 @@
                         </div>
                     </div>
                 </div>
-                <div class="col-12 col-sm-6 col-md-5 col-lg-3 mt-auto">
+                <div class="col-12 col-sm-6 col-md-5 col-lg-12 mt-auto">
                     <button class="btn w-100 mt-2 btn-outline-primary" type="submit">
                         <i class="fas me-2 fa-plus"></i>
                         Save Information

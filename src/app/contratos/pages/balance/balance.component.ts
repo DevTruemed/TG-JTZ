@@ -5,6 +5,7 @@ import { BancosService } from '../../../core/services/bancos.service';
 import { ProveedoresService } from '../../../core/services/proveedores.service';
 import { Router, ActivatedRoute } from '@angular/router';
 import { ContratosService } from '../../../core/services/contratos.service';
+import { PagoContratoModel } from '../../../core/models/contratos.model';
 
 @Component({
   selector: 'app-balance',
@@ -17,11 +18,13 @@ export class BalanceComponent implements OnInit {
 
   formularioPago !: FormGroup;
 
+  diasPago: number;
+
   depositos: any[] = [];
 
   bancos: BancoModel[];
 
-  pagos: any[] = [];
+  pagos: PagoContratoModel[] = [];
 
   proveedores: ProveedorModel[] = [];
 
@@ -35,6 +38,7 @@ export class BalanceComponent implements OnInit {
     private fb: FormBuilder,
     private router: Router,
     private activeRoute: ActivatedRoute) {
+    this.diasPago = 0;
     this.bancos = [];
     this.inicializarFormularios();
   }
@@ -50,11 +54,13 @@ export class BalanceComponent implements OnInit {
     this.contratosService.getContrato(this.activeRoute.snapshot.params.id).subscribe(contrato => {
       this.depositos = contrato.depositos;
       this.pagos = contrato.pagos;
+      this.diasPago = contrato.diasPago;
     },
       err => this.router.navigate(['/leases']));
   }
 
   public agregarDeposito(): void {
+    this.formularioDeposito.patchValue({ 'tipoEntrada': true });
     this.formularioDeposito.patchValue({ 'contrato': { id: this.activeRoute.snapshot.params.id } });
     if (this.formularioDeposito.valid) {
       this.contratosService.addPago(this.formularioDeposito.value).subscribe(() => {
@@ -95,7 +101,7 @@ export class BalanceComponent implements OnInit {
 
   public selectProveedor(index: number) {
     this.proveedorSeleccionado = this.proveedores[index];
-    this.formularioPago.get('proveeder')?.patchValue(this.proveedores[index]);
+    this.formularioPago.get('proveedor')?.patchValue(this.proveedores[index]);
   }
 
   public getProveedores(): void {
@@ -138,7 +144,7 @@ export class BalanceComponent implements OnInit {
 
     this.formularioPago = this.fb.group({
 
-      monto: [0, [Validators.required, Validators.min(0)]],
+      monto: [0, [Validators.required, Validators.min(1)]],
 
       banco: this.fb.group({
         id: [],
@@ -158,5 +164,16 @@ export class BalanceComponent implements OnInit {
 
     });
 
+  }
+
+  pagoRecibido(): boolean {
+    let anio = new Date().getFullYear();
+    let mes: string | number = new Date().getMonth() + 1;
+    mes = mes < 10 ? '0' + mes : mes;
+    let dia = this.diasPago < 10 ? '0' + this.diasPago : this.diasPago;
+    let fecha = anio + '-' + mes + '-' + dia;
+
+    let deposito = this.depositos.find(deposito => deposito.fechaEmision >= fecha);
+    return deposito ? true : false;
   }
 }

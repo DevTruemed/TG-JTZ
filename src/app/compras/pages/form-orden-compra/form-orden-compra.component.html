@@ -86,18 +86,17 @@
                             </div>
                         </div>
                         <ng-template #noEdit>
-                            <ng-template #show class="mb-3 col-12"
-                                [ngIf]="formulario.get('contrato')?.get('id')?.value">
+                            <ng-template #show class="mb-3 col-12" [ngIf]="formulario.get('contrato')?.value">
                                 <label class="form-label">Is related to a lease? Select Property</label>
                                 <div class="d-grid gap-2">
                                     <div
                                         class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
                                         <div class=" d-flex flex-column">
                                             <p class="card-text mb-1 fw-bold">
-                                                {{oc.contrato.propiedad.tipo.tipo}}
+                                                {{oc.contratoModelo.propiedad.tipo.tipo}}
                                             </p>
                                             <p class="card-text mb-0 fst-italic">
-                                                {{oc.contrato.propiedad.direccion}}
+                                                {{oc.contratoModelo.propiedad.direccion}}
                                             </p>
                                         </div>
                                     </div>

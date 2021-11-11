@@ -34,6 +34,7 @@ export class ContratosService {
     formData.append('cliente', contrato.cliente.id.toString());
     formData.append('tipo', contrato.tipo.id.toString());
     formData.append('monto', contrato.monto.toString());
+    formData.append('diasPago', contrato.diasPago.toString());
     formData.append('fechaInicio', contrato.fechaInicio.toString());
     formData.append('fechaTermino', contrato.fechaTermino.toString());
 
