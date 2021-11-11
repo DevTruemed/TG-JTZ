@@ -77,6 +77,20 @@ export class BancosComponent implements OnInit {
   }
 
   public getClientesOrProveedores(clientes: boolean = true): void {
+    this.formularioPago.reset({
+      propiedad: this.fb.group({
+        id: [0],
+        tipo: this.fb.group({
+          tipo: []
+        }),
+        direccion: []
+      })
+    });
+    this.formularioPago.reset({
+      contrato: this.fb.group({
+        id: [0]
+      })
+    });
     if (clientes && (this.clientes === null || this.clientes.length === 0))
       this.clientesService.getClientes().subscribe(clientes => {
         this.clientes = clientes;

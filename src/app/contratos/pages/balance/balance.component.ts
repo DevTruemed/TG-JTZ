@@ -167,11 +167,15 @@ export class BalanceComponent implements OnInit {
   }
 
   pagoRecibido(): boolean {
-    let anio = new Date().getFullYear();
-    let mes: string | number = new Date().getMonth() + 1;
+    let now = new Date()
+    let anio = now.getFullYear();
+    let mes: string | number = now.getMonth() + 1;
+    let diaActual = now.getDay() < 10 ? '0' + now.getDay() : now.getDay();
     mes = mes < 10 ? '0' + mes : mes;
     let dia = this.diasPago < 10 ? '0' + this.diasPago : this.diasPago;
     let fecha = anio + '-' + mes + '-' + dia;
+    if ((anio.toString() + '-' + (now.getMonth() + 1).toString() + '-' + diaActual) < fecha) return true;
+
 
     let deposito = this.depositos.find(deposito => deposito.fechaEmision >= fecha);
     return deposito ? true : false;
