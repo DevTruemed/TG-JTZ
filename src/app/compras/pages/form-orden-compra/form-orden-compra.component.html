@@ -176,20 +176,38 @@
                                 formArrayName="productos">
                                 <tr *ngFor="let producto of productosForm.controls; let i=index" [formGroupName]="i">
                                     <td>
-                                        <input type="number" class="form-control text-center m-auto"
-                                            [class.is-invalid]="productosForm.at(i).get('cantidad')?.invalid  && productosForm.at(i).get('cantidad')?.touched"
-                                            id="inputPrecio" (keyup)="actualizarImporte()" formControlName="cantidad"
-                                            #inputCantdad>
-                                        <div class="invalid-feedback"
-                                            *ngIf="productosForm.at(i).get('cantidad')?.invalid && productosForm.at(i).get('cantidad')?.touched">
-                                            Quantity must be at least 0.1
-                                        </div>
+                                        <ng-template #updateCantidad [ngIf]="estatus != 'Creating...'"
+                                            [ngIfElse]="noUpdateCantidad">
+                                            {{productosForm.at(i)?.get('cantidad')?.value}}
+                                        </ng-template>
+                                        <ng-template #noUpdateCantidad>
+                                            <input type="number" class="form-control text-center m-auto"
+                                                [class.is-invalid]="productosForm.at(i).get('cantidad')?.invalid  && productosForm.at(i).get('cantidad')?.touched"
+                                                id="inputPrecio" (keyup)="actualizarImporte()"
+                                                formControlName="cantidad" #inputCantdad>
+                                            <div class="invalid-feedback"
+                                                *ngIf="productosForm.at(i).get('cantidad')?.invalid && productosForm.at(i).get('cantidad')?.touched">
+                                                Quantity must be at least 0.1
+                                            </div>
+                                        </ng-template>
                                     </td>
                                     <td>
                                         {{productosForm.at(i)?.get('producto')?.get('producto')?.value}}
-                                        s </td>
+                                    </td>
                                     <td>
-                                        {{productosForm.at(i)?.get('costo')?.value | currency}}
+                                        <ng-template #update [ngIf]="estatus != 'Creating...'" [ngIfElse]="noUpdate">
+                                            {{productosForm.at(i)?.get('costo')?.value | currency}}
+                                        </ng-template>
+                                        <ng-template #noUpdate>
+                                            <input type="number" class="form-control text-center m-auto"
+                                                [class.is-invalid]="productosForm.at(i).get('costo')?.invalid  && productosForm.at(i).get('costo')?.touched"
+                                                id="inputCosto" (keyup)="actualizarImporte()" formControlName="costo"
+                                                (ngModelChange)="addProductosCambiados(productosForm.at(i).value)">
+                                            <div class="invalid-feedback"
+                                                *ngIf="productosForm.at(i).get('costo')?.invalid && productosForm.at(i).get('costo')?.touched">
+                                                UnitPrice must be at least 0.1
+                                            </div>
+                                        </ng-template>
                                     </td>
                                     <td>
                                         {{productosForm.at(i)?.get('costo')?.value *

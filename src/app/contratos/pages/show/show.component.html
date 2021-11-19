@@ -143,10 +143,17 @@
                                                 </div>
                                             </td>
                                             <td>
-                                                {{productosForm.at(i)?.get('producto')?.get('producto')?.value}}
-                                                s </td>
+                                                {{productosForm.at(i)?.get('producto')?.get('producto')?.value}}</td>
                                             <td>
-                                                {{productosForm.at(i)?.get('costo')?.value | currency}}
+                                                <input type="number" class="form-control text-center m-auto"
+                                                    [class.is-invalid]="productosForm.at(i).get('costo')?.invalid  && productosForm.at(i).get('costo')?.touched"
+                                                    id="inputCosto" (keyup)="actualizarImporte()"
+                                                    formControlName="costo"
+                                                    (ngModelChange)="addProductosCambiados(productosForm.at(i).value)">
+                                                <div class="invalid-feedback"
+                                                    *ngIf="productosForm.at(i).get('costo')?.invalid && productosForm.at(i).get('costo')?.touched">
+                                                    UnitPrice must be at least 0.1
+                                                </div>
                                             </td>
                                             <td>
                                                 {{productosForm.at(i)?.get('costo')?.value *
@@ -264,7 +271,7 @@
                         <tr>
                             <th scope="col">Ticket</th>
                             <th scope="col">Description</th>
-                            <th scope="col">ODC</th>
+                            <th scope="col">#PO</th>
                             <th scope="col">Date</th>
                             <th scope="col">Estatus</th>
                             <th scope="col">Comments</th>

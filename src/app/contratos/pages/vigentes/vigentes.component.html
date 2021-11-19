@@ -57,6 +57,10 @@
                                     (click)="documentosModal(i)">
                                     <i class="fas fa-folder-open"></i>
                                 </button>
+                                <button class="btn btn-outline-warning btn-sm" title="Increase Expiration Date"
+                                    *ngIf="checkFechaTermino(i)" (click)="incrementarFechaTermino(i)">
+                                    <i class="far fa-calendar-plus"></i>
+                                </button>
                                 <button class="btn btn-sm btn-outline-danger m-1" type="button" title="Delete"
                                     (click)="eliminarContrato(i)">
                                     <i class="fas fa-trash"></i>

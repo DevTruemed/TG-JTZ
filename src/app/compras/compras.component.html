@@ -22,28 +22,28 @@
             <div class="col-12">
                 <div class="card card-body">
                     <div class="nav nav-tabs mb-3" id="nav-tab" role="tablist">
-                        <button class="nav-link active" data-bs-toggle="tab" type="button" role="tab" aria-selected="true"
-                            (click)="getCompras()">
+                        <button class="nav-link active" data-bs-toggle="tab" type="button" role="tab"
+                            aria-selected="true" (click)="getCompras()">
                             Created
                         </button>
                         <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false"
-                        (click)="getCompras('revisadas')">
+                            (click)="getCompras('revisadas')">
                             Reviewed
                         </button>
                         <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false"
-                        (click)="getCompras('autorizadas')">
+                            (click)="getCompras('autorizadas')">
                             Authorized
                         </button>
                         <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false"
-                        (click)="getCompras('porPagar')">
+                            (click)="getCompras('porPagar')">
                             For payment
                         </button>
                         <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false"
-                        (click)="getCompras('pagadas')">
+                            (click)="getCompras('pagadas')">
                             Paid out
                         </button>
                         <button class="nav-link" data-bs-toggle="tab" type="button" role="tab" aria-selected="false"
-                        (click)="getCompras('canceladas')">
+                            (click)="getCompras('canceladas')">
                             Canceled
                         </button>
                         <div class="ms-auto">
@@ -60,7 +60,7 @@
                                 <th scope="col">Order</th>
                                 <th scope="col">Supplier</th>
                                 <th scope="col">Status</th>
-                                <th scope="col">Creation Date</th>
+                                <!-- <th scope="col">Creation Date</th> -->
                                 <th scope="col">Total</th>
                                 <th scope="col">Actions</th>
                             </tr>
@@ -70,7 +70,7 @@
                                 <td>{{(oc.id | number: '5.0-0') | code}}</td>
                                 <td>{{oc.proveedor.proveedor}}</td>
                                 <td>{{oc.estatus.estatus}}</td>
-                                <td>NA</td>
+                                <!-- <td>NA</td> -->
                                 <td>{{oc.importe | currency}}</td>
                                 <td class="justify-content-evenly d-flex justify-content-md-center">
                                     <a class="btn btn-sm btn-outline-primary me-md-2" type="button" title="update"

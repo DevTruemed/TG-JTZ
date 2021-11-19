@@ -70,4 +70,11 @@ export class ContratosService {
 
     return this.http.post<PagoContratoModel>(this.urlBase + '/pagos', formData);
   }
+
+  updateFechaTermino(idContrato: number, fechaTermino: string) {
+    let formData: FormData = new FormData();
+    formData.append('fecha', fechaTermino);
+
+    return this.http.put<ContratoModel>(this.urlBase + '/' + idContrato + '/extender', formData);
+  }
 }

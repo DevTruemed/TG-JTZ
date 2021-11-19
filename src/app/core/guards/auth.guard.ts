@@ -17,39 +17,39 @@ export class AuthGuard implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot): Observable<boolean | UrlTree> | Promise<boolean | UrlTree> | boolean | UrlTree {
 
-      Swal.fire({
-        text:'Cargando',
-        allowEscapeKey:false,
-        allowOutsideClick: false
-      });
-      Swal.showLoading();
+    Swal.fire({
+      text: 'Cargando',
+      allowEscapeKey: false,
+      allowOutsideClick: false
+    });
+    Swal.showLoading();
 
     return this.checkRoute(this.getRuta(state.url));
 
   }
 
-  private checkRoute(route: string): Observable<boolean>{
+  private checkRoute(route: string): Observable<boolean> {
 
     const params: HttpParams = new HttpParams().set('route', route);
 
-    return this.http.get<boolean>('https://localhost:8090/security/checkRoute', { params })
-    .pipe(
-      map(res => {
+    return this.http.get<boolean>('https://jtz.truemedgroup.com:7002/security/checkRoute', { params })
+      .pipe(
+        map(res => {
 
-        if ( !res )
-          Swal.fire('Access denied','', 'error');
+          if (!res)
+            Swal.fire('Access denied', '', 'error');
 
-        else
-          Swal.close();
+          else
+            Swal.close();
 
-        return res;
-      }),
-      catchError(error => {
+          return res;
+        }),
+        catchError(error => {
 
-            Swal.fire({
-              icon: 'error',
-              title: 'Error '
-            })
+          Swal.fire({
+            icon: 'error',
+            title: 'Error '
+          })
 
           return new Observable<boolean>(observer => observer.next(false));
         })

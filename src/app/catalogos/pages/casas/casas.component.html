@@ -207,7 +207,7 @@
                 </div>
                 <hr>
                 <div class="row gx-3">
-                    <h3>Insurers</h3>
+                    <h3>Insurance</h3>
                     <form class="mb-3 row" [formGroup]="formularioSeguro" (ngSubmit)="agregarSeguro()">
                         <div class="mb-3 col-12 col-md-3">
                             <label for="categoriaInput" class="form-label">Category</label>
@@ -227,7 +227,7 @@
                             </div>
                         </div>
                         <div class="col-12 col-sm-6 col-md-3">
-                            <label class="form-label">Period</label>
+                            <label class="form-label">Effective date - Expiration date</label>
                             <div class="input-group">
                                 <!-- input box -->
                                 <input class="form-control" placeholder="Select a Date Range" angular-mydatepicker
@@ -293,8 +293,8 @@
                                 <tr>
                                     <th scope="col">Category</th>
                                     <th scope="col"># Policy</th>
-                                    <th scope="col">Start Date</th>
-                                    <th scope="col">End Date</th>
+                                    <th scope="col">Effective Date</th>
+                                    <th scope="col">Expiration Date</th>
                                     <th scope="col">Deductible</th>
                                     <th scope="col" *ngIf="update != null">Insurance</th>
                                     <th scope="col">Actions</th>
@@ -395,7 +395,7 @@
                 <thead class="bg-secondary text-white">
                     <tr>
                         <th scope="col">Type</th>
-                        <th scope="col">Adress</th>
+                        <th scope="col">Address</th>
                         <th scope="col">Description</th>
                         <th scope="col">Floors</th>
                         <th scope="col">Actions</th>

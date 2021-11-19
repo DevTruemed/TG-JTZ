@@ -10,6 +10,9 @@ import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.comp
 import Swal from 'sweetalert2';
 import { ContratoModel } from '../../../core/models/contratos.model';
 import { ContratosService } from '../../../core/services/contratos.service';
+import { ProductosService } from '../../../core/services/productos.service';
+import { CuentaContableModel } from '../../../core/models/catalogos.models';
+import { CcService } from '../../../core/services/cc.service';
 
 @Component({
   selector: 'app-form-orden-compra',
@@ -37,6 +40,13 @@ export class FormOrdenCompraComponent implements OnInit {
 
   contratos: ContratoModel[] = [];
 
+  productosCambiados: {
+    id: number,
+    producto: string,
+    costoInicial: number,
+    costoModificado: number
+  }[] = [];
+
   height: number = screen.height - 165;
   width: number = screen.width;
 
@@ -45,7 +55,8 @@ export class FormOrdenCompraComponent implements OnInit {
     private activeRoute: ActivatedRoute,
     private proveedoresService: ProveedoresService,
     private contratosService: ContratosService,
-    private ocService: ComprasService) {
+    private ocService: ComprasService,
+    private productosService: ProductosService) {
 
     if (this.activeRoute.snapshot.params.id) {
       this.update = true;
@@ -98,7 +109,7 @@ export class FormOrdenCompraComponent implements OnInit {
         oc.productos.forEach(p => {
           for (let index = 0; index < this.proveedorSelect.productos.length; index++) {
             if (p.producto.id === this.proveedorSelect.productos[index].producto.id)
-              this.addProducto(index);
+              this.addProducto(index, true);
           }
           this.productosForm.at(i).get('cantidad')?.setValue(p.cantidad);
           if (this.estatus != 'CREATED' && this.estatus != 'REVIEWED')
@@ -127,6 +138,7 @@ export class FormOrdenCompraComponent implements OnInit {
   }
 
   public seleccionarProveedor(index: any): void {
+    this.productosCambiados = [];
     this.productosForm.controls.forEach(() => this.productosForm.removeAt(0));
     this.formulario.reset();
     this.proveedorSelect = JSON.parse(JSON.stringify(this.proveedores[Number(index)]));
@@ -138,23 +150,41 @@ export class FormOrdenCompraComponent implements OnInit {
     this.formulario.patchValue({ 'contrato': this.contratos[index].id });
   }
 
-  public addProducto(index: number) {
-
-    this.productosForm.push(
-      this.fb.group({
-        costo: [this.proveedorSelect.productos[index].precio, [Validators.required, Validators.min(.1)]],
-        cantidad: [0, [Validators.required, Validators.min(1)]],
-        cantidadAutorizada: [],
-        cantidadRevisada: [],
-        revisado: [false],
-        autorizado: [false],
-        producto: this.fb.group({
-          id: [this.proveedorSelect.productos[index].producto.id],
-          producto: [this.proveedorSelect.productos[index].producto.producto, Validators.required]
+  public addProducto(index: number, created: boolean = false) {
+    if (!created) {
+      this.productosForm.push(
+        this.fb.group({
+          costo: [this.proveedorSelect.productos[index].precio, [Validators.required, Validators.min(.1)]],
+          costoInicial: [this.proveedorSelect.productos[index].precio],
+          cantidad: [0, [Validators.required, Validators.min(1)]],
+          cantidadAutorizada: [],
+          cantidadRevisada: [],
+          revisado: [false],
+          autorizado: [false],
+          producto: this.fb.group({
+            id: [this.proveedorSelect.productos[index].producto.id],
+            producto: [this.proveedorSelect.productos[index].producto.producto, Validators.required]
+          })
         })
-      })
-    )
-
+      )
+    } else {
+      let producto = this.oc.productos.find(producto => producto.producto.id == this.proveedorSelect.productos[index].producto.id);
+      this.productosForm.push(
+        this.fb.group({
+          costo: [producto?.costo, [Validators.required, Validators.min(.1)]],
+          costoInicial: [producto?.costo],
+          cantidad: [0, [Validators.required, Validators.min(1)]],
+          cantidadAutorizada: [],
+          cantidadRevisada: [],
+          revisado: [false],
+          autorizado: [false],
+          producto: this.fb.group({
+            id: [producto?.producto.id],
+            producto: [producto?.producto.producto, Validators.required]
+          })
+        })
+      )
+    }
     this.proveedorSelect.productos.splice(index, 1)
 
   }
@@ -189,7 +219,15 @@ export class FormOrdenCompraComponent implements OnInit {
 
       if (!this.update) {
         this.formulario.get('id')?.setValue(null);
-        this.ocService.postOrdenCompra(this.formulario.value).subscribe(() => this.router.navigate(['/purchases']))
+        this.ocService.postOrdenCompra(this.formulario.value).subscribe(async (oc) => {
+          if (this.productosCambiados.length) {
+            for await (const cambiado of this.productosCambiados) {
+              const hecho = await this.preguntarProductoCambiado(cambiado, oc.id);
+              if (hecho) continue;
+            }
+          }
+          this.router.navigate(['/purchases'])
+        })
       } else {
 
         if (this.estatus != 'AUTHORIZED') {
@@ -281,4 +319,70 @@ export class FormOrdenCompraComponent implements OnInit {
     });
   }
 
+  addProductosCambiados(e: any) {
+    let index = this.productosCambiados.findIndex(item => item.id == e.producto.id);
+    if (index == -1) {
+      this.productosCambiados.unshift({ id: e.producto.id, producto: e.producto.producto, costoInicial: e.costoInicial, costoModificado: e.costo });
+    } else {
+      let producto = this.productosCambiados[index];
+      if (producto?.costoInicial == e.costo) {
+        this.productosCambiados.splice(index, 1);
+      }
+      if (producto.costoModificado != e.costo) {
+        producto.costoModificado = e.costo;
+      }
+    }
+  }
+
+  async preguntarProductoCambiado(cambiado: any, idOc: number) {
+    const inputOptions = {
+      'update': 'Update supplier price',
+      'create': 'Create new product',
+      'ignore': 'Ignore'
+    };
+
+    // @ts-ignore
+    const { value: option } = await Swal.fire({
+      title: 'Advice',
+      text: `The following product has changed its price \n Product: ${cambiado.producto} -- Old price: ${cambiado.costoInicial} -- New price: ${cambiado.costoModificado}`,
+      input: 'radio',
+      inputOptions: inputOptions,
+      inputValidator: (value) => {
+        if (!value) {
+          return 'You need to choose one!'
+        }
+        return false;
+      }
+    })
+
+    switch (option) {
+      case 'update':
+        this.productosService.putPrecioProveedor(this.proveedorSelect.id, cambiado.id, cambiado.costoModificado).subscribe(res => { });
+        break;
+
+      case 'create':
+        // @ts-ignore
+        const { value: nombre } = await Swal.fire({
+          title: `Type product name`,
+          input: 'text',
+          inputLabel: 'Name: ',
+          showCancelButton: true,
+          inputValidator: (value) => {
+            if (!value) {
+              return 'You need to write something!'
+            } else {
+              return false;
+            }
+          }
+        });
+        if (nombre) {
+          this.productosService.cloneProduct(cambiado.id, nombre, cambiado.costoModificado, this.proveedorSelect.id, idOc).subscribe(res => { });
+        }
+        break;
+
+      default:
+        break;
+    }
+    return true;
+  }
 }
