@@ -144,7 +144,7 @@ export class FormComponent implements OnInit {
     this.observacionesForm.push(
       this.fb.group({
         id: [],
-        observacion: [, [Validators.required, Validators.minLength(5), Validators.maxLength(300)]]
+        observacion: [, [Validators.required, Validators.minLength(3), Validators.maxLength(300)]]
       })
     );
 

@@ -95,7 +95,7 @@ export class TiposDocumentosComponent implements OnInit {
 
       id: [],
       nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
-      descripcion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]],
+      descripcion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
 
     })
 

@@ -291,7 +291,7 @@ export class CasasComponent implements OnInit {
   private inicializarFormulario(): void {
     this.formularioAddPropiedad = this.formBuilder.group({
       id: [null],
-      direccion: ['', [Validators.minLength(5), Validators.maxLength(200), Validators.required]],
+      direccion: ['', [Validators.minLength(3), Validators.maxLength(200), Validators.required]],
       estado: ['', [Validators.minLength(2), Validators.maxLength(50), Validators.required]],
       pais: ['USA'],
       cp: ['', [Validators.minLength(4), Validators.maxLength(10), Validators.required]],
@@ -301,7 +301,7 @@ export class CasasComponent implements OnInit {
       habitaciones: [0, [Validators.min(1), Validators.required]],
       terreno: [1, [Validators.min(1), Validators.max(50000), Validators.required]],
       terrenoConstruido: [0, [Validators.min(0), Validators.max(50000)]],
-      descripcion: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(2000)]],
+      descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       tipo: this.formBuilder.group({
         id: [1]
       }),

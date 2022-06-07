@@ -66,4 +66,12 @@ export class BancosService {
     return this.http.get<TipoModel[]>(this.urlBase + '/tiposPago');
   }
 
+  deletePago(id: number): Observable<any> {
+    return this.http.delete<any>(this.urlBase + '/pago/' + id.toString());
+  }
+
+  deleteDeposito(id: number): Observable<any> {
+    return this.http.delete<any>(this.urlBase + '/deposito/' + id.toString());
+  }
+
 }

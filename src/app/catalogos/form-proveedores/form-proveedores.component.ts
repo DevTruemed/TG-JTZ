@@ -195,8 +195,8 @@ export class FormProveedoresComponent implements OnInit {
         precio: [precio, [Validators.required, Validators.min(.1)]],
         producto: this.fb.group({
           id: [this.productos[index].id],
-          producto: [this.productos[index].producto, [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
-          descripcion: [this.productos[index].descripcion, [Validators.required, Validators.minLength(50), Validators.maxLength(500)]],
+          producto: [this.productos[index].producto, [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+          descripcion: [this.productos[index].descripcion, [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
           precio: [this.productos[index].precio, [Validators.required, Validators.min(0)]],
           existencia: [this.productos[index].existencia, [Validators.required, Validators.min(0)]],
           cuenta: this.fb.group({
@@ -244,11 +244,11 @@ export class FormProveedoresComponent implements OnInit {
     this.formulario = this.fb.group({
 
       id: [],
-      proveedor: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(300)]],
+      proveedor: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(300)]],
       telefono: ['', [Validators.required, Validators.min(1000000), Validators.max(9999999999999)]],
-      correo: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200), Validators.email]],
-      contacto: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
-      direccion: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(500)]],
+      correo: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200), Validators.email]],
+      contacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+      direccion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
       pais: ['USA', [Validators.required, Validators.minLength(3), Validators.maxLength(20)]],
       rfc: [, [Validators.minLength(12), Validators.maxLength(13)]],
       cuentasContables: this.fb.array([]),

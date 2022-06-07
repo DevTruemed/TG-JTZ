@@ -99,8 +99,8 @@ export class ProductosComponent implements OnInit {
   private inicializarFormularios(): void {
     this.formularioAddProducto = this.formBuilder.group({
       id: [null],
-      producto: ['', [Validators.required, Validators.minLength(5), Validators.maxLength(200)]],
-      descripcion: ['', [Validators.required, Validators.minLength(50), Validators.maxLength(500)]],
+      producto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
+      descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(500)]],
       precio: [0, [Validators.required, Validators.min(0)]],
       existencia: [0, [Validators.required, Validators.min(0)]],
       cuenta: this.formBuilder.group({

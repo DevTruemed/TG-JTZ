@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { BancoModel, ClienteModel, ProveedorModel } from 'src/app/core/models/catalogos.models';
 import { BancosService } from 'src/app/core/services/bancos.service';
@@ -7,6 +7,8 @@ import { ProveedoresService } from 'src/app/core/services/proveedores.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 import { ContratosService } from '../../../core/services/contratos.service';
 import { ContratoModel } from '../../../core/models/contratos.model';
+import { AngularMyDatePickerDirective, IAngularMyDpOptions } from 'angular-mydatepicker';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-bancos',
@@ -46,10 +48,19 @@ export class BancosComponent implements OnInit {
 
   height: number = screen.height - 165;
 
+  @ViewChild('dp_pago') myDpPago!: AngularMyDatePickerDirective;
+  @ViewChild('dp_deposito') myDpDeposito!: AngularMyDatePickerDirective;
+  myOptions: IAngularMyDpOptions = {
+    // dateRange: true,
+    dateFormat: 'yyyy-mm-dd',
+    appendSelectorToBody: false,
+  };
+
   constructor(private bancosService: BancosService,
     private proveedoresService: ProveedoresService,
     private clientesService: ClientesService,
     private contratosService: ContratosService,
+    private cdr: ChangeDetectorRef,
     private fb: FormBuilder) {
 
     this.update = null;
@@ -159,6 +170,8 @@ export class BancosComponent implements OnInit {
 
   public reiniciarModals() {
     this.formularioBanco.reset();
+    this.formularioDeposito.reset();
+    this.formularioPago.reset();
     this.update = null;
   }
 
@@ -253,8 +266,9 @@ export class BancosComponent implements OnInit {
       }),
       contrato: this.fb.group({
         id: []
-      })
-
+      }),
+      datepicker: [],
+      fechaTransient: ['', [Validators.required]]
     });
 
     this.formularioPago = this.fb.group({
@@ -283,10 +297,50 @@ export class BancosComponent implements OnInit {
 
       contrato: this.fb.group({
         id: []
-      })
+      }),
+      datepicker: [],
+      fechaTransient: ['', [Validators.required]]
 
     });
 
   }
 
+  toggleCalendar(myDp: AngularMyDatePickerDirective): void {
+    this.cdr.detectChanges();
+    myDp.toggleCalendar();
+  }
+
+  seleccionarFechas(e: any, formulario: FormGroup): void {
+    formulario.patchValue({'fechaTransient': e.singleDate.formatted});
+  }
+
+  borrarPago(index: number): void {
+    let pago = this.pagos[index];
+    Swal.showLoading();
+    this.bancosService.deletePago(pago.id).subscribe(res => {
+      this.ngOnInit();
+      Swal.close();
+    }, err => {
+      Swal.fire({
+        title: 'Error',
+        text: 'Vuelve a intentarlo',
+        icon: 'error'
+      })
+    });
+  }
+
+  borrarDeposito(index: number): void {
+    let deposito = this.depositos[index];
+    Swal.showLoading();
+    this.bancosService.deleteDeposito(deposito.id).subscribe(res => {
+      this.ngOnInit();
+      Swal.close();
+    }, err => {
+      Swal.fire({
+        title: 'Error',
+        text: 'Vuelve a intentarlo',
+        icon: 'error'
+      })
+    });
+  }
 }

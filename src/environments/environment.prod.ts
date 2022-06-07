@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  api: 'https://localhost:8090'
+  api: 'https://jtz.truemedgroup.com:7002'
 };

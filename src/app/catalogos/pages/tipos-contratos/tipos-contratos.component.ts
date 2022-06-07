@@ -88,8 +88,8 @@ export class TiposContratosComponent implements OnInit {
     this.formulario = this.fb.group({
 
       id: [],
-      nombre: ['', [Validators.required, Validators.minLength(4), Validators.maxLength(255)]],
-      descripcion: ['', [Validators.required, Validators.minLength(6), Validators.maxLength(500)]],
+      nombre: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(255)]],
+      descripcion: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(500)]],
 
     })
 

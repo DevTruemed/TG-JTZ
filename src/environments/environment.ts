@@ -1,4 +1,5 @@
 export const environment = {
   production: false,
-  api: 'https://localhost:8090'
+  api: 'https://jtz.truemedgroup.com:7002'
+  // api: 'https://localhost:8090'
 };
