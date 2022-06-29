@@ -59,8 +59,8 @@
                     <div class="mb-3 col-12">
                         <label class="form-label">Date</label>
                         <input class="form-control" placeholder="Select a Date" angular-mydatepicker
-                            formControlName="datepicker" [options]="myOptions" #dp="angular-mydatepicker"
-                            (click)="toggleCalendar(myDp)" (dateChanged)="seleccionarFechas($event)" />
+                            [options]="myOptions" #dp="angular-mydatepicker" (click)="toggleCalendar(myDp)"
+                            (dateChanged)="seleccionarFechas($event)" />
                         <div class="invalid-feedback">
                             this field is required
                         </div>
