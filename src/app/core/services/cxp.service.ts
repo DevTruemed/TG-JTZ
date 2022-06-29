@@ -10,7 +10,7 @@ export class CxpService {
 
   urlBase: string = environment.api + '/jtz/cxp'
 
-  constructor(private http: HttpClient){
+  constructor(private http: HttpClient) {
 
   }
 
@@ -18,30 +18,31 @@ export class CxpService {
 
     let params: HttpParams = new HttpParams().set('estatus', estatus);
 
-    return this.http.get<any>(this.urlBase, {params});
+    return this.http.get<any>(this.urlBase, { params });
 
   }
 
-  putRevisar(id: number): Observable<void>{
+  putRevisar(id: number): Observable<void> {
     return this.http.put<void>(this.urlBase + '/' + id + '/revisar', null);
   }
 
-  putAutorizar(id: number): Observable<void>{
+  putAutorizar(id: number): Observable<void> {
     return this.http.put<void>(this.urlBase + '/' + id + '/autorizar', null);
   }
 
   getPago(id: number): Observable<Blob> {
 
     return this.http.get<Blob>(this.urlBase + '/' + id + '/pago', { responseType: 'blob' as 'json' });
-    
+
   }
 
-  sendPago(id: number, file: File, idBanco: number): Observable<void> {
+  sendPago(id: number, file: File, idBanco: number, fechaPago: string): Observable<void> {
 
     let formData: FormData = new FormData();
 
     formData.append('pago', file)
     formData.append('banco', idBanco.toString());
+    formData.append('fechaPago', fechaPago);
 
     return this.http.post<void>(this.urlBase + '/' + id + '/pagar', formData);
 
