@@ -196,6 +196,26 @@
                         </div>
                     </div>
                     <div class="mb-3 col-12">
+                        <label class="form-label">Select Account</label>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                {{formularioPago.get('account')?.get('cuenta')?.value}}
+                            </button>
+
+                            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let cuenta of cuentas; let i = index"
+                                    (click)="selectCuenta(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{cuenta.cuenta}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
                         <label class="form-label">Is related to a property? Select Property</label>
                         <div class="d-grid gap-2">
                             <button class="btn btn-outline-secondary dropdown-toggle" role="button"
@@ -241,6 +261,57 @@
                 <button type="submit" class="btn btn-primary">Save changes</button>
             </div>
         </form>
+    </div>
+</div>
+<button class="d-none" data-bs-toggle="modal" data-bs-target="#visualizarPago" id="openVisualizarPago"></button>
+<div class="modal fade" id="visualizarPago" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addTypeLabel">Update Account For Payment</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" id="closeVisualizarPago"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Bank: {{pagoSeleccionado?.banco}}</label>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Supplier: {{pagoSeleccionado?.proveedor}}</label>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Select Account</label>
+                        <div class="d-grid gap-2">
+                            <button class="btn btn-outline-secondary dropdown-toggle" role="button"
+                                id="dropdownMenuLink" data-bs-toggle="dropdown" aria-expanded="false">
+                                <i class="fas fa-file-invoice-dollar"></i>
+                                {{pagoSeleccionado?.account?.cuenta}}
+                            </button>
+
+                            <ul class="dropdown-menu p-0" aria-labelledby="dropdownMenuLink">
+                                <li role="button" *ngFor="let cuenta of cuentasPagoSeleccionado; let i = index"
+                                    (click)="selectCuentaPagoSeleccionado(i)"
+                                    class="list-group-item list-group-item-action d-flex justify-content-between align-items-center">
+                                    <div class=" d-flex flex-column">
+                                        <p class="card-text mb-1 fw-bold">{{cuenta.cuenta}}</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Date: {{pagoSeleccionado?.fecha.split('T')[0]}}</label>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label class="form-label">Amount: {{pagoSeleccionado?.monto | currency}}</label>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalPago">Close</button>
+                <button type="button" class="btn btn-primary" (click)="actualizarPago()">Save changes</button>
+            </div>
+        </div>
     </div>
 </div>
 <div class="d-flex">
@@ -352,13 +423,13 @@
                     </div>
                     <ul class="list-group list-group-flush">
                         <li class="list-group-item list-group-item-action d-flex justify-content-between align-items-center border-bottom"
-                            role="button" *ngFor="let pago of pagos; let i=index">
-                            <div class="w-50 d-flex flex-column">
+                            role="button" *ngFor="let pago of pagos; let i=index" [ngClass]="{'bg-warning': !pago.cuentaContable}">
+                            <div class="w-50 d-flex flex-column" (click)="visualizarPago(i)">
                                 <h5 class="mb-1">{{pago.proveedor}}</h5>
                                 <p class="mb-0 text-muted">{{pago.fecha | date: 'mediumDate'}}</p>
                                 <small class="fst-italic">Accounting: {{pago.cuentaContable}}</small>
                             </div>
-                            <div class="d-flex flex-column ms-auto">
+                            <div class="d-flex flex-column ms-auto" (click)="visualizarPago(i)">
                                 <div class="fs-4 text-danger text-end">
                                     - {{pago.monto | currency}}
                                 </div>

@@ -6,6 +6,7 @@ import { ClientesService } from 'src/app/core/services/clientes.service';
 import { ProveedoresService } from 'src/app/core/services/proveedores.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 import { ContratosService } from '../../../core/services/contratos.service';
+import { CuentaContableModel } from '../../../core/models/catalogos.models';
 import { ContratoModel } from '../../../core/models/contratos.model';
 import { AngularMyDatePickerDirective, IAngularMyDpOptions } from 'angular-mydatepicker';
 import Swal from 'sweetalert2';
@@ -30,6 +31,8 @@ export class BancosComponent implements OnInit {
 
   proveedores: ProveedorModel[] = [];
 
+  cuentas: CuentaContableModel[] = [];
+
   bancos: BancoModel[];
 
   contratos: ContratoModel[] = [];
@@ -39,6 +42,10 @@ export class BancosComponent implements OnInit {
   clienteSeleccionado: ClienteModel = new ClienteModel();
 
   proveedorSeleccionado: ProveedorModel = new ProveedorModel();
+
+  pagoSeleccionado: any;
+
+  cuentasPagoSeleccionado: CuentaContableModel[] = [];
 
   depositos: any[] = [];
 
@@ -220,6 +227,12 @@ export class BancosComponent implements OnInit {
   public selectProveedor(index: number) {
     this.proveedorSeleccionado = this.proveedores[index];
     this.formularioPago.get('provider')?.patchValue(this.proveedores[index]);
+    this.cuentas = this.proveedorSeleccionado.cuentasContables;
+    this.formularioPago.get('account')?.patchValue(this.cuentas[0]);
+  }
+
+  public selectCuenta(index: number) {
+    this.formularioPago.get('account')?.patchValue(this.cuentas[index]);
   }
 
   public selectPropiedad(index: number): void {
@@ -287,6 +300,11 @@ export class BancosComponent implements OnInit {
         proveedor: []
       }),
 
+      account: this.fb.group({
+        id: [],
+        cuenta: []
+      }),
+
       propiedad: this.fb.group({
         id: [],
         tipo: this.fb.group({
@@ -315,6 +333,7 @@ export class BancosComponent implements OnInit {
   }
 
   borrarPago(index: number): void {
+    document.getElementById('closeVisualizarPago')?.click();
     let pago = this.pagos[index];
     Swal.showLoading();
     this.bancosService.deletePago(pago.id).subscribe(res => {
@@ -341,6 +360,32 @@ export class BancosComponent implements OnInit {
         text: 'Vuelve a intentarlo',
         icon: 'error'
       })
+    });
+  }
+
+  visualizarPago(index: number) {
+
+    let pago = this.pagos[index];
+    this.pagoSeleccionado = pago;
+    Swal.showLoading();
+    this.proveedoresService.getProveedores().subscribe(proveedores => {
+      this.proveedores = proveedores;
+      this.cuentasPagoSeleccionado = this.proveedores.find( prov => {return prov.id == pago.proveedorId})!.cuentasContables;
+      document.getElementById('openVisualizarPago')?.click();
+      Swal.close();
+    }, err => {
+      Swal.close();
+    });
+  }
+
+  public selectCuentaPagoSeleccionado(index: number) {
+    this.pagoSeleccionado.account = this.cuentasPagoSeleccionado[index];
+  }
+
+  actualizarPago() {
+    this.bancosService.putPago(this.pagoSeleccionado.id, this.pagoSeleccionado.account.id).subscribe(res => {
+      this.ngOnInit();
+      document.getElementById('closeVisualizarPago')?.click();
     });
   }
 }

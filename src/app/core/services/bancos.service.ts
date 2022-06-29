@@ -34,6 +34,13 @@ export class BancosService {
     return this.http.post<any>(this.urlBase + '/pago', pago);
   }
 
+  putPago(pagoId: number, cuentaId: number): Observable<any> {
+    let formData: FormData = new FormData();
+    formData.append('pagoId', pagoId.toString());
+    formData.append('cuentaId', cuentaId.toString());
+    return this.http.put<any>(this.urlBase + '/pago', formData);
+  }
+
   putBanco(banco: BancoModel): Observable<BancoModel> {
 
     return this.http.put<BancoModel>(this.urlBase + '/' + banco.id, banco);
