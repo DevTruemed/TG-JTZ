@@ -119,8 +119,8 @@ export class CxpComponent implements OnInit {
     this.sideBar.isOpen = true;
   }
 
-  public openFileWindow() {
-    document.getElementById('inputFile')?.click();
+  public openFileWindow(id: number) {
+    document.getElementById('inputFile'+id.toString())?.click();
   }
 
   public getPagoCXP(id: number) {

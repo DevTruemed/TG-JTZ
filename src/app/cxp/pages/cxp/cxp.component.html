@@ -145,11 +145,11 @@
                                         data-bs-target="#exampleModal" (click)="getPagoCXP(cxp.id)">
                                         <i class="fas fa-file-pdf"></i>
                                     </button>
-                                    <button class="btn btn-outline-primary btn-sm" (click)="openFileWindow()"
+                                    <button class="btn btn-outline-primary btn-sm" (click)="openFileWindow(i)"
                                         *ngIf="cxp.status != 'PAID OUT'">
                                         <i class="fas fa-upload"></i>
                                     </button>
-                                    <input class="d-none" type="file" (change)="addFile($event, i)" id="inputFile"
+                                    <input class="d-none" type="file" (change)="addFile($event, i)" [id]="'inputFile'+i"
                                         *ngIf="cxp.status != 'PAID OUT'">
                                 </td>
                             </tr>
