@@ -4,6 +4,7 @@ import { AseguradoraModel } from '../../../core/models/catalogos.models';
 import { AseguradorasService } from '../../../core/services/aseguradoras.service';
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-aseguradoras',
@@ -20,7 +21,7 @@ export class AseguradorasComponent implements OnInit {
   update: number | null;
   height: number = screen.height - 165;
 
-  constructor(private formB: FormBuilder, private aseguradorasService: AseguradorasService,
+  constructor(private formB: FormBuilder, private aseguradorasService: AseguradorasService, private authService: AuthService,
     private router: Router) {
 
     this.aseguradoras = [];
@@ -53,9 +54,14 @@ export class AseguradorasComponent implements OnInit {
 
   }
 
-  public prepararUpdate(index: number): void {
+  public prepararUpdate(index: number, tipo: string): void {
     this.formulario.patchValue(this.aseguradoras[index]);
-    document.getElementById('addButton')?.click();
+    if (tipo === 'read') {
+      document.getElementById('readButton')?.click();
+    }
+    if (tipo === 'update') {
+      document.getElementById('addButton')?.click();
+    }
     this.update = index;
   }
 
@@ -85,9 +91,15 @@ export class AseguradorasComponent implements OnInit {
       paginaWeb: ['', [Validators.required, Validators.maxLength(255)]],
       nombreContacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(200)]],
       correoContacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(100), Validators.email]],
-      telefonoContacto: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
-      telefonoReclamaciones: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50)]],
+      telefonoContacto: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
+      telefonoReclamaciones: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(10)]],
     })
 
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
 }

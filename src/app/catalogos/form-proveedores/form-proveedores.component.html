@@ -1,13 +1,18 @@
 <div class="d-flex">
     <app-sidebar #sideBar></app-sidebar>
-    <app-navbar (sideBar)="openSideBar()" [nombreModulo]="'Add supplier'"></app-navbar>
-    <form class="container-fluid" [formGroup]="formulario" (ngSubmit)="agregarProveedor()">
+    <app-navbar (sideBar)="openSideBar()" [nombreModulo]="canCreate() || canUpdate() ? 'Add supplier' : 'Show supplier'"></app-navbar>
+    <form class="container-fluid" [formGroup]="formulario" (ngSubmit)="agregarProveedor()" *ngIf="canCreate() || canUpdate() else onlyRead">
         <div style="height: 50px;" class="mb-2"></div>
         <div class="row g-2">
             <div class="col-12">
                 <div class="card ">
                     <div class="card-body ">
-                        <h5 class="card-title mb-3">Infomation</h5>
+                        <h5 class="card-title mb-3 d-flex">
+                            Infomation
+                            <a class="btn btn-outline-secondary btn-sm ms-auto" type="button" title="Exit" [routerLink]="['/catalogs/suppliers']">
+                                <i class="fas fa-door-open"></i>
+                            </a>
+                        </h5>
                         <div class="row g-2">
                             <div class="col-12 col-sm-6 col-md-4">
                                 <label for="supplierNameInput" class="form-label">Supplier name</label>
@@ -58,10 +63,14 @@
                             </div>
                             <div class="col-12 col-sm-6 col-md-4 mb-3 mb-sm-auto">
                                 <label class="form-label">EIN / SSN / RFC</label>
-                                <input type="text" class="form-control" formControlName="rfc">
+                                <input type="text" class="form-control" formControlName="rfc"
+                                [class.is-invalid]="isValid(formulario,'rfc')">
+                                <div class="invalid-feedback" *ngIf="isValid(formulario,'rfc')">
+                                    this field is required (Between 12 and 13 characters)
+                                </div>
                             </div>
                             <div class="col-12 col-sm-6 col-md-8 ms-auto mt-auto">
-                                <button class="btn btn-outline-primary w-100" type="submit"><i
+                                <button class="btn btn-outline-primary w-100" type="submit" *ngIf="canCreate() || canUpdate()"><i
                                         class="fas fa-plus me-2"></i>Save Supplier</button>
                             </div>
                         </div>
@@ -178,4 +187,124 @@
             </div>
         </div>
     </form>
+    <ng-template #onlyRead>
+        <form class="container-fluid" [formGroup]="formulario">
+            <div style="height: 50px;" class="mb-2"></div>
+            <div class="row g-2">
+                <div class="col-12">
+                    <div class="card ">
+                        <div class="card-body ">
+                            <h5 class="card-title mb-3 d-flex">
+                                Infomation
+                                <a class="btn btn-outline-secondary btn-sm ms-auto" type="button" title="Exit" [routerLink]="['/catalogs/suppliers']">
+                                    <i class="fas fa-door-open"></i>
+                                </a>
+                            </h5>
+                            <div class="row g-2">
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label for="supplierNameInput" class="form-label">Supplier name</label>
+                                    <p class="fst-italic">{{formulario.get('proveedor')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label for="phoneInput" class="form-label">Phone number</label>
+                                    <p class="fst-italic">{{formulario.get('telefono')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label for="emailInput" class="form-label">Email</label>
+                                    <p class="fst-italic">{{formulario.get('correo')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label for="contactInput" class="form-label">Contact</label>
+                                    <p class="fst-italic">{{formulario.get('contacto')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label for="addressInput" class="form-label">Address</label>
+                                    <p class="fst-italic">{{formulario.get('direccion')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4">
+                                    <label class="form-label">Country</label>
+                                    <p class="fst-italic">{{formulario.get('pais')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-4 mb-3 mb-sm-auto">
+                                    <label class="form-label">EIN / SSN / RFC</label>
+                                    <p class="fst-italic">{{formulario.get('rfc')!.value}}</p>
+                                </div>
+                                <div class="col-12 col-sm-6 col-md-8 ms-auto mt-auto">
+                                    <button class="btn btn-outline-primary w-100" type="submit" *ngIf="canCreate() || canUpdate()"><i
+                                            class="fas fa-plus me-2"></i>Save Supplier</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body ">
+                            <h5 class="card-title mb-3">Payment methods</h5>
+                            <ul class="list-group mt-3" formArrayName="tiposPago">
+                                <li class="list-group-item"
+                                    *ngFor="let pago of tiposPagoProveedor.controls; let i=index" [formGroupName]="i">
+                                    <div class="d-flex justify-content-between">
+                                        <div class="fw-6 mb-2 fw-bold">{{tiposPagoProveedor.at(i).get('tipo')?.get('tipo')?.value}}</div>
+                                    </div>
+                                    <input type="text" class="form-control form-control-sm w-100" placeholder="Extra information"
+                                        formControlName="informacion">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-md-6">
+                    <div class="card h-100">
+                        <div class="card-body ">
+                            <h5 class="card-title mb-3">SubAccounts</h5>
+                            <ul class="list-group mt-3" formArrayName="cuentasContables">
+                                <li class="list-group-item d-flex justify-content-between align-items-start"
+                                    *ngFor="let cc of cuentasProveedor.controls; let i=index" [formGroupName]="i">
+                                    <input type="text" readonly class="form-control-text fw-bold w-100"
+                                        formControlName="cuenta" style="border: none; background-color: transparent;">
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 mb-3">
+                    <div class="card" style="overflow-x: scroll;" [ngStyle]="{'min-height': height/2 + 'px'}">
+                        <div class="card-body ">
+                            <h5 class="card-title mb-3">Add Products</h5>
+    
+                            <div class="col-12 col-sm-6 col-md-4">
+                                <label class="form-label">Products</label>
+                            </div>
+    
+                            <table class="table table-striped table-bordered text-center mt-3" style="overflow-x: scroll;">
+                                <thead class="bg-secondary text-white">
+                                    <tr>
+                                        <th scope="col">Product</th>
+                                        <th scope="col">Description</th>
+                                        <th scope="col">Cost</th>
+                                    </tr>
+                                </thead>
+                                <tbody [ngStyle]="{ 'max-height' : height/3+'px' }" class="contenedor"
+                                    formArrayName="productos">
+                                    <tr *ngFor="let producto of productosProveedor.controls; let i=index"
+                                        [formGroupName]="i">
+                                        <th scope="row">
+                                            {{productosProveedor.at(i).get('producto')?.get('producto')?.value}}
+                                        </th>
+                                        <td>
+                                            {{productosProveedor.at(i).get('producto')?.get('descripcion')?.value}}
+                                        </td>
+                                        <td class="">
+                                            <p class="fst-italic">{{productosProveedor.at(i).get('precio')!.value}}</p>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </ng-template>
 </div>

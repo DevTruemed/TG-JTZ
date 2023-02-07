@@ -12,7 +12,7 @@
                     <a class="nav-link" [routerLink]="['/sales','paid']" routerLinkActive="active">Paid out</a>
                 </li>
                 <li class="ms-auto">
-                    <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton"
+                    <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton" *ngIf="canCreate()"
                         [routerLink]="['/sales','form']">
                         <i class="fas fa-plus"></i>
                     </a>
@@ -42,12 +42,12 @@
                                 {{cotizacion.estatus.estatus | titlecase}}
                             </td>
                             <td>
-                                <button class="btn btn-sm btn-outline-secondary me-2" title="download invoice"
+                                <button class="btn btn-sm btn-outline-secondary me-2" title="download invoice" *ngIf="canRead()"
                                         type="button" (click)="generarPDF(cotizacion.id)">
                                     <i class="fas fa-cart-arrow-down"></i>
                                     
                                 </button>
-                                <button class="btn btn-outline-danger btn-sm" type="button" (click)="cancelar(i)">
+                                <button class="btn btn-outline-danger btn-sm" type="button" (click)="cancelar(i)" *ngIf="canDelete()">
                                     <i class="fas fa-trash"></i>
                                 </button>
                             </td>

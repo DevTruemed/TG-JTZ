@@ -11,6 +11,7 @@
                             <h5 class="card-title mb-3">Active Suppliers</h5>
                             <div class="ms-auto">
                                 <button class="btn btn-outline-secondary btn-sm" title="Add" id="addButton"
+                                    *ngIf="canCreate()"
                                     (click)="add()">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -35,10 +36,13 @@
                                     <td>{{proveedor.contacto}}</td>
                                     <td>{{proveedor.direccion}}</td>
                                     <td class="justify-content-evenly d-flex justify-content-md-center">
-                                        <a class="btn btn-sm btn-outline-primary me-md-2" type="button" title="update" [routerLink]="['form', proveedor.id]">
+                                        <a class="btn btn-sm btn-outline-secondary me-md-2" type="button" title="read" [routerLink]="['form', proveedor.id]" *ngIf="canRead()">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a class="btn btn-sm btn-outline-primary me-md-2" type="button" title="update" [routerLink]="['form', proveedor.id]" *ngIf="canUpdate()">
                                             <i class="fas fa-pen"></i>
                                         </a>
-                                        <button class="btn btn-sm btn-outline-danger" type="button" title="inactivate" (click)="desactive(i)">
+                                        <button class="btn btn-sm btn-outline-danger" type="button" title="inactivate" (click)="desactive(i)" *ngIf="canDelete()">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

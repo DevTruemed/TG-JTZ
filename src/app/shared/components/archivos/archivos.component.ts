@@ -1,4 +1,5 @@
 import { Component, Input, OnInit, Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { DocumentoModel, TipoDocumentoModel } from '../../../core/models/catalogos.models';
 import { DocumentosService } from '../../../core/services/documentos.service';
 import { TiposDocumentosService } from '../../../core/services/tipos-documentos.service';
@@ -21,6 +22,7 @@ export class ArchivosComponent implements OnInit {
   @ViewChild('inputFile') inputFile!: ElementRef;
 
   constructor(private documentosService: DocumentosService,
+    private authService: AuthService,
     private tiposService: TiposDocumentosService) { }
 
   ngOnInit(): void {
@@ -79,4 +81,12 @@ export class ArchivosComponent implements OnInit {
       this.inputFile.nativeElement.value = null;
     }
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 }

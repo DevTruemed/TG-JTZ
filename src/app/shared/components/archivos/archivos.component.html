@@ -19,12 +19,12 @@
                                 </div>
                                 <div class="col-2">
                                     <div class="btn-group" role="group">
-                                        <button (click)="descargarArchivo(archivo)"
+                                        <button (click)="descargarArchivo(archivo)" *ngIf="canRead()"
                                             class="btn btn-outline-secondary btn-sm"><i
                                                 class="fas fa-download"></i></button>
-                                        <button (click)="visualizarArchivo(archivo)"
+                                        <button (click)="visualizarArchivo(archivo)" *ngIf="canRead()"
                                             class="btn btn-outline-primary btn-sm"><i class="fas fa-eye"></i></button>
-                                        <button (click)="borrarArchivoFromServer(archivo.id, i)"
+                                        <button (click)="borrarArchivoFromServer(archivo.id, i)" *ngIf="canDelete()"
                                             class="btn btn-outline-danger btn-sm">
                                             <i class="fas fa-trash-alt"></i>
                                         </button>
@@ -38,12 +38,12 @@
                     </ng-template>
                 </div>
             </div>
-            <div class="modal-footer">
+            <div class="modal-footer" *ngIf="canUpdate() || canCreate()">
                 <span>Add</span>
                 <div class="mb-3 col-12 col-sm-12 col-md-12">
                     <label class="form-label">Select Files</label>
                     <input #inputFile class="form-control" (change)="seleccionarArchivos($event)" type="file"
-                        id="formFileMultiple" multiple>
+                        id="formFileMultiple">
                 </div>
                 <div class="mb-3 col-12 col-sm-12 col-md-12">
                     <label class="form-label">Document Type</label>

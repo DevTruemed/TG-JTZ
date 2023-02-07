@@ -10,6 +10,7 @@ import { CuentaContableModel } from '../../../core/models/catalogos.models';
 import { ContratoModel } from '../../../core/models/contratos.model';
 import { AngularMyDatePickerDirective, IAngularMyDpOptions } from 'angular-mydatepicker';
 import Swal from 'sweetalert2';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-bancos',
@@ -67,6 +68,7 @@ export class BancosComponent implements OnInit {
     private proveedoresService: ProveedoresService,
     private clientesService: ClientesService,
     private contratosService: ContratosService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef,
     private fb: FormBuilder) {
 
@@ -365,6 +367,9 @@ export class BancosComponent implements OnInit {
 
   visualizarPago(index: number) {
 
+    if (!this.canUpdate() && !this.canRead()) {
+      return;
+    }
     let pago = this.pagos[index];
     this.pagoSeleccionado = pago;
     Swal.showLoading();
@@ -388,4 +393,12 @@ export class BancosComponent implements OnInit {
       document.getElementById('closeVisualizarPago')?.click();
     });
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 }

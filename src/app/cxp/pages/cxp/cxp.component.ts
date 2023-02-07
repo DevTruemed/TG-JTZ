@@ -8,6 +8,7 @@ import { CxpService } from 'src/app/core/services/cxp.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 import Swal from 'sweetalert2';
 import { IAngularMyDpOptions, AngularMyDatePickerDirective } from 'angular-mydatepicker';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-cxp',
@@ -44,6 +45,7 @@ export class CxpComponent implements OnInit {
   constructor(private cxpService: CxpService,
     private ocService: ComprasService,
     private bankService: BancosService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
   }
@@ -142,4 +144,15 @@ export class CxpComponent implements OnInit {
     this.fechaPago = e.singleDate.formatted;
   }
 
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
+
+  public canSuggest(): boolean {return this.authService.canSuggest()};
+
+  public canAuthorize(): boolean {return this.authService.canAuthorize()};
 }

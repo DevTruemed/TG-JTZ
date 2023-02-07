@@ -13,6 +13,7 @@ import { ContratosService } from '../../../core/services/contratos.service';
 import { ProductosService } from '../../../core/services/productos.service';
 import { CuentaContableModel } from '../../../core/models/catalogos.models';
 import { CcService } from '../../../core/services/cc.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-form-orden-compra',
@@ -56,6 +57,7 @@ export class FormOrdenCompraComponent implements OnInit {
     private proveedoresService: ProveedoresService,
     private contratosService: ContratosService,
     private ocService: ComprasService,
+    private authService: AuthService,
     private productosService: ProductosService) {
 
     if (this.activeRoute.snapshot.params.id) {
@@ -123,7 +125,13 @@ export class FormOrdenCompraComponent implements OnInit {
           if (this.estatus != 'CREATED' && this.estatus != 'REVIEWED')
             this.productosForm.at(i).get('autorizado')?.disable();
 
+          if (!this.canSuggest())
+            this.productosForm.at(i).get('revisado')?.disable();
+
           this.productosForm.at(i).get('autorizado')?.setValue(p.autorizado);
+
+          if (!this.canAuthorize())
+            this.productosForm.at(i).get('autorizado')?.disable();
           i++
         });
       })
@@ -385,4 +393,12 @@ export class FormOrdenCompraComponent implements OnInit {
     }
     return true;
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canSuggest(): boolean {return this.authService.canSuggest()};
+
+  public canAuthorize(): boolean {return this.authService.canAuthorize()};
 }

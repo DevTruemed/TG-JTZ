@@ -6,6 +6,7 @@ import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { AseguradorasService } from '../../../core/services/aseguradoras.service';
 import { AngularMyDatePickerDirective, IAngularMyDpOptions } from 'angular-mydatepicker';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 declare var $: any;
 @Component({
@@ -61,6 +62,7 @@ export class CasasComponent implements OnInit {
     private propiedadesService: PropiedadesService,
     private productosService: ProductosService,
     private aseguradorasService: AseguradorasService,
+    private authService: AuthService,
     private cdr: ChangeDetectorRef) {
 
     this.inicializarFormulario();
@@ -179,7 +181,7 @@ export class CasasComponent implements OnInit {
     this.segurosPropiedades.clear();
   }
 
-  public modificarPropiedad(index: number): void {
+  public modificarPropiedad(index: number, tipo: string): void {
 
     this.formularioAddPropiedad.patchValue(this.propiedades[index]);
     this.formularioAddPropiedad.get('id')?.setValue(this.propiedades[index].id);
@@ -189,7 +191,12 @@ export class CasasComponent implements OnInit {
     });
     this.update = index;
     this.imagenesActualesBase64 = [];
-    document.getElementById('addButton')?.click();
+    if (tipo === 'read') {
+      document.getElementById('readButton')?.click();
+    }
+    if (tipo === 'update') {
+      document.getElementById('addButton')?.click();
+    }
 
     this.propiedades[index].imagenes.forEach(imagen => {
 
@@ -378,4 +385,10 @@ export class CasasComponent implements OnInit {
       documentacion: file
     });
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
 }

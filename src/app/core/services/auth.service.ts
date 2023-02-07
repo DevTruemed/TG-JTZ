@@ -87,12 +87,49 @@ export class AuthService {
   }
 
   /* Método que elimina el token y su fecha de expiración
-  del localStorage */
+  del localStorage, accesos y acciones*/
   logout(): void {
 
     localStorage.removeItem('token');
     localStorage.removeItem('expiration');
+    localStorage.removeItem('accesos');
+    localStorage.removeItem('acciones');
 
+  }
+
+  /* Método que obtiene y parsea las acciones del rol, almacenadas en el localStorage */
+  getAcciones(): any[] {
+    return JSON.parse(localStorage.getItem('acciones') || '[]');
+  }
+
+  /* Método que  indica si el usuario tiene permiso para crear registros nuevos */
+  canCreate(): boolean {
+    return this.getAcciones().some(act => act.nombre === 'create');
+  }
+
+  /* Método que  indica si el usuario tiene permiso para ver el detalle de los registros */
+  canRead(): boolean {
+    return this.getAcciones().some(act => act.nombre === 'read');
+  }
+
+  /* Método que  indica si el usuario tiene permiso para actualizar los registros */
+  canUpdate(): boolean {
+    return this.getAcciones().some(act => act.nombre === 'update');
+  }
+
+  /* Método que  indica si el usuario tiene permiso para eliminar registros */
+  canDelete(): boolean {
+    return this.getAcciones().some(act => act.nombre === 'delete');
+  }
+
+  /* Método que  indica si el usuario tiene permiso para sugerir registros */
+  canSuggest(): boolean {
+    return this.getAcciones().some(act => act.nombre === 'suggest');
+  }
+
+  /* Método que  indica si el usuario tiene permiso para autorizar registros */
+  canAuthorize(): boolean {
+    return this.getAcciones().some(act => act.nombre === 'authorize');
   }
 
 }

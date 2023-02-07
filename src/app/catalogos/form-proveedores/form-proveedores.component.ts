@@ -3,6 +3,7 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CuentaContableModel, TipoModel } from 'src/app/core/models/catalogos.models';
 import { ProductoModel } from 'src/app/core/models/catalogos.models';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { BancosService } from 'src/app/core/services/bancos.service';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { ProveedoresService } from 'src/app/core/services/proveedores.service';
@@ -34,6 +35,7 @@ export class FormProveedoresComponent implements OnInit {
   constructor(private fb: FormBuilder,
     private productosService: ProductosService,
     private proveedorService: ProveedoresService,
+    private authService: AuthService,
     private bancoService: BancosService,
     private router: Router,
     private activeRoute: ActivatedRoute) {
@@ -43,6 +45,9 @@ export class FormProveedoresComponent implements OnInit {
     if (activeRoute.snapshot.params.id) {
       this.update = true;
     }
+
+    console.log(this.canCreate());
+    console.log(this.canUpdate());
 
   }
 
@@ -268,4 +273,8 @@ export class FormProveedoresComponent implements OnInit {
       }
     });
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
 }

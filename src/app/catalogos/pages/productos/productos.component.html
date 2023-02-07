@@ -58,12 +58,59 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalProducto"
                     (click)="reiniciarModals()">Close</button>
-                <button type="submit" class="btn btn-primary">Save changes</button>
+                <button type="submit" class="btn btn-primary" *ngIf="canCreate() || canUpdate()">Save changes</button>
             </div>
         </form>
     </div>
 </div>
 
+<!--================================-->
+<!--Modal Ver Producto =========-->
+<!--================================-->
+<button class="d-none" title="Show" data-bs-toggle="modal" data-bs-target="#readProductoModal" id="readProductoButton"></button>
+<div class="modal fade" id="readProductoModal" tabindex="-1" aria-labelledby="readProductoModal" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <form class="modal-content" [formGroup]="formularioAddProducto">
+            <div class="modal-header">
+                <h5 class="modal-title" id="readProductLabel">Show Product</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="reiniciarModals()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="productInput" class="form-label">Product</label>
+                        <p class="fst-italic">{{formularioAddProducto.get('producto')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="priceInput" class="form-label">Price</label>
+                        <p class="fst-italic">{{formularioAddProducto.get('precio')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-md-6">
+                        <label for="descriptionProductInput" class="form-label">Description</label>
+                        <p class="fst-italic">{{formularioAddProducto.get('descripcion')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="StockInput" class="form-label">Stock</label>
+                        <p class="fst-italic">{{formularioAddProducto.get('existencia')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3" formGroupName="cuenta">
+                        <label for="typeSelectorProduct" class="form-label">Account</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="id" 
+                            id="typeSelectorProduct">
+                            <option [value]="tipo.id" *ngFor="let tipo of tiposProductos">{{tipo.cuenta|titlecase}}
+                            </option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalProducto"
+                    (click)="reiniciarModals()">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
 
 <div class="row g-2 mx-1">
     <div class="card card-body col-12">
@@ -76,7 +123,7 @@
                     <a class="nav-link" [routerLink]="['/catalogs', 'houses']" [routerLinkActive]="'active'">Houses</a>
                 </li>
                 <li class="ms-auto">
-                    <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                    <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal" [ngClass]="{'d-none': !canCreate()}"
                         data-bs-target="#addProductoModal" id="addProductoButton">
                         <i class="fas fa-plus"></i>
                     </button>
@@ -111,7 +158,10 @@
                         </ng-template>
                     </td>
                     <td>
-                        <button class="btn btn-outline-primary btn-sm" title="Update" (click)="modificarProducto(i)">
+                        <button class="btn btn-outline-secondary btn-sm me-md-2" title="Update" (click)="modificarProducto(i, 'read')" *ngIf="canRead()">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                        <button class="btn btn-outline-primary btn-sm me-md-2" title="Update" (click)="modificarProducto(i, 'update')" *ngIf="canUpdate()">
                             <i class="fas fa-pen"></i>
                         </button>
                     </td>

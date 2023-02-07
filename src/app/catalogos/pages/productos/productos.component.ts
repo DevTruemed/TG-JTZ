@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CuentaContableModel,PropiedadModel, TipoModel, ProductoModel } from 'src/app/core/models/catalogos.models';
 import { CcService } from 'src/app/core/services/cc.service';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
@@ -28,7 +29,9 @@ export class ProductosComponent implements OnInit {
 
   constructor(private formBuilder: FormBuilder,
     private ccServce: CcService,
-    private productosService: ProductosService) {
+    private productosService: ProductosService,
+    private authService: AuthService
+    ) {
 
     this.productos = [];
     this.tiposProductos = [];
@@ -43,6 +46,11 @@ export class ProductosComponent implements OnInit {
     this.productosService.getProductos().subscribe(p => this.productos = p, error => console.log(error));
 
     this.ccServce.getSubCuentas().subscribe(p => this.tiposProductos = p, error => console.log(error));
+
+    console.log(this.authService.canCreate())
+    console.log(this.authService.canRead())
+    console.log(this.authService.canUpdate())
+    console.log(this.authService.canDelete())
 
   }
 
@@ -80,12 +88,19 @@ export class ProductosComponent implements OnInit {
 
   }
 
-  public modificarProducto(index: number): void {
+  public modificarProducto(index: number, tipo: string): void {
 
     this.formularioAddProducto.patchValue(this.productos[index]);
     this.formularioAddProducto.get('id')?.setValue(this.productos[index].id);
     this.update = index;
-    document.getElementById('addProductoButton')?.click();
+    if (tipo === 'read') {
+      // this.formularioAddProducto.get('cuenta')!.disable();
+      document.getElementById('readProductoButton')?.click();
+    }
+    if (tipo === 'update') {
+      // this.formularioAddProducto.get('cuenta')!.enable();
+      document.getElementById('addProductoButton')?.click();
+    }
 
   }
 
@@ -108,5 +123,13 @@ export class ProductosComponent implements OnInit {
       })
     });
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 
 }

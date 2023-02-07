@@ -70,10 +70,14 @@ export class AuthComponent {
         })
 
         if (isAuth) {
-          if (isAuth.accesos.find((acceso: any) => acceso.ruta ? acceso.ruta.includes("platform") : false)) {
-            this.router.navigate(['platform', 'contratos']);
+          if (isAuth.accesos.find((acceso: any) => acceso.ruta ? acceso.ruta.includes("/cxp") : false)) {
+            this.router.navigate(['cxp']);
           } else {
-            this.router.navigate(['catalogs', 'products']);
+            if (isAuth.accesos.find((acceso: any) => acceso.ruta ? acceso.ruta.includes("platform") : false)) {
+              this.router.navigate(['platform', 'contratos']);
+            } else {
+              this.router.navigate(['catalogs', 'products']);
+            }
           }
         }
 

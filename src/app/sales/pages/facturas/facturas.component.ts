@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { VentaModel } from 'src/app/core/models/ventas.model';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { VentasService } from 'src/app/core/services/ventas.service';
 
 @Component({
@@ -13,7 +14,7 @@ export class FacturasComponent implements OnInit {
 
   height: number = screen.height -165;
 
-  constructor(private ventasService: VentasService) { }
+  constructor(private ventasService: VentasService, private authService: AuthService) { }
 
   ngOnInit(): void {
 
@@ -31,4 +32,7 @@ export class FacturasComponent implements OnInit {
     })
   }
 
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 }

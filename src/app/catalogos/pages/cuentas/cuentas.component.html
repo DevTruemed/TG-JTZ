@@ -38,13 +38,59 @@
                             <option [ngValue]="c.id" *ngFor="let c of cuentas; let i=index">{{c.cuenta}}</option>
                         </select>
                     </div>
-                    {{formularioCC.value | json}}
                 </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalCC"
                     (click)="reiniciarModals()">Close</button>
                 <button type="submit" class="btn btn-primary">Save changes</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!--================================-->
+<!--Modal Ver Detalle =========-->
+<!--================================-->
+<button class="d-none" title="Show" data-bs-toggle="modal" data-bs-target="#readAccountModal" id="readAccountButton" (click)="addSubCuenta = false; formularioCC.get('padre')?.setValue(null)"></button>
+<button class="d-none" title="Show" data-bs-toggle="modal" data-bs-target="#readAccountModal" id="readTypeButton" (click)="addSubCuenta = true"></button>
+<div class="modal fade" id="readAccountModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <form class="modal-content" [formGroup]="formularioCC">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductLabel">Show Detail</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="reiniciarModals()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12" *ngIf="!addSubCuenta">
+                        <label class="form-label">Code</label>
+                        <p class="fst-italic">{{formularioCC.get('codigo')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label for="productInput" class="form-label">Account name</label>
+                        <p class="fst-italic">{{formularioCC.get('cuenta')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12">
+                        <label for="typeSelectorProduct" class="form-label">Type</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="ingreso"
+                            id="typeSelectorProduct">
+                            <option [value]="true">ASSET</option>
+                            <option [value]="false">EXPENSE</option>
+                        </select>
+                    </div>
+                    <div class="mb-3 col-12" *ngIf="addSubCuenta">
+                        <label class="form-label">Main Account</label>
+                        <select class="form-select" formControlName="padre" >
+                            <option [ngValue]="c.id" *ngFor="let c of cuentas; let i=index">{{c.cuenta}}</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModalCC"
+                    (click)="reiniciarModals()">Close</button>
             </div>
         </form>
     </div>
@@ -62,7 +108,7 @@
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title mb-3">Accounts</h5>
                             <div class="ms-auto">
-                                <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                                <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal" [ngClass]="{'d-none': !canCreate()}"
                                     data-bs-target="#addAccountModal" id="addAccountButton" (click)="addSubCuenta = false; formularioCC.get('padre')?.setValue(null)">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -87,12 +133,16 @@
                                         {{((cuenta.ingreso) ? 'Asset' : 'Expense') | uppercase}}
                                     </td>
                                     <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-md-2" type="button"
+                                            (click)="prepararCCmodificar(i, true, 'read')" *ngIf="canRead()">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
                                         <button class="btn btn-sm btn-outline-primary me-md-2" type="button"
-                                            (click)="prepararCCmodificar(i)">
+                                            (click)="prepararCCmodificar(i, true, 'update')" *ngIf="canUpdate()">
                                             <i class="fas fa-pen"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger" type="button"
-                                            (click)="borrarCC(i)">
+                                            (click)="borrarCC(i)" *ngIf="canDelete()">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>
@@ -108,7 +158,7 @@
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title mb-3">Subaccounts</h5>
                             <div class="ms-auto">
-                                <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                                <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal" [ngClass]="{'d-none': !canCreate()}"
                                 data-bs-target="#addAccountModal" id="addTypeButton" (click)="addSubCuenta = true">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -131,12 +181,16 @@
                                         {{((subcuenta.ingreso) ? 'Asset' : 'Expense') | uppercase}}
                                     </td>
                                     <td>
+                                        <button class="btn btn-sm btn-outline-secondary me-md-2" type="button"
+                                            (click)="prepararCCmodificar(i,false, 'read')"  *ngIf="canRead()">
+                                            <i class="fas fa-eye"></i>
+                                        </button>
                                         <button class="btn btn-sm btn-outline-primary me-md-2" type="button"
-                                            (click)="prepararCCmodificar(i,false)">
+                                            (click)="prepararCCmodificar(i,false, 'update')" *ngIf="canUpdate()">
                                             <i class="fas fa-pen"></i>
                                         </button>
                                         <button class="btn btn-sm btn-outline-danger" type="button"
-                                            (click)="borrarCC(i,subCuentas)">
+                                            (click)="borrarCC(i,subCuentas)" *ngIf="canDelete()">
                                             <i class="fas fa-trash"></i>
                                         </button>
                                     </td>

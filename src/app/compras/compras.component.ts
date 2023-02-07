@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { pdfDefaultOptions } from 'ngx-extended-pdf-viewer';
 
 import { OrdenCompraModel } from '../core/models/compras.model';
+import { AuthService } from '../core/services/auth.service';
 import { ComprasService } from '../core/services/compras.service';
 import { SidebarComponent } from '../shared/components/sidebar/sidebar.component';
 
@@ -21,7 +22,7 @@ export class ComprasComponent implements OnInit {
 
   height: number = screen.height - 165;
 
-  constructor(private ocService: ComprasService) {
+  constructor(private ocService: ComprasService, private authService: AuthService) {
     pdfDefaultOptions.assetsFolder = 'bleeding-edge';
    }
 
@@ -52,5 +53,13 @@ export class ComprasComponent implements OnInit {
     );
 
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 
 }

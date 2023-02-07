@@ -3,6 +3,7 @@ import { PropiedadImpuestoModel } from '../../../core/models/catalogos.models';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { PropiedadesService } from '../../../core/services/propiedades.service';
 import { AngularMyDatePickerDirective, IAngularMyDpOptions, IMyDateModel } from 'angular-mydatepicker';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-casas-impuestos',
@@ -16,6 +17,7 @@ export class CasasImpuestosComponent implements OnInit {
   @Input() impuestos: PropiedadImpuestoModel[] = [];
 
   constructor(private formBuilder: FormBuilder,
+    private authService: AuthService,
     private propiedadesService: PropiedadesService) {
     this.inicializarFormulario();
   }
@@ -60,4 +62,10 @@ export class CasasImpuestosComponent implements OnInit {
       paginaWeb: ['', [Validators.required]]
     });
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 }

@@ -118,14 +118,14 @@
                                 <td>{{cxp.factura}}</td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-danger me-md-2" type="button" title="pdf"
-                                        data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                        data-bs-toggle="modal" data-bs-target="#exampleModal" [disabled]="!canRead()"
                                         (click)="getPago(cxp.idOrden)">
                                         <i class="fas fa-file-pdf"></i>
                                     </button>
                                 </td>
                                 <td>
                                     <input type="checkbox" class="btn-check" [id]="'checkR'+i" [checked]="cxp.sugerido"
-                                        (change)="revisar(i)" [disabled]="cxp.autorizado" #inputRevisado>
+                                        (change)="revisar(i)" [disabled]="cxp.autorizado || !canSuggest()" #inputRevisado>
                                     <label class="btn btn-sm"
                                         [ngClass]="{'btn-outline-danger': !inputRevisado.checked, 'bg-success text-white': inputRevisado.checked}"
                                         [for]="'checkR'+i"><i class="fas"
@@ -133,7 +133,7 @@
                                 </td>
                                 <td>
                                     <input type="checkbox" class="btn-check" [id]="'checkA'+i"
-                                        [checked]="cxp.autorizado" (change)="autorizar(i)" #inputAutorizado>
+                                        [checked]="cxp.autorizado" (change)="autorizar(i)"  [disabled]="!canAuthorize()" #inputAutorizado>
                                     <label class="btn btn-sm"
                                         [ngClass]="{'btn-outline-danger': !inputAutorizado.checked, 'bg-success text-white': inputAutorizado.checked}"
                                         [for]="'checkA'+i"><i class="fas"
@@ -141,16 +141,16 @@
                                 </td>
                                 <td>
                                     <button class="btn btn-sm btn-outline-danger me-md-2" type="button" title="pdf"
-                                        data-bs-toggle="modal" *ngIf="cxp.status === 'PAID OUT'"
+                                        data-bs-toggle="modal" *ngIf="cxp.status === 'PAID OUT'" [disabled]="!canRead()"
                                         data-bs-target="#exampleModal" (click)="getPagoCXP(cxp.id)">
                                         <i class="fas fa-file-pdf"></i>
                                     </button>
                                     <button class="btn btn-outline-primary btn-sm" (click)="openFileWindow(i)"
-                                        *ngIf="cxp.status != 'PAID OUT'">
+                                        *ngIf="cxp.status != 'PAID OUT'" [disabled]="!canUpdate()">
                                         <i class="fas fa-upload"></i>
                                     </button>
                                     <input class="d-none" type="file" (change)="addFile($event, i)" [id]="'inputFile'+i"
-                                        *ngIf="cxp.status != 'PAID OUT'">
+                                        *ngIf="cxp.status != 'PAID OUT' && canUpdate()">
                                 </td>
                             </tr>
                         </tbody>

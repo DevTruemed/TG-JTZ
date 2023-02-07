@@ -1,6 +1,7 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CuentaContableModel, TipoModel } from 'src/app/core/models/catalogos.models';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { CcService } from 'src/app/core/services/cc.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
 
@@ -27,6 +28,7 @@ export class CuentasComponent implements OnInit {
   addSubCuenta: boolean = false;
 
   constructor(private ccService: CcService,
+    private authService: AuthService,
     private fb: FormBuilder) {
 
     this.inicializarFormularios();
@@ -84,18 +86,28 @@ export class CuentasComponent implements OnInit {
   public borrarCC(index: number, arreglo: CuentaContableModel[] = this.cuentas): void {
     this.ccService.deleteCuenta(arreglo[index].id).subscribe(() => arreglo.splice(index, 1));
   }
-  public prepararCCmodificar(index: number, account: boolean = true): void {
+  public prepararCCmodificar(index: number, account: boolean = true, tipo: string): void {
 
     this.update = index;
 
     if (account){
       this.formularioCC.patchValue(this.cuentas[index]);
-      document.getElementById('addAccountButton')?.click();
+      if (tipo === 'read') {
+        document.getElementById('readAccountButton')?.click();
+      }
+      if (tipo === 'update') {
+        document.getElementById('addAccountButton')?.click();
+      }
     }else{
       this.formularioCC.patchValue(this.subCuentas[index]);
       //@ts-ignore
       this.formularioCC.get('padre')?.setValue(this.subCuentas[index].padre.id);
-      document.getElementById('addTypeButton')?.click();
+      if (tipo === 'read') {
+        document.getElementById('readTypeButton')?.click();
+      }
+      if (tipo === 'update') {
+        document.getElementById('addTypeButton')?.click();
+      }
     }
   }
 
@@ -119,5 +131,13 @@ export class CuentasComponent implements OnInit {
     });
 
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 
 }

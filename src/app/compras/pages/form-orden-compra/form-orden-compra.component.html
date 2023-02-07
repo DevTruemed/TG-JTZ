@@ -49,6 +49,7 @@
                                 <button
                                     class="btn btn-outline-dark w-100 d-flex justify-content-between align-items-center"
                                     type="button" style="border: 1px solid lightgray;" data-bs-toggle="dropdown"
+                                    *ngIf="canCreate() || canUpdate()"
                                     aria-expanded="false" [disabled]="update">
                                     Add product
                                     <i class="fas fa-chevron-down" style="font-size: .8em"></i>
@@ -103,11 +104,11 @@
                                 </div>
                             </ng-template>
                         </ng-template>
-                        <div class="col-12 col-sm-6" *ngIf="estatus === 'AUTHORIZED'">
+                        <div class="col-12 col-sm-6" *ngIf="estatus === 'AUTHORIZED' && canUpdate()">
                             <label for="formFile" class="form-label">upload invoice</label>
                             <input class="form-control" type="file" id="formFile" (change)="addFile($event)">
                         </div>
-                        <div class="col-12 col-sm-6 mb-2" *ngIf="estatus === 'AUTHORIZED'">
+                        <div class="col-12 col-sm-6 mb-2" *ngIf="estatus === 'AUTHORIZED' && canUpdate()">
                             <label class="form-label">Folio</label>
                             <input class="form-control" type="text" formControlName="factura"
                                 [class.is-invalid]="formulario.get('factura')?.touched && (formulario.get('factura')?.value === null || formulario.get('factura')?.value === '') ">
@@ -117,7 +118,7 @@
                             </div>
                         </div>
                         <div class="col-12" *ngIf="estatus != 'FOR PAYMENT' && estatus != 'CANCELED'">
-                            <button class="btn w-100 mt-2" type="submit"
+                            <button class="btn w-100 mt-2" type="submit" *ngIf="canCreate() || canUpdate()"
                                 [ngClass]="{'btn-outline-primary': !update, 'btn-outline-secondary': update}">
                                 <i class="fas me-2" [ngClass]="{'fa-plus': !update, 'fa-save': update}"></i>
                                 {{ !update ? 'Create Order': 'Save changes' }}
@@ -150,7 +151,7 @@
                     </ng-container>
 
                     <button type="button" class="btn btn-outline-primary w-100" (click)="addObservacion()"
-                        [disabled]="estatus === 'AUTHORIZED' || estatus === 'FOR PAYMENT' || estatus === 'CANCELED'">
+                        [disabled]="estatus === 'AUTHORIZED' || estatus === 'FOR PAYMENT' || estatus === 'CANCELED' || (!canCreate() && !canUpdate())">
                         <i class="fas fa-plus me-2"></i>Add Comment
                     </button>
                 </div>

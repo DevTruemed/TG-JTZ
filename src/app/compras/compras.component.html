@@ -47,7 +47,7 @@
                             Canceled
                         </button>
                         <div class="ms-auto">
-                            <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton"
+                            <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton" *ngIf="canCreate()"
                                 [routerLink]="['form']">
                                 <i class="fas fa-plus"></i>
                             </a>
@@ -73,18 +73,22 @@
                                 <!-- <td>NA</td> -->
                                 <td>{{oc.importe | currency}}</td>
                                 <td class="justify-content-evenly d-flex justify-content-md-center">
+                                    <a class="btn btn-sm btn-outline-secondary me-md-2" type="button" title="show"
+                                        [routerLink]="['form',oc.id]" *ngIf="oc.estatus.estatus != 'FOR PAYMENT' && canRead()">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
                                     <a class="btn btn-sm btn-outline-primary me-md-2" type="button" title="update"
-                                        [routerLink]="['form',oc.id]" *ngIf="oc.estatus.estatus != 'FOR PAYMENT'">
+                                        [routerLink]="['form',oc.id]" *ngIf="oc.estatus.estatus != 'FOR PAYMENT' && canUpdate() && oc.estatus.estatus != 'CANCELED'">
                                         <i class="fas"
                                             [ngClass]="{'fa-pen': oc.estatus.estatus != 'CANCELED', 'fa-eye': oc.estatus.estatus === 'CANCELED'}"></i>
                                     </a>
                                     <button class="btn btn-sm btn-outline-secondary me-md-2" type="button" title="pdf"
-                                        *ngIf="oc.estatus.estatus === 'FOR PAYMENT'" data-bs-toggle="modal"
+                                        *ngIf="oc.estatus.estatus === 'FOR PAYMENT' && canRead()" data-bs-toggle="modal"
                                         data-bs-target="#exampleModal" (click)="getPago(oc.id)">
                                         <i class="fas fa-file-pdf"></i>
                                     </button>
                                     <button class="btn btn-sm btn-outline-danger" type="button" title="inactivate"
-                                        (click)="cancelOC(i)" *ngIf="oc.estatus.estatus != 'CANCELED'">
+                                        (click)="cancelOC(i)" *ngIf="oc.estatus.estatus != 'CANCELED' && canDelete()">
                                         <i class="fas fa-trash"></i>
                                     </button>
                                 </td>

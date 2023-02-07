@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { ClienteModel } from 'src/app/core/models/catalogos.models';
 import { ProductoModel } from 'src/app/core/models/catalogos.models';
 import { VentaModel } from 'src/app/core/models/ventas.model';
+import { AuthService } from 'src/app/core/services/auth.service';
 import { ClientesService } from 'src/app/core/services/clientes.service';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { VentasService } from 'src/app/core/services/ventas.service';
@@ -36,6 +37,7 @@ export class FormComponent implements OnInit {
     private clienteService: ClientesService,
     private fb: FormBuilder,
     private router: Router,
+    private authService: AuthService,
     private activeRoute: ActivatedRoute) {
 
     this.inicializarFormulario();
@@ -185,5 +187,13 @@ export class FormComponent implements OnInit {
       }
     });
   }
+
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
+
+  public canDelete(): boolean {return this.authService.canDelete()};
 
 }

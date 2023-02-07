@@ -12,7 +12,7 @@
                     <a class="nav-link" [routerLink]="['/sales','paid']" routerLinkActive="active">Paid out</a>
                 </li>
                 <li class="ms-auto">
-                    <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton" [routerLink]="['/sales','form']">
+                    <a class="btn btn-outline-secondary btn-sm" title="Add" id="addButton" [routerLink]="['/sales','form']" *ngIf="canCreate()">
                         <i class="fas fa-plus"></i>
                     </a>
                 </li>
@@ -36,7 +36,10 @@
                             <td>{{cotizacion.fechaCreacion | date: 'mediumDate'}}</td>
                             <td>{{cotizacion.importe | currency}}</td>
                             <td>
-                                <a class="btn btn-outline-primary btn-sm" [routerLink]="['/sales','form',cotizacion.id]">
+                                <a class="btn btn-outline-secondary btn-sm m-1" [routerLink]="['/sales','form',cotizacion.id]" *ngIf="canRead()">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a class="btn btn-outline-primary btn-sm m-1" [routerLink]="['/sales','form',cotizacion.id]" *ngIf="canUpdate()">
                                     <i class="fas fa-pen"></i>
                                 </a>
                             </td>

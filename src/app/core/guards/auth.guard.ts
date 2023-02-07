@@ -3,12 +3,15 @@ import { Injectable } from '@angular/core';
 import { CanActivate, ActivatedRouteSnapshot, RouterStateSnapshot, UrlTree, Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { catchError, map } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthGuard implements CanActivate {
+
+  private urlService: string = environment.api + '/security/checkRoute';
 
   constructor(private router: Router,
     private http: HttpClient) { }
@@ -24,7 +27,7 @@ export class AuthGuard implements CanActivate {
     });
     Swal.showLoading();
 
-    return this.checkRoute(this.getRuta(state.url));
+    return this.checkRoute(this.getRuta(state.url.startsWith('/sales') ? '/sales' : state.url));
 
   }
 
@@ -32,17 +35,21 @@ export class AuthGuard implements CanActivate {
 
     const params: HttpParams = new HttpParams().set('route', route);
 
-    return this.http.get<boolean>('https://jtz.truemedgroup.com:7002/security/checkRoute', { params })
+    return this.http.get<any>(this.urlService, { params })
       .pipe(
         map(res => {
-
-          if (!res)
+          console.log(res)
+          if (!res.grant) {
+            localStorage.removeItem('acciones')
+            localStorage.removeItem('token')
             Swal.fire('Access denied', '', 'error');
-
-          else
+          } else {
+            if (res.acciones)
+              localStorage.setItem('acciones', JSON.stringify(res.acciones))
             Swal.close();
+          }
 
-          return res;
+          return res.grant;
         }),
         catchError(error => {
 

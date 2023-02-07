@@ -2,6 +2,7 @@ import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TiposDocumentosService } from '../../../core/services/tipos-documentos.service';
 import { TipoDocumentoModel } from '../../../core/models/catalogos.models';
+import { AuthService } from 'src/app/core/services/auth.service';
 
 @Component({
   selector: 'app-tipos-documentos',
@@ -22,6 +23,7 @@ export class TiposDocumentosComponent implements OnInit {
   height: number = screen.height - 165;
 
   constructor(private fb: FormBuilder,
+    private authService: AuthService,
     private documentoService: TiposDocumentosService) {
 
     this.update = null;
@@ -61,10 +63,15 @@ export class TiposDocumentosComponent implements OnInit {
 
   }
 
-  public prepararUpdate(index: number): void {
+  public prepararUpdate(index: number, tipo: string): void {
 
     this.formulario.patchValue(this.documentos[index]);
-    document.getElementById('addButton')?.click();
+    if (tipo === 'read') {
+      document.getElementById('readButton')?.click();
+    }
+    if (tipo === 'update') {
+      document.getElementById('addButton')?.click();
+    }
     this.update = index;
 
   }
@@ -101,4 +108,9 @@ export class TiposDocumentosComponent implements OnInit {
 
   }
 
+  public canCreate(): boolean {return this.authService.canCreate()};
+
+  public canRead(): boolean {return this.authService.canRead()};
+
+  public canUpdate(): boolean {return this.authService.canUpdate()};
 }

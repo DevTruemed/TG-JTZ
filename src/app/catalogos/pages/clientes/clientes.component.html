@@ -87,6 +87,63 @@
     </div>
 </div>
 
+<!--================================-->
+<!--Modal Ver Cliente     ==========-->
+<!--================================-->
+<button class="d-none" title="Show" data-bs-toggle="modal" data-bs-target="#Read" id="readButton"></button>
+<div class="modal fade" id="Read" tabindex="-1" aria-labelledby="Read" aria-hidden="true">
+    <div class="modal-dialog modal-fullscreen">
+        <form class="modal-content" [formGroup]="formulario">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addProductLabel">Show Customer</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
+                    (click)="reiniciarModals()"></button>
+            </div>
+            <div class="modal-body">
+                <div class="row gx-3">
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Code</label>
+                        <input type="text" class="form-control" formControlName="id" readonly>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Customer</label>
+                        <p class="fst-italic">{{formulario.get('cliente')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Phone number</label>
+                        <p class="fst-italic">{{formulario.get('telefono')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Email</label>
+                        <p class="fst-italic">{{formulario.get('correo')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Contact Name</label>
+                        <p class="fst-italic">{{formulario.get('contacto')!.value}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label class="form-label">Balance</label>
+                        <p class="fst-italic">{{formulario.get('saldo')!.value | currency}}</p>
+                    </div>
+                    <div class="mb-3 col-12 col-sm-6 col-md-3">
+                        <label for="paymentSelector" class="form-label">Payment method</label>
+                        <select class="form-select" aria-label="Default select example" formControlName="metodoPago"
+                            id="paymentSelector" [class.is-invalid]="isValid(formulario,'metodoPago')" readonly>
+                            <option value="1">Pay Pal</option>
+                            <option value="2">Electronic Transfer</option>
+                        </select>
+                    </div>
+
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" id="closeModal"
+                    (click)="reiniciarModals()">Close</button>
+            </div>
+        </form>
+    </div>
+</div>
+
 <button class="btn btn-outline-secondary d-none" data-bs-toggle="modal" data-bs-target="#ArchivesModal"
     id="openArchivosModal"></button>
 <app-archivos [archivos]="documentacion" (uploadFiles)="subirArchivos($event)"></app-archivos>
@@ -103,7 +160,7 @@
                         <div class="d-flex justify-content-between">
                             <h5 class="card-title mb-3">Active Customers</h5>
                             <div class="ms-auto">
-                                <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal"
+                                <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal" [ngClass]="{'d-none': !canCreate()}"
                                     data-bs-target="#Add" id="addButton">
                                     <i class="fas fa-plus"></i>
                                 </button>
@@ -134,25 +191,29 @@
                                             {{numeroAbsoluto(cliente.saldo) | currency}}
                                         </td>
                                         <td>
-                                            <button class="btn btn-sm btn-outline-primary m-auto m-1" type="button"
-                                                title="update" (click)="prepararUpdate(i)">
+                                            <button class="btn btn-sm btn-outline-secondary m-auto m-1" type="button" *ngIf="canRead()"
+                                                title="update" (click)="prepararUpdate(i, 'read')">
+                                                <i class="fas fa-eye"></i>
+                                            </button>
+                                            <button class="btn btn-sm btn-outline-primary m-1" type="button" *ngIf="canUpdate()"
+                                                title="update" (click)="prepararUpdate(i, 'update')">
                                                 <i class="fas fa-pen"></i>
                                             </button>
-                                            <button class="btn btn-sm btn-outline-danger m-1" type="button"
+                                            <button class="btn btn-sm btn-outline-danger m-1" type="button" *ngIf="canDelete()"
                                                 title="inactivate" (click)="desactivarCliente(i)">
                                                 <i class="fas fa-trash"></i>
                                             </button>
-                                            <button class="btn btn-outline-secondary btn-sm m-1"
+                                            <button class="btn btn-outline-secondary btn-sm m-1" *ngIf="canUpdate() || canRead()"
                                                 title="Customer Documents" (click)="documentosModal(i)">
                                                 <i class="fas fa-folder-open"></i>
                                             </button>
-                                            <button *ngIf="cliente.usuario; else noLogin"
+                                            <button *ngIf="canUpdate() && cliente.usuario; else noLogin"
                                                 class="btn btn-outline-success btn-sm m-1" title="Show Login"
                                                 (click)="mostrarUsuario(i)">
                                                 <i class="far fa-address-card"></i>
                                             </button>
                                             <ng-template #noLogin>
-                                                <button class="btn btn-outline-info btn-sm m-1" title="Generate Login"
+                                                <button class="btn btn-outline-info btn-sm m-1" title="Generate Login"  *ngIf="canUpdate()"
                                                     (click)="generarLogin(i)">
                                                     <i class="fas fa-user-plus"></i>
                                                 </button>

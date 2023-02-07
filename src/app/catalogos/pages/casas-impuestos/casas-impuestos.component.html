@@ -29,7 +29,7 @@
                                     <th class="d-flex justify-content-around">
                                         <a [href]="'http://'+impuesto.paginaWeb" target="_blank"
                                             rel="noopener noreferrer">{{impuesto.paginaWeb}}</a>
-                                        <button class="btn btn-sm btn-outline-danger" type="button" title="Delete"
+                                        <button class="btn btn-sm btn-outline-danger" type="button" title="Delete" *ngIf="canDelete()"
                                             (click)="eliminarImpuesto(impuesto, i)">
                                             <i class="fas fa-trash"></i>
                                         </button>
@@ -40,7 +40,7 @@
                     </div>
                 </div>
             </div>
-            <form [formGroup]="formularioAddImpuesto" (ngSubmit)="agregarImpuesto()" autocomplete="off">
+            <form [formGroup]="formularioAddImpuesto" (ngSubmit)="agregarImpuesto()" autocomplete="off" *ngIf="canCreate()">
                 <div class="modal-footer">
                     <div class="row">
                         <div class="mb-3 col-6 col-sm-6 col-md-4">
