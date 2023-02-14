@@ -5,6 +5,7 @@ import { AseguradorasService } from '../../../core/services/aseguradoras.service
 import { Router } from '@angular/router';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { AuthService } from 'src/app/core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-aseguradoras',
@@ -36,18 +37,32 @@ export class AseguradorasComponent implements OnInit {
   public agregarAseguradora(): void {
 
     if (this.formulario.valid) {
-      if (this.update == null)
+      if (this.update == null) {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.aseguradorasService.postAseguradora(this.formulario.value).subscribe(aseguradora => {
           this.aseguradoras.unshift(aseguradora)
           document.getElementById('closeModal')?.click();
+          Swal.close();
         });
-
-      else
+      } else {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.aseguradorasService.putAseguradora(this.formulario.value).subscribe(aseguradora => {
           if (this.update != null)
             this.aseguradoras[this.update] = aseguradora;
           document.getElementById('closeModal')?.click();
+          Swal.close();
         });
+      }
     } else {
       return Object.values(this.formulario.controls).forEach(control => control.markAsTouched());
     }

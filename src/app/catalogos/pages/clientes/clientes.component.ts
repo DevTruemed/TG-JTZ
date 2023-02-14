@@ -56,18 +56,32 @@ export class ClientesComponent implements OnInit {
 
     if (this.formulario.valid) {
 
-      if (this.update == null)
+      if (this.update == null) {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.clienteService.postCliente(this.formulario.value).subscribe(cliente => {
           this.clientes.unshift(cliente)
           document.getElementById('closeModal')?.click();
+          Swal.close();
         });
-
-      else
+      } else {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.clienteService.putCliente(this.formulario.value).subscribe(cliente => {
           if (this.update != null)
             this.clientes[this.update] = cliente;
           document.getElementById('closeModal')?.click();
+          Swal.close();
         });
+      }
 
     } else {
       return Object.values(this.formulario.controls).forEach(control => control.markAsTouched());

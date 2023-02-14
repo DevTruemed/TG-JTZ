@@ -7,6 +7,7 @@ import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { AseguradorasService } from '../../../core/services/aseguradoras.service';
 import { AngularMyDatePickerDirective, IAngularMyDpOptions } from 'angular-mydatepicker';
 import { AuthService } from 'src/app/core/services/auth.service';
+import Swal from 'sweetalert2';
 
 declare var $: any;
 @Component({
@@ -20,13 +21,15 @@ export class CasasComponent implements OnInit {
 
   formularioSeguro!: FormGroup;
 
-  imagenesActualesBase64: { image: string, id: number }[] = [];
+  imagenesActualesBase64: { image: string, id: number, tipo?: string }[] = [];
 
   fotosSeleccionadas: File[] = [];
 
   propiedades: PropiedadModel[] = [];
 
-  fotosMostrar: string[] = [];
+  sumatoriaVenta: number = 0;
+
+  fotosMostrar: {data: string, isPdf: boolean}[] = [];
 
   tiposProductos: TipoModel[] = [];
 
@@ -50,6 +53,10 @@ export class CasasComponent implements OnInit {
 
   width = screen.width;
 
+  addPropiedadValoresIniciales: any;
+
+  addSeguroValoresIniciales: any;
+
   @ViewChild('dp') myDp!: AngularMyDatePickerDirective;
 
   myOptions: IAngularMyDpOptions = {
@@ -66,6 +73,7 @@ export class CasasComponent implements OnInit {
     private cdr: ChangeDetectorRef) {
 
     this.inicializarFormulario();
+    document.getElementById('closeAllModals')?.click();
 
   }
 
@@ -73,8 +81,13 @@ export class CasasComponent implements OnInit {
 
     this.propiedadesService.getPropiedades().subscribe(
       propiedades => {
+        this.sumatoriaVenta = 0;
         this.propiedades = propiedades;
-        this.propiedades.forEach(p => p.cortarDetalle = true);
+        this.propiedades.map(p => {
+          p.cortarDetalle = true;
+          p.venta = p.productos.find(prod => prod.cuenta.id == 142)?.precio || 0;
+          this.sumatoriaVenta += p.venta
+        });
       },
       err => { console.log(err) }
     )
@@ -113,6 +126,12 @@ export class CasasComponent implements OnInit {
   public agregarPropiedad(): void {
     if (this.formularioAddPropiedad.valid) {
       if (this.update === null) {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.propiedadesService.postPropiedad(this.formularioAddPropiedad.value, this.fotosSeleccionadas).subscribe(p => {
 
           if (this.segurosPropiedades.length) {
@@ -129,9 +148,16 @@ export class CasasComponent implements OnInit {
             this.ngOnInit();
             this.reiniciarModals();
           }
-        }, err => console.log(err))
+          Swal.close();
+        }, err => {console.log(err); Swal.close()})
 
       } else
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.propiedadesService.putPropiedad(this.formularioAddPropiedad.value, this.fotosSeleccionadas).subscribe(propiedad => {
 
           if (this.segurosPropiedades.length) {
@@ -143,15 +169,18 @@ export class CasasComponent implements OnInit {
             document.getElementById('closeModal')?.click();
             if (this.update != null)
               this.propiedades[this.update] = propiedad;
+            this.ngOnInit();
             this.reiniciarModals();
           } else {
             document.getElementById('closeModal')?.click();
             if (this.update != null)
               this.propiedades[this.update] = propiedad;
+            this.ngOnInit();
             this.reiniciarModals();
-          } 5
-        }, err => console.log(err))
-
+          }
+          Swal.close();
+        }, err => {console.log(err); Swal.close()})
+      
     } else {
       return Object.values(this.formularioAddPropiedad.controls).forEach(control => control.markAsTouched());
     }
@@ -174,7 +203,8 @@ export class CasasComponent implements OnInit {
 
   public reiniciarModals(): void {
     this.update = null;
-    this.formularioAddPropiedad.reset();
+    this.formularioAddPropiedad.reset(this.addPropiedadValoresIniciales);
+    this.formularioSeguro.reset(this.addSeguroValoresIniciales);
     this.fotosMostrar = [];
     this.fotosSeleccionadas = [];
     this.imagenesActualesBase64 = [];
@@ -183,8 +213,11 @@ export class CasasComponent implements OnInit {
 
   public modificarPropiedad(index: number, tipo: string): void {
 
+    console.log(this.propiedades[index])
     this.formularioAddPropiedad.patchValue(this.propiedades[index]);
     this.formularioAddPropiedad.get('id')?.setValue(this.propiedades[index].id);
+    this.formularioAddPropiedad.get('venta')?.setValue(this.propiedades[index].productos.find(prod => prod.cuenta.id == 142)?.precio);
+    this.formularioAddPropiedad.get('renta')?.setValue(this.propiedades[index].productos.find(prod => prod.cuenta.id == 141)?.precio);
 
     this.propiedades[index].seguros.forEach(seguro => {
       this.segurosPropiedades.push(this.formBuilder.group(seguro));
@@ -192,16 +225,18 @@ export class CasasComponent implements OnInit {
     this.update = index;
     this.imagenesActualesBase64 = [];
     if (tipo === 'read') {
+      this.formularioAddPropiedad.get('tipo')?.disable();
       document.getElementById('readButton')?.click();
     }
     if (tipo === 'update') {
+      this.formularioAddPropiedad.get('tipo')?.enable();
       document.getElementById('addButton')?.click();
     }
 
     this.propiedades[index].imagenes.forEach(imagen => {
 
       this.propiedadesService.getImagen(imagen.ruta).subscribe(image => {
-        this.imagenesActualesBase64.push({ image: ('data:' + image.type + ';base64, ' + image.image), id: imagen.id });
+        this.imagenesActualesBase64.push({ image: ('data:' + image.type + ';base64, ' + image.image), id: imagen.id, tipo: imagen.tipo });
       }, err => console.log(err));
 
     });
@@ -242,10 +277,10 @@ export class CasasComponent implements OnInit {
     this.fotosSeleccionadas.length
 
     for (let index = 0; index < event.target.files.length; index++) {
-      if (event.target.files[index].type === 'image/png' || event.target.files[index].type === 'image/jpg' || event.target.files[index].type === 'image/jpeg') {
+      if (event.target.files[index].type === 'image/png' || event.target.files[index].type === 'image/jpg' || event.target.files[index].type === 'image/jpeg' || event.target.files[index].type === 'application/pdf') {
 
         this.fotosSeleccionadas.push(event.target.files[index]);
-        this.arrayBufferToBase64(event.target.files[index].arrayBuffer())
+        this.arrayBufferToBase64(event.target.files[index].arrayBuffer(), event.target.files[index].type === 'application/pdf' ? true : false)
 
       }
 
@@ -280,7 +315,7 @@ export class CasasComponent implements OnInit {
 
   }
 
-  private arrayBufferToBase64(buffer: Promise<ArrayBuffer>): void {
+  private arrayBufferToBase64(buffer: Promise<ArrayBuffer>, isPdf: boolean = false): void {
 
     buffer.then((arraybuffer: ArrayBuffer) => {
       var binary = '';
@@ -289,7 +324,7 @@ export class CasasComponent implements OnInit {
       for (var i = 0; i < len; i++) {
         binary += String.fromCharCode(bytes[i]);
       }
-      this.fotosMostrar.push(window.btoa(binary));
+      this.fotosMostrar.push({data: window.btoa(binary), isPdf: isPdf});
     })
 
 
@@ -305,21 +340,22 @@ export class CasasComponent implements OnInit {
       numeroExterior: ['', [Validators.minLength(1), Validators.maxLength(10), Validators.required]],
       venta: [1, [Validators.min(1), Validators.required]],
       renta: [1, [Validators.min(1), Validators.required]],
-      habitaciones: [0, [Validators.min(1), Validators.required]],
-      terreno: [1, [Validators.min(1), Validators.max(50000), Validators.required]],
-      terrenoConstruido: [0, [Validators.min(0), Validators.max(50000)]],
+      habitaciones: [0, [Validators.min(0), Validators.required]],
+      terreno: [1, [Validators.min(1), Validators.required]],
+      terrenoConstruido: [0, [Validators.min(0)]],
       descripcion: ['', [Validators.required, Validators.minLength(10), Validators.maxLength(2000)]],
       tipo: this.formBuilder.group({
         id: [1]
       }),
-      noPisos: [1, [Validators.min(1), Validators.max(10), Validators.required]],
+      noPisos: [0, [Validators.min(0), Validators.max(10), Validators.required]],
       piso: [0, [Validators.min(0), Validators.max(500)]],
-      recamaras: [1, [Validators.min(1), Validators.max(10), Validators.required]],
-      banos: [1, [Validators.min(1), Validators.max(10), Validators.required]],
+      recamaras: [0, [Validators.min(0), Validators.max(30), Validators.required]],
+      banos: [0, [Validators.min(0), Validators.max(10), Validators.required]],
       estacionamientos: [0, [Validators.min(0), Validators.max(10), Validators.required]],
       seguros: this.formBuilder.array([]),
       productos: this.formBuilder.array([])
     });
+    this.addPropiedadValoresIniciales = this.formularioAddPropiedad.value;
     this.inicializarFormularioSeguro();
   }
 
@@ -338,6 +374,7 @@ export class CasasComponent implements OnInit {
         id: [0, [Validators.min(1)]]
       }),
     });
+    this.addSeguroValoresIniciales = this.formularioSeguro.value;
   }
 
   getInfoAseguradora(): void {

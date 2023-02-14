@@ -6,6 +6,7 @@ import { AuthService } from 'src/app/core/services/auth.service';
 import { ProductosService } from 'src/app/core/services/productos.service';
 import { PropiedadesService } from 'src/app/core/services/propiedades.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-productos',
@@ -47,11 +48,6 @@ export class ProductosComponent implements OnInit {
 
     this.ccServce.getSubCuentas().subscribe(p => this.tiposProductos = p, error => console.log(error));
 
-    console.log(this.authService.canCreate())
-    console.log(this.authService.canRead())
-    console.log(this.authService.canUpdate())
-    console.log(this.authService.canDelete())
-
   }
 
   openSideBar(): void {
@@ -66,22 +62,38 @@ export class ProductosComponent implements OnInit {
   public agregarProducto(): void {
 
     if (this.formularioAddProducto.valid) {
-      if (this.update === null)
+      if (this.update === null) {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.productosService.postProductos(this.formularioAddProducto.value).subscribe(producto => {
           document.getElementById('closeModalProducto')?.click();
           //propiedad.tipo.tipo = this.tipos[propiedad.tipo.id - 1].tipo;
           this.productos.push(producto)
           this.formularioAddProducto.reset();
-        }, err => console.log(err))
-
-      else
+          this.ngOnInit();
+          Swal.close();
+        }, err => {console.log(err); Swal.close()})
+      } else {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.productosService.putProductos(this.formularioAddProducto.value).subscribe(producto => {
           document.getElementById('closeModalProducto')?.click();
           if (this.update != null)
             this.productos[this.update] = producto;
           this.update = null;
           this.formularioAddProducto.reset();
-        }, err => console.log(err))
+          this.ngOnInit();
+          Swal.close();
+        }, err => {console.log(err); Swal.close()})
+      }
     } else {
       return Object.values(this.formularioAddProducto.controls).forEach(control => control.markAsTouched());
     }
@@ -94,11 +106,11 @@ export class ProductosComponent implements OnInit {
     this.formularioAddProducto.get('id')?.setValue(this.productos[index].id);
     this.update = index;
     if (tipo === 'read') {
-      // this.formularioAddProducto.get('cuenta')!.disable();
+      this.formularioAddProducto.get('cuenta')!.disable();
       document.getElementById('readProductoButton')?.click();
     }
     if (tipo === 'update') {
-      // this.formularioAddProducto.get('cuenta')!.enable();
+      this.formularioAddProducto.get('cuenta')!.enable();
       document.getElementById('addProductoButton')?.click();
     }
 

@@ -6,6 +6,8 @@ import { catchError, map } from 'rxjs/operators';
 import { environment } from 'src/environments/environment';
 import Swal from 'sweetalert2';
 
+declare var $: any;
+
 @Injectable({
   providedIn: 'root'
 })
@@ -26,6 +28,8 @@ export class AuthGuard implements CanActivate {
       allowOutsideClick: false
     });
     Swal.showLoading();
+
+    $('.modal-backdrop').remove()
 
     return this.checkRoute(this.getRuta(state.url.startsWith('/sales') ? '/sales' : state.url));
 

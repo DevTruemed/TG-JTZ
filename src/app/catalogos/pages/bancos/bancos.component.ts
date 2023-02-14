@@ -191,11 +191,18 @@ export class BancosComponent implements OnInit {
   public agregarDeposito(): void {
 
     if (this.formularioDeposito.valid) {
+      Swal.fire({
+        text: 'Cargando',
+        allowEscapeKey: false,
+        allowOutsideClick: false
+      });
+      Swal.showLoading();
       this.bancosService.postDeposito(this.formularioDeposito.value).subscribe(deposito => {
         this.depositos.unshift(deposito);
         document.getElementById('closeModalDeposito')?.click();
         this.bancoSeleccionado.saldo += deposito.monto;
         this.clienteSeleccionado.saldo += deposito.monto;
+        Swal.close();
       });
     } else
       return Object.values(this.formularioDeposito.controls).forEach(control => control.markAsTouched());
@@ -205,10 +212,17 @@ export class BancosComponent implements OnInit {
   public agregarPago(): void {
 
     if (this.formularioPago.valid) {
+      Swal.fire({
+        text: 'Cargando',
+        allowEscapeKey: false,
+        allowOutsideClick: false
+      });
+      Swal.showLoading();
       this.bancosService.postPago(this.formularioPago.value).subscribe(pago => {
         this.pagos.unshift(pago);
         document.getElementById('closeModalPago')?.click();
         this.bancoSeleccionado.saldo -= pago.monto;
+        Swal.close();
       });
     } else
       return Object.values(this.formularioPago.controls).forEach(control => control.markAsTouched());

@@ -3,6 +3,7 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { TiposDocumentosService } from '../../../core/services/tipos-documentos.service';
 import { TipoDocumentoModel } from '../../../core/models/catalogos.models';
 import { AuthService } from 'src/app/core/services/auth.service';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-tipos-documentos',
@@ -44,19 +45,32 @@ export class TiposDocumentosComponent implements OnInit {
 
     if (this.formulario.valid) {
 
-      if (this.update == null)
+      if (this.update == null) {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.documentoService.postTipoDocumento(this.formulario.value).subscribe(documento => {
           this.documentos.unshift(documento)
           document.getElementById('closeModal')?.click();
+          Swal.close();
         });
-
-      else
+      } else {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.documentoService.putTipoDocumento(this.formulario.value).subscribe(documento => {
           if (this.update != null)
             this.documentos[this.update] = documento;
           document.getElementById('closeModal')?.click();
+          Swal.close();
         });
-
+      }
     } else {
       return Object.values(this.formulario.controls).forEach(control => control.markAsTouched());
     }

@@ -82,18 +82,18 @@
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label for="builtInput" class="form-label">Built area (sqtf)</label>
                         <input type="number" class="form-control" id="builtInput" placeholder="Built area (sqtf)"
-                            [class.is-invalid]="isValid(formularioAddPropiedad,'terreno')" formControlName="terreno">
-                        <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'terreno')">
-                            this field is required (between 1 and 50000)
+                            [class.is-invalid]="isValid(formularioAddPropiedad,'terrenoConstruido')" formControlName="terrenoConstruido">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'terrenoConstruido')">
+                            this field is required (between 0 and 50000)
                         </div>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label for="totalInput" class="form-label">Total area (sqft)</label>
                         <input type="number" class="form-control" id="totalInput" placeholder="Total area (sqft)"
-                            [class.is-invalid]="isValid(formularioAddPropiedad,'terrenoConstruido')"
-                            formControlName="terrenoConstruido">
-                        <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'terrenoConstruido')">
-                            Insert number between 0 and 50000
+                            [class.is-invalid]="isValid(formularioAddPropiedad,'terreno')"
+                            formControlName="terreno">
+                        <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'terreno')">
+                            Insert number between 1 and 50000
                         </div>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
@@ -101,7 +101,7 @@
                         <input type="number" class="form-control" id="floorsInput" placeholder="Number of floors"
                             [class.is-invalid]="isValid(formularioAddPropiedad,'noPisos')" formControlName="noPisos">
                         <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'noPisos')">
-                            this field is required (between 1 and 10)
+                            this field is required (between 0 and 10)
                         </div>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
@@ -109,7 +109,7 @@
                         <input type="number" class="form-control" id="pisoInput" placeholder="Floor"
                             [class.is-invalid]="isValid(formularioAddPropiedad,'piso')" formControlName="piso">
                         <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'piso')">
-                            this field is required (between 1 and 500)
+                            this field is required (between 0 and 500)
                         </div>
                         <div id="floorHelp" class="form-text" *ngIf="!isValid(formularioAddPropiedad,'piso')">What floor
                             is the apartment on?</div>
@@ -120,7 +120,7 @@
                             [class.is-invalid]="isValid(formularioAddPropiedad,'habitaciones')"
                             formControlName="habitaciones">
                         <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'habitaciones')">
-                            this field is required (between 1 and 10)
+                            this field is required (between 0 and 10)
                         </div>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
@@ -129,7 +129,7 @@
                             [class.is-invalid]="isValid(formularioAddPropiedad,'recamaras')"
                             formControlName="recamaras">
                         <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'recamaras')">
-                            this field is required (between 1 and 30)
+                            this field is required (between 0 and 30)
                         </div>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
@@ -147,7 +147,7 @@
                         <input type="number" class="form-control" id="bathroomsInput" placeholder="Number of bathrooms"
                             [class.is-invalid]="isValid(formularioAddPropiedad,'banos')" formControlName="banos">
                         <div class="invalid-feedback" *ngIf="isValid(formularioAddPropiedad,'banos')">
-                            this field is required (between 1 and 10)
+                            this field is required (between 0 and 10)
                         </div>
                     </div>
                 </div>
@@ -155,15 +155,17 @@
                 <div class="row gx-3">
                     <h3>Multimedia</h3>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
-                        <label for="formFileMultiple" class="form-label">Select images</label>
+                        <label for="formFileMultiple" class="form-label">Select images or pdf's</label>
                         <input class="form-control" (change)="seleccionarFotos($event)" type="file"
-                            id="formFileMultiple" multiple>
+                            id="formFileMultiple" multiple accept="application/pdf, image/*">
                     </div>
                     <div class="row">
                         <div class="mb-3 col-12 col-sm-6 col-md-3 d-flex"
                             *ngFor="let image of imagenesActualesBase64; let i = index">
                             <div class="col-11">
-                                <img class="img-fluid" [src]="image.image | domSeguro">
+                                <!-- <img class="img-fluid" [src]="image.image | domSeguro"> -->
+                                <img class="img-fluid" [src]="image.image | domSeguro" *ngIf="!image.tipo?.includes('/pdf')">
+                                <embed [src]="image.image | domSeguro" width="350" height="375" type="application/pdf"  *ngIf="image.tipo?.includes('/pdf')">
                             </div>
                             <button type="button" class="mb-auto"
                                 style="border: transparent; background-color: transparent; margin-left: -5%; margin-top: -3%;"
@@ -175,7 +177,9 @@
                         <div class="mb-3 col-12 col-sm-6 col-md-3 d-flex"
                             *ngFor="let image of fotosMostrar; let i = index">
                             <div class="col-11">
-                                <img class="img-fluid" [src]="('data:image/png;base64, ' + image) | domSeguro">
+                                <!-- <img class="img-fluid" [src]="('data:image/png;base64, ' + image) | domSeguro"> -->
+                                <img class="img-fluid" [src]="('data:image/png;base64, ' + image.data) | domSeguro" *ngIf="!image.isPdf">
+                                <embed [src]="('data:application/pdf;base64, ' + image.data) | domSeguro" width="350" height="375" type="application/pdf"  *ngIf="image.isPdf">
                             </div>
                             <button type="button" class="mb-auto"
                                 style="border: transparent; background-color: transparent; margin-left: -5%; margin-top: -3%;"
@@ -414,11 +418,11 @@
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label for="builtInput" class="form-label">Built area (sqtf)</label>
-                        <p class="fst-italic">{{formularioAddPropiedad.get('terreno')!.value}}</p>
+                        <p class="fst-italic">{{formularioAddPropiedad.get('terrenoConstruido')!.value}}</p>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label for="totalInput" class="form-label">Total area (sqft)</label>
-                        <p class="fst-italic">{{formularioAddPropiedad.get('terrenoConstruido')!.value}}</p>
+                        <p class="fst-italic">{{formularioAddPropiedad.get('terreno')!.value}}</p>
                     </div>
                     <div class="mb-3 col-12 col-sm-6 col-md-3">
                         <label for="floorsInput" class="form-label">Number of floors</label>
@@ -446,21 +450,22 @@
                     </div>
                 </div>
                 <hr>
-                <div class="row gx-3">
+                <div class="row gx-3" *ngIf="imagenesActualesBase64.length || fotosMostrar.length">
                     <h3>Multimedia</h3>
                     <div class="row">
                         <div class="mb-3 col-12 col-sm-6 col-md-3 d-flex"
                             *ngFor="let image of imagenesActualesBase64; let i = index">
                             <div class="col-11">
-                                <img class="img-fluid" [src]="image.image | domSeguro">
+                                <img class="img-fluid" [src]="image.image | domSeguro" *ngIf="!image.tipo?.includes('/pdf')">
+                                <embed [src]="image.image | domSeguro" width="350" height="375" type="application/pdf"  *ngIf="image.tipo?.includes('/pdf')">
                             </div>
                         </div>
-                        <div class="mb-3 col-12 col-sm-6 col-md-3 d-flex"
+                        <!-- <div class="mb-3 col-12 col-sm-6 col-md-3 d-flex bg-danger"
                             *ngFor="let image of fotosMostrar; let i = index">
                             <div class="col-11">
                                 <img class="img-fluid" [src]="('data:image/png;base64, ' + image) | domSeguro">
                             </div>
-                        </div>
+                        </div> -->
                     </div>
                     <div class="mb-3 row d-none" formArrayName="productos">
                         <ng-container *ngFor="let control of productosPropiedades.controls; let i=index"
@@ -557,7 +562,7 @@
                         and Services</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" [routerLink]="['/catalogs', 'houses']" [routerLinkActive]="'active'">Houses</a>
+                    <a class="nav-link" [routerLink]="['/catalogs', 'properties']" [routerLinkActive]="'active'">Properties</a>
                 </li>
                 <li class="ms-auto">
                     <button class="btn btn-outline-secondary btn-sm" title="Add" data-bs-toggle="modal" [ngClass]="{'d-none': !canCreate()}"
@@ -577,6 +582,7 @@
                         <th scope="col">Address</th>
                         <th scope="col">Description</th>
                         <th scope="col">Floors</th>
+                        <th scope="col">Sale price</th>
                         <th scope="col">Actions</th>
                     </tr>
                 </thead>
@@ -590,11 +596,13 @@
                             {{ propiedad.descripcion | cutText: propiedad.cortarDetalle }}
                             <button class="btn btn-sm btn-outline-primary w-100 py-0 mt-2"
                                 [ngClass]="{'btn-outline-secondary': !propiedad.cortarDetalle}"
-                                (click)="propiedad.cortarDetalle = !propiedad.cortarDetalle">
+                                (click)="propiedad.cortarDetalle = !propiedad.cortarDetalle"
+                                *ngIf="propiedad.descripcion.length > 35">
                                 {{propiedad.cortarDetalle ? 'Show more' : 'Show less'}}
                             </button>
                         </td>
                         <td>{{ propiedad.noPisos }}</td>
+                        <td>{{ propiedad.venta | currency }}</td>
                         <td>
                             <button class="btn btn-outline-secondary btn-sm" title="Read" *ngIf="canRead()"
                                 (click)="modificarPropiedad(i, 'read')">
@@ -615,6 +623,16 @@
                         </td>
                     </tr>
                 </tbody>
+                <tfoot class="bg-secondary text-white">
+                    <tr *ngIf="propiedades.length && sumatoriaVenta">
+                        <td></td>
+                        <td></td>
+                        <td></td>
+                        <th>Total:</th>
+                        <th>{{ sumatoriaVenta | currency }}</th>
+                        <td></td>
+                    </tr>
+                </tfoot>
             </table>
         </div>
 

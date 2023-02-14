@@ -4,6 +4,7 @@ import { CuentaContableModel, TipoModel } from 'src/app/core/models/catalogos.mo
 import { AuthService } from 'src/app/core/services/auth.service';
 import { CcService } from 'src/app/core/services/cc.service';
 import { SidebarComponent } from 'src/app/shared/components/sidebar/sidebar.component';
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-cuentas',
@@ -56,7 +57,13 @@ export class CuentasComponent implements OnInit {
     
     if (this.formularioCC.valid) {
 
-      if (this.update === null)
+      if (this.update === null) {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.ccService.postCuenta(this.formularioCC.value).subscribe(cc => {
 
           if (!this.addSubCuenta)
@@ -65,8 +72,15 @@ export class CuentasComponent implements OnInit {
             this.subCuentas.push(cc);
 
           document.getElementById('closeModalCC')?.click();
-        }, err => console.log(err))
-      else
+          Swal.close();
+        }, err => {console.log(err); Swal.close()})
+      } else {
+        Swal.fire({
+          text: 'Cargando',
+          allowEscapeKey: false,
+          allowOutsideClick: false
+        });
+        Swal.showLoading();
         this.ccService.putCuenta(this.formularioCC.value).subscribe(cc => {
 
           if ( this.update != null ){
@@ -76,7 +90,9 @@ export class CuentasComponent implements OnInit {
               this.subCuentas[this.update] = cc;
           }
           document.getElementById('closeModalCC')?.click();
-        }, err => console.log(err))
+          Swal.close();
+        }, err => {console.log(err); Swal.close()})
+      }
     } else {
       return Object.values(this.formularioCC.controls).forEach(control => control.markAsTouched());
     }
